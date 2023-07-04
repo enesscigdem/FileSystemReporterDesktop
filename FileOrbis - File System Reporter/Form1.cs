@@ -74,17 +74,26 @@ namespace FileOrbis___File_System_Reporter
                 string excelPathAfterDate = Path.Combine(Application.StartupPath, "output", "afterdate.xlsx");
                 string excelPathBeforeDate = Path.Combine(Application.StartupPath, "output", "beforedate.xlsx");
 
-                using (var workbook = new XLWorkbook())
+                using (var workbookAfterDate = new XLWorkbook())
+                using (var workbookBeforeDate = new XLWorkbook())
                 {
-                    var worksheet = workbook.Worksheets.Add("Data");
+                    var worksheetAfterDate = workbookAfterDate.Worksheets.Add("Data");
+                    var worksheetBeforeDate = workbookBeforeDate.Worksheets.Add("Data");
 
-                    worksheet.Cell(1, 1).Value = "File Name";
-                    worksheet.Cell(1, 2).Value = "Create Date";
-                    worksheet.Cell(1, 3).Value = "Modified Date";
-                    worksheet.Cell(1, 4).Value = "Access Date";
-                    worksheet.Cell(1, 5).Value = "File Size (bytes)";
+                    worksheetAfterDate.Cell(1, 1).Value = "File Name";
+                    worksheetAfterDate.Cell(1, 2).Value = "Create Date";
+                    worksheetAfterDate.Cell(1, 3).Value = "Modified Date";
+                    worksheetAfterDate.Cell(1, 4).Value = "Access Date";
+                    worksheetAfterDate.Cell(1, 5).Value = "File Size (bytes)";
 
-                    int row = 2;
+                    worksheetBeforeDate.Cell(1, 1).Value = "File Name";
+                    worksheetBeforeDate.Cell(1, 2).Value = "Create Date";
+                    worksheetBeforeDate.Cell(1, 3).Value = "Modified Date";
+                    worksheetBeforeDate.Cell(1, 4).Value = "Access Date";
+                    worksheetBeforeDate.Cell(1, 5).Value = "File Size (bytes)";
+
+                    int rowAfterDate = 2;
+                    int rowBeforeDate = 2;
                     foreach (string file in files)
                     {
                         string fileName = Path.GetFileName(file);
@@ -95,19 +104,44 @@ namespace FileOrbis___File_System_Reporter
                         DateTime accessDate = File.GetLastAccessTime(file);
                         long fileSize = new FileInfo(file).Length;
 
-                        worksheet.Cell(row, 1).Value = $"{fileDirectory + "\\" + fileName}";
-                        worksheet.Cell(row, 2).Value = createDate.ToString();
-                        worksheet.Cell(row, 3).Value = modifiedDate.ToString();
-                        worksheet.Cell(row, 4).Value = accessDate.ToString();
-                        worksheet.Cell(row, 5).Value = fileSize.ToString();
-
-                        row++;
+                        if ((radioButton1.Checked && createDate > dateTimePicker1.Value) ||
+                            (radioButton2.Checked && accessDate > dateTimePicker1.Value) ||
+                            (radioButton3.Checked && modifiedDate > dateTimePicker1.Value))
+                        {
+                            worksheetAfterDate.Cell(rowAfterDate, 1).Value = $"{fileDirectory + "\\" + fileName}";
+                            worksheetAfterDate.Cell(rowAfterDate, 2).Value = createDate.ToString();
+                            worksheetAfterDate.Cell(rowAfterDate, 3).Value = modifiedDate.ToString();
+                            worksheetAfterDate.Cell(rowAfterDate, 4).Value = accessDate.ToString();
+                            worksheetAfterDate.Cell(rowAfterDate, 5).Value = fileSize.ToString();
+                            rowAfterDate++;
+                        }
+                        else
+                        {
+                            worksheetBeforeDate.Cell(rowBeforeDate, 1).Value = $"{fileDirectory + "\\" + fileName}";
+                            worksheetBeforeDate.Cell(rowBeforeDate, 2).Value = createDate.ToString();
+                            worksheetBeforeDate.Cell(rowBeforeDate, 3).Value = modifiedDate.ToString();
+                            worksheetBeforeDate.Cell(rowBeforeDate, 4).Value = accessDate.ToString();
+                            worksheetBeforeDate.Cell(rowBeforeDate, 5).Value = fileSize.ToString();
+                            rowBeforeDate++;
+                        }
                     }
-                    var range = worksheet.Range("A1:D" + (row - 1));
-                    range.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-                    worksheet.ColumnWidth = 15;
-                    workbook.SaveAs(excelPathAfterDate);
-                    workbook.SaveAs(excelPathBeforeDate);
+
+                    var rangeAfterDate = worksheetAfterDate.Range("A1:E" + (rowAfterDate - 1));
+                    var rangeBeforeDate = worksheetBeforeDate.Range("A1:E" + (rowBeforeDate - 1));
+                    rangeAfterDate.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+                    rangeBeforeDate.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+                    worksheetAfterDate.ColumnWidth = 15;
+                    worksheetBeforeDate.ColumnWidth = 15;
+                    try
+                    {
+                        workbookAfterDate.SaveAs(excelPathAfterDate);
+                        workbookBeforeDate.SaveAs(excelPathBeforeDate);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Çıktı alma başarısız. Excel dosyanız açık ise kapatıp deneyiniz.", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+
                 }
 
                 MessageBox.Show("Veriler Excel'e kaydedildi.", "Başarılı İşlem", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -117,6 +151,7 @@ namespace FileOrbis___File_System_Reporter
                 MessageBox.Show("Lütfen geçerli bir klasör seçin.", "Klasör Seçin", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
+
         #endregion
         #region Disabled Checked Radio Buttons,CheckBoxs
         public void DisabledChecked()
@@ -132,7 +167,17 @@ namespace FileOrbis___File_System_Reporter
         }
         #endregion
         #region Scan Process and view to listbox
-        private void ScanProcess(string selectedFolder)
+        public string GetListBoxItem(string fileDirectory, string fileName, DateTime createDate, DateTime modifiedDate, DateTime accessDate, long fileSize)
+        {
+            string listItem = $"{fileDirectory + "\\" + fileName}";
+            listItem += $"\n  Create Date: {createDate}";
+            listItem += $"\n  Modified Date: {modifiedDate}";
+            listItem += $"\n  Access Date: {accessDate}";
+            listItem += $"\n  File Size (bytes): {fileSize}";
+
+            return listItem;
+        }
+        private void ScanProcess(string selectedFolder, string DateType)
         {
             if (!string.IsNullOrEmpty(selectedFolder) && Directory.Exists(selectedFolder))
             {
@@ -153,19 +198,20 @@ namespace FileOrbis___File_System_Reporter
                 {
                     string fileName = Path.GetFileName(file);
                     string fileDirectory = Path.GetDirectoryName(file);
-
                     DateTime createDate = File.GetCreationTime(file);
                     DateTime modifiedDate = File.GetLastWriteTime(file);
                     DateTime accessDate = File.GetLastAccessTime(file);
                     long fileSize = new FileInfo(file).Length;
-
-                    string listItem = $"{fileDirectory + "\\" + fileName}";
-                    listItem += $"\n  Create Date: {createDate}";
-                    listItem += $"\n  Modified Date: {modifiedDate}";
-                    listItem += $"\n  Access Date: {accessDate}";
-                    listItem += $"\n  File Size (bytes): {fileSize}";
-
-                    listBox1.Items.Add(listItem);
+                    if ((DateType == "Created" && createDate > dateTimePicker1.Value) || (DateType == "Accessed" && accessDate > dateTimePicker1.Value) || (DateType == "Modified" && modifiedDate > dateTimePicker1.Value))
+                    {
+                        string listItem = GetListBoxItem(fileDirectory, fileName, createDate, modifiedDate, accessDate, fileSize);
+                        listBox1.Items.Add(listItem);
+                    }
+                    else
+                    {
+                        string listItem = GetListBoxItem(fileDirectory, fileName, createDate, modifiedDate, accessDate, fileSize);
+                        listBox2.Items.Add(listItem);
+                    }
 
                     processedFiles++;
                     progressBar1.Value = processedFiles;
@@ -225,38 +271,23 @@ namespace FileOrbis___File_System_Reporter
         private void button3_Click(object sender, EventArgs e)
         {
             #region Scan Process 
+            listBox1.Items.Clear();
+            listBox2.Items.Clear();
             if (radioButton6.Checked)
             {
-
                 string selectedFolder = textBox1.Text;
 
                 if (radioButton1.Checked == true)
                 {
-                    if (File.GetCreationTime(selectedFolder) > dateTimePicker1.Value)
-                        ScanProcess(selectedFolder);
-                    else
-                    {
-
-                        DialogResult d1 = MessageBox.Show("Bu tarihten sonra bir kayıt bulunamadı! Yine de tarama işlemi yapılsın mı?", "Kayıt Bulunamadı.", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-                        if (d1 == DialogResult.Yes)
-                        {
-                            ScanProcess(selectedFolder);
-                        }
-                    }
+                    ScanProcess(selectedFolder, "Created");
                 }
                 if (radioButton2.Checked == true)
                 {
-                    if (File.GetLastWriteTime(selectedFolder) > dateTimePicker1.Value)
-                        ScanProcess(selectedFolder);
-                    else
-                        MessageBox.Show("Bu tarihten sonra bir kayıt bulunamadı!", "Kayıt Bulunamadı.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ScanProcess(selectedFolder, "Accessed");
                 }
                 if (radioButton3.Checked == true)
                 {
-                    if (File.GetLastAccessTime(selectedFolder) > dateTimePicker1.Value)
-                        ScanProcess(selectedFolder);
-                    else
-                        MessageBox.Show("Bu tarihten sonra bir kayıt bulunamadı!", "Kayıt Bulunamadı.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ScanProcess(selectedFolder, "Modified");
                 }
             }
 
@@ -313,7 +344,7 @@ namespace FileOrbis___File_System_Reporter
                         string destinationFolderPath = textBox3.Text + "\\" + selectedFileName;
 
                         DeleteDirectory(destinationFolderPath); // overwrite işlemi .
-                        CopyDirectory(sourceFolderPath, destinationFolderPath,copyPermissions);
+                        CopyDirectory(sourceFolderPath, destinationFolderPath, copyPermissions);
 
                         MessageBox.Show("Klasör '" + sourceFolderPath + "' konumu '" + destinationFolderPath + "' konumuna kopyalanmıştır ve " +
                             "üzerine yazılmıştır.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -364,12 +395,27 @@ namespace FileOrbis___File_System_Reporter
             foreach (string altDizin in altDizinler)
             {
                 string altDizinAdi = Path.GetFileName(altDizin);
-                string hedefAltDizin = Path.Combine(hedefKlasör, altDizinAdi);
-                MoveDirectory(altDizin, hedefAltDizin);
+                string[] altDizinDosyalari = Directory.GetFiles(altDizin);
+                if (altDizinDosyalari.Length >= 1)
+                {
+                    string hedefAltDizin = Path.Combine(hedefKlasör, altDizinAdi);
+                    MoveDirectory(altDizin, hedefAltDizin);
+                }
+                else
+                {
+                    if (checkBox1.Checked)
+                    {
+                        string hedefAltDizin = Path.Combine(hedefKlasör, altDizinAdi);
+                        MoveDirectory(altDizin, hedefAltDizin);
+                    }
+                    else
+                        continue; // Boş alt dizinleri atla
+                }
             }
 
             Directory.Delete(kaynakKlasör, recursive: true);
         }
+
 
         #endregion
         #region Copy Directory
