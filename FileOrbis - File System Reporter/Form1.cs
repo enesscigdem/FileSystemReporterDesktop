@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -197,13 +198,6 @@ namespace FileOrbis___File_System_Reporter
             checkBox3.Enabled = true;
         }
         #endregion
-        #region Move Process 
-        private void MoveProcess()
-        {
-            string path = textBox1.Text;
-            string pathToMove = textBox2.Text;
-        }
-        #endregion
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -277,9 +271,8 @@ namespace FileOrbis___File_System_Reporter
                     {
                         string sourceFolderPath = textBox1.Text;
                         string destinationFolderPath = textBox3.Text + "\\" + selectedFileName;
-
                         DeleteDirectory(destinationFolderPath); // overwrite işlemi .
-                        Directory.Move(sourceFolderPath, destinationFolderPath);
+                        MoveDirectory(sourceFolderPath, destinationFolderPath);
 
                         MessageBox.Show("Klasör '" + sourceFolderPath + "' konumundan '" + destinationFolderPath + "' konumuna taşınmıştır.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -295,8 +288,8 @@ namespace FileOrbis___File_System_Reporter
                         string sourceFolderPath = textBox1.Text;
                         string destinationFolderPath = textBox3.Text + "\\" + selectedFileName;
 
-                        DeleteDirectory(destinationFolderPath); // overwrite işlemi .
-                        Directory.Move(sourceFolderPath, destinationFolderPath);
+                        Directory.CreateDirectory(destinationFolderPath);
+                        MoveDirectory(sourceFolderPath, destinationFolderPath);
 
                         MessageBox.Show("Klasör '" + sourceFolderPath + "' konumundan '" + destinationFolderPath + "' konumuna taşınmıştır.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -315,11 +308,12 @@ namespace FileOrbis___File_System_Reporter
                 {
                     try
                     {
+                        bool copyPermissions = checkBox2.Checked;
                         string sourceFolderPath = textBox1.Text;
                         string destinationFolderPath = textBox3.Text + "\\" + selectedFileName;
 
                         DeleteDirectory(destinationFolderPath); // overwrite işlemi .
-                        CopyDirectory(sourceFolderPath, destinationFolderPath);
+                        CopyDirectory(sourceFolderPath, destinationFolderPath,copyPermissions);
 
                         MessageBox.Show("Klasör '" + sourceFolderPath + "' konumu '" + destinationFolderPath + "' konumuna kopyalanmıştır ve " +
                             "üzerine yazılmıştır.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -333,10 +327,11 @@ namespace FileOrbis___File_System_Reporter
                 {
                     try
                     {
+                        bool copyPermissions = checkBox2.Checked;
                         string sourceFolderPath = textBox1.Text;
                         string destinationFolderPath = textBox3.Text + "\\" + selectedFileName;
 
-                        CopyDirectory(sourceFolderPath, destinationFolderPath);
+                        CopyDirectory(sourceFolderPath, destinationFolderPath, copyPermissions);
 
                         MessageBox.Show("Klasör '" + sourceFolderPath + "' konumu '" + destinationFolderPath + "' konumuna kopyalanmıştır.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -349,33 +344,103 @@ namespace FileOrbis___File_System_Reporter
             }
             #endregion
         }
+        #region Move Directory
+        public void MoveDirectory(string kaynakKlasör, string hedefKlasör)
+        {
+            if (!Directory.Exists(hedefKlasör))
+            {
+                Directory.CreateDirectory(hedefKlasör);
+            }
 
-        #region Copy Directory 
-        private void CopyDirectory(string sourceDir, string destinationDir)
+            string[] dosyalar = Directory.GetFiles(kaynakKlasör);
+            foreach (string dosya in dosyalar)
+            {
+                string dosyaAdi = Path.GetFileName(dosya);
+                string hedefDosya = Path.Combine(hedefKlasör, dosyaAdi);
+                File.Move(dosya, hedefDosya);
+            }
+
+            string[] altDizinler = Directory.GetDirectories(kaynakKlasör);
+            foreach (string altDizin in altDizinler)
+            {
+                string altDizinAdi = Path.GetFileName(altDizin);
+                string hedefAltDizin = Path.Combine(hedefKlasör, altDizinAdi);
+                MoveDirectory(altDizin, hedefAltDizin);
+            }
+
+            Directory.Delete(kaynakKlasör, recursive: true);
+        }
+
+        #endregion
+        #region Copy Directory
+
+        private void CopyDirectory(string sourceDir, string destinationDir, bool copyPermissions)
         {
             if (!Directory.Exists(destinationDir))
             {
                 Directory.CreateDirectory(destinationDir);
             }
 
+            // Dosyaları kopyala
             string[] files = Directory.GetFiles(sourceDir);
             foreach (string file in files)
             {
                 string fileName = Path.GetFileName(file);
                 string destFile = Path.Combine(destinationDir, fileName);
                 File.Copy(file, destFile);
+
+                // Yetkileri taşı
+                if (copyPermissions)
+                {
+                    FileSecurity sourceFileSecurity = File.GetAccessControl(file);
+                    FileSecurity destFileSecurity = File.GetAccessControl(destFile);
+                    destFileSecurity.SetSecurityDescriptorBinaryForm(sourceFileSecurity.GetSecurityDescriptorBinaryForm());
+                    File.SetAccessControl(destFile, destFileSecurity);
+                }
             }
 
+            // Klasörleri kopyala
             string[] subDirectories = Directory.GetDirectories(sourceDir);
             foreach (string subDir in subDirectories)
             {
                 string dirName = Path.GetFileName(subDir);
                 string destSubDir = Path.Combine(destinationDir, dirName);
-                CopyDirectory(subDir, destSubDir);
+                CopyDirectory(subDir, destSubDir, copyPermissions);
+
+                // Yetkileri taşı
+                if (copyPermissions)
+                {
+                    DirectorySecurity sourceDirSecurity = Directory.GetAccessControl(subDir);
+                    DirectorySecurity destDirSecurity = Directory.GetAccessControl(destSubDir);
+                    destDirSecurity.SetSecurityDescriptorBinaryForm(sourceDirSecurity.GetSecurityDescriptorBinaryForm());
+                    Directory.SetAccessControl(destSubDir, destDirSecurity);
+                }
             }
         }
 
+
         #endregion
+        #region Delete Directory
+        public void DeleteDirectory(string path)
+        {
+            string[] files = Directory.GetFiles(path);
+            string[] directories = Directory.GetDirectories(path);
+
+            foreach (string file in files)
+            {
+                File.SetAttributes(file, FileAttributes.Normal);
+                File.Delete(file);
+            }
+
+            foreach (string directory in directories)
+            {
+                DeleteDirectory(directory);
+            }
+
+            Directory.Delete(path, false);
+        }
+
+        #endregion// overrite işlemi için ilk olarak siliyorum. sonrasında tekrardan taşıma işlemi gerçekleştiricem.
         private void button4_Click(object sender, EventArgs e)
         {
             #region report process 
@@ -424,26 +489,6 @@ namespace FileOrbis___File_System_Reporter
         {
             if (radioButton4.Checked)
                 EnabledChecked();
-        }
-
-        // overrite işlemi için ilk olarak siliyorum. sonrasında tekrardan taşıma işlemi gerçekleştiricem.
-        public void DeleteDirectory(string path)
-        {
-            string[] files = Directory.GetFiles(path);
-            string[] directories = Directory.GetDirectories(path);
-
-            foreach (string file in files)
-            {
-                File.SetAttributes(file, FileAttributes.Normal);
-                File.Delete(file);
-            }
-
-            foreach (string directory in directories)
-            {
-                DeleteDirectory(directory);
-            }
-
-            Directory.Delete(path, false);
         }
     }
 }
