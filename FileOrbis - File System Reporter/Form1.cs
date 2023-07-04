@@ -403,7 +403,6 @@ namespace FileOrbis___File_System_Reporter
                         throw new ArgumentException("Geçersiz tarih türü.");
                 }
 
-                // Dosyanın seçilen tarihten sonraki bir tarihte mi olduğunu kontrol ediyoruz.
                 if (fileDate > selectedDate)
                 {
                     string dosyaAdi = Path.GetFileName(dosya);
