@@ -271,7 +271,7 @@ namespace FileOrbis___File_System_Reporter
                     {
                         string sourceFolderPath = textBox1.Text;
                         string destinationFolderPath = textBox3.Text + "\\" + selectedFileName;
-                        DeleteDirectory(destinationFolderPath); // overwrite işlemi .
+                        DeleteDirectory(destinationFolderPath); // overwrite işlemi.
                         MoveDirectory(sourceFolderPath, destinationFolderPath);
 
                         MessageBox.Show("Klasör '" + sourceFolderPath + "' konumundan '" + destinationFolderPath + "' konumuna taşınmıştır.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -418,7 +418,6 @@ namespace FileOrbis___File_System_Reporter
             }
         }
 
-
         #endregion
         #region Delete Directory
         public void DeleteDirectory(string path)
@@ -470,8 +469,6 @@ namespace FileOrbis___File_System_Reporter
                 textBox3.Text = selectedFolderMove;
             }
             #endregion
-
-
         }
         private void radioButton5_CheckedChanged(object sender, EventArgs e)
         {
