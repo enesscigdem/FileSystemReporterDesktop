@@ -64,7 +64,7 @@ namespace FileOrbis___File_System_Reporter
             }
         }
 
-        private void AddHeaders(IXLWorksheet worksheet)
+        private void ExcelAddHeaders(IXLWorksheet worksheet)
         {
             worksheet.Cell(1, 1).Value = "File Name";
             worksheet.Cell(1, 2).Value = "Create Date";
@@ -73,7 +73,7 @@ namespace FileOrbis___File_System_Reporter
             worksheet.Cell(1, 5).Value = "File Size (bytes)";
         }
 
-        private void AddFileData(IXLWorksheet worksheet, int row, string file, DateTime createDate, DateTime modifiedDate, DateTime accessDate, long fileSize)
+        private void ExcelAddFileData(IXLWorksheet worksheet, int row, string file, DateTime createDate, DateTime modifiedDate, DateTime accessDate, long fileSize)
         {
             worksheet.Cell(row, 1).Value = file;
             worksheet.Cell(row, 2).Value = createDate.ToString();
@@ -82,47 +82,18 @@ namespace FileOrbis___File_System_Reporter
             worksheet.Cell(row, 5).Value = fileSize.ToString();
         }
 
-        private string ExcelFileName(string name)
+        
+        private void ExcelProcess(string selectedFolder,string excelfileName)
         {
-            return string.Format("{0}{1:dd-MM-yyyy_HH.mm.ss}.xlsx", name, DateTime.Now);
-        }
-
-        private string ExcelPath(string folder, string fileName)
-        {
-            return Path.Combine(folder, fileName);
-        }
-        private void SaveExcel()
-        {
-            string selectedFolder = txtSourcePath.Text;
-
-            if (string.IsNullOrEmpty(selectedFolder) || !Directory.Exists(selectedFolder))
-            {
-                MessageBox.Show("Please select a valid folder.", "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
             string[] files = Directory.GetFiles(selectedFolder, "*", SearchOption.AllDirectories);
-            string fileNameAfterDate = ExcelFileName("afterdate");
-            string fileNameBeforeDate = ExcelFileName("beforedate");
-            string excelPathAfterDate = ExcelPath(Path.Combine(Application.StartupPath, "output"), fileNameAfterDate);
-            string excelPathBeforeDate = ExcelPath(Path.Combine(Application.StartupPath, "output"), fileNameBeforeDate);
-
-            //string fileNameAfterDate = string.Format("afterdate{0:dd-MM-yyyy_HH.mm.ss}.xlsx", DateTime.Now);
-            //string fileNameBeforeDate = string.Format("beforedate{0:dd-MM-yyyy_HH.mm.ss}.xlsx", DateTime.Now);
-            //string excelPathAfterDate = Path.Combine(Application.StartupPath, "output", fileNameAfterDate);
-            //string excelPathBeforeDate = Path.Combine(Application.StartupPath, "output", fileNameBeforeDate);
-
-            using (var workbookAfterDate = new XLWorkbook())
-            using (var workbookBeforeDate = new XLWorkbook())
+            string selectedExcelFileName = string.Format(excelfileName + "{0:dd-MM-yyyy_HH.mm.ss}.xlsx", DateTime.Now);
+            string excelFilePath = Path.Combine(Path.Combine(Application.StartupPath, "output", selectedExcelFileName));
+            using (var workbook = new XLWorkbook())
             {
-                var worksheetAfterDate = workbookAfterDate.Worksheets.Add("AfterDate");
-                var worksheetBeforeDate = workbookBeforeDate.Worksheets.Add("BeforeDate");
+                string worksheetName = Convert.ToString(workbook.Worksheets.Add(excelfileName));
+                ExcelAddHeaders(workbook.Worksheet(worksheetName));
 
-                AddHeaders(worksheetAfterDate);
-                AddHeaders(worksheetBeforeDate);
-
-                int rowAfterDate = 2;
-                int rowBeforeDate = 2;
+                int row = 2;
 
                 foreach (string file in files)
                 {
@@ -132,32 +103,32 @@ namespace FileOrbis___File_System_Reporter
                     DateTime modifiedDate = File.GetLastWriteTime(file);
                     DateTime accessDate = File.GetLastAccessTime(file);
                     long fileSize = new FileInfo(file).Length;
-
                     if ((rdCreatedDate.Checked && createDate > dtDateOption.Value) ||
                         (rdModifiedDate.Checked && accessDate > dtDateOption.Value) ||
                         (rdAccessedDate.Checked && modifiedDate > dtDateOption.Value))
                     {
-                        AddFileData(worksheetAfterDate, rowAfterDate, $"{fileDirectory}\\{fileName}", createDate, modifiedDate, accessDate, fileSize);
-                        rowAfterDate++;
+                        if (excelfileName == "afterDate")
+                        {
+                            ExcelAddFileData(workbook.Worksheet(worksheetName), row, $"{fileDirectory}\\{fileName}", createDate, modifiedDate, accessDate, fileSize);
+                            row++;
+                        }
                     }
                     else
                     {
-                        AddFileData(worksheetBeforeDate, rowBeforeDate, $"{fileDirectory}\\{fileName}", createDate, modifiedDate, accessDate, fileSize);
-                        rowBeforeDate++;
+                        if (excelfileName=="beforeDate")
+                        {
+                            ExcelAddFileData(workbook.Worksheet(worksheetName), row, $"{fileDirectory}\\{fileName}", createDate, modifiedDate, accessDate, fileSize);
+                            row++;
+                        }
                     }
                 }
-
-                var rangeAfterDate = worksheetAfterDate.Range("A1:E" + (rowAfterDate - 1));
-                var rangeBeforeDate = worksheetBeforeDate.Range("A1:E" + (rowBeforeDate - 1));
-                rangeAfterDate.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-                rangeBeforeDate.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-                worksheetAfterDate.ColumnWidth = 15;
-                worksheetBeforeDate.ColumnWidth = 15;
+                var range = workbook.Worksheet(worksheetName).Range("A1:E" + (row - 1));
+                range.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+                workbook.Worksheet(worksheetName).ColumnWidth = 15;
 
                 try
                 {
-                    workbookAfterDate.SaveAs(excelPathAfterDate);
-                    workbookBeforeDate.SaveAs(excelPathBeforeDate);
+                    workbook.SaveAs(excelFilePath);
                     MessageBox.Show("The data has been saved to Excel.", "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
@@ -165,6 +136,19 @@ namespace FileOrbis___File_System_Reporter
                     MessageBox.Show("Output failed. If your Excel file is open, close it and try.", "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
+        }
+
+        private void SaveExcel()
+        {
+            string selectedFolder = txtSourcePath.Text;
+
+            if (string.IsNullOrEmpty(selectedFolder) || !Directory.Exists(selectedFolder))
+            {
+                MessageBox.Show("Please select a valid folder.", "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            ExcelProcess(selectedFolder, "afterDate");
+            ExcelProcess(selectedFolder, "beforeDate");
         }
 
         #endregion
@@ -325,7 +309,7 @@ namespace FileOrbis___File_System_Reporter
                         string sourceFolderPath = txtSourcePath.Text;
                         string destinationFolderPath = txtTargetPath.Text + "\\" + selectedFileName;
                         if (Directory.Exists(destinationFolderPath))
-                            DeleteDirectory(destinationFolderPath); // overwrite işlemi.
+                            DeleteDirectory(destinationFolderPath); // overwrite process.
 
                         MoveDirectoryByDate(sourceFolderPath, destinationFolderPath, GetSelectedDateType());
                         MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully moved from location '" + sourceFolderPath + "' to '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -438,16 +422,15 @@ namespace FileOrbis___File_System_Reporter
             {
                 string subDirectoryName = Path.GetFileName(subDirectory);
                 string[] subDirectoryFiles = Directory.GetFiles(subDirectory);
+                string targetSubDirectory = Path.Combine(targetDirectory, subDirectoryName);
                 if (subDirectoryFiles.Length >= 1)
                 {
-                    string targetSubDirectory = Path.Combine(targetDirectory, subDirectoryName);
                     MoveDirectoryByDate(subDirectory, targetSubDirectory, dateType);
                 }
                 else
                 {
                     if (chEmptyFolders.Checked)
                     {
-                        string targetSubDirectory = Path.Combine(targetDirectory, subDirectoryName);
                         MoveDirectoryByDate(subDirectory, targetSubDirectory, dateType);
                     }
                     else
@@ -488,7 +471,7 @@ namespace FileOrbis___File_System_Reporter
 
                 if (copyPermissions)
                 {
-                    FileSecurity sourceFileSecurity = File.GetAccessControl(file);
+                    FileSecurity sourceFileSecurity = File.GetAccessControl(file); // permission process
                     FileSecurity destFileSecurity = File.GetAccessControl(destFile);
                     destFileSecurity.SetSecurityDescriptorBinaryForm(sourceFileSecurity.GetSecurityDescriptorBinaryForm());
                     File.SetAccessControl(destFile, destFileSecurity);
