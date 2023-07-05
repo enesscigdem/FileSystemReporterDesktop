@@ -549,19 +549,14 @@ namespace FileOrbis___File_System_Reporter
         #endregion
 
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox txtSourcePath;
         private System.Windows.Forms.Button btnSourcePath;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.DateTimePicker dtDateOption;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.RadioButton rdCopy;
-        private System.Windows.Forms.RadioButton rdMove;
-        private System.Windows.Forms.RadioButton rdScan;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button btnTargetPath;
-        private System.Windows.Forms.TextBox txtTargetPath;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ComboBox comboBox1;
@@ -588,6 +583,11 @@ namespace FileOrbis___File_System_Reporter
         public System.Windows.Forms.CheckBox chEmptyFolders;
         public System.Windows.Forms.CheckBox chNtfsPermission;
         public System.Windows.Forms.CheckBox chOverWrite;
+        public System.Windows.Forms.RadioButton rdCopy;
+        public System.Windows.Forms.RadioButton rdMove;
+        public System.Windows.Forms.RadioButton rdScan;
+        public System.Windows.Forms.TextBox txtSourcePath;
+        public System.Windows.Forms.TextBox txtTargetPath;
     }
 }
 

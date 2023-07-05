@@ -21,7 +21,6 @@ namespace FileOrbis___File_System_Reporter
         {
             InitializeComponent();
         }
-
         public DateTime selectedDate, createDate, modifiedDate, accessDate, fileDate;
         public string fileName, fileDirectory, selectedFileName;
         public long fileSize;
@@ -87,7 +86,7 @@ namespace FileOrbis___File_System_Reporter
 
             return listItem;
         }
-       
+
         public void Fileİnformations(string file)
         {
             fileName = Path.GetFileName(file);
@@ -135,7 +134,6 @@ namespace FileOrbis___File_System_Reporter
             }
             #endregion
         }
-
         private void button3_Click(object sender, EventArgs e)
         {
             #region Scan Process 
@@ -159,6 +157,7 @@ namespace FileOrbis___File_System_Reporter
             if (rdMove.Checked)
             {
                 MoveProcess moveProcess = new MoveProcess(this);
+                DeleteProcess deleteProcess = new DeleteProcess(this);
                 if (chOverWrite.Checked)
                 {
                     try
@@ -166,7 +165,7 @@ namespace FileOrbis___File_System_Reporter
                         string sourceFolderPath = txtSourcePath.Text;
                         string destinationFolderPath = txtTargetPath.Text + "\\" + selectedFileName;
                         if (Directory.Exists(destinationFolderPath))
-                            DeleteDirectory(destinationFolderPath);
+                            deleteProcess.DeleteDirectory(destinationFolderPath);
 
                         moveProcess.MoveDirectoryByDate(sourceFolderPath, destinationFolderPath, GetSelectedDateType());
                         MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully moved from location '" + sourceFolderPath + "' to '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -197,121 +196,23 @@ namespace FileOrbis___File_System_Reporter
             #region Copy Process
             if (rdCopy.Checked)
             {
-                if (chOverWrite.Checked)
-                {
-                    try
-                    {
-                        bool copyPermissions = chNtfsPermission.Checked;
-                        string sourceFolderPath = txtSourcePath.Text;
-                        string destinationFolderPath = txtTargetPath.Text + "\\" + selectedFileName;
-
-                        DeleteDirectory(destinationFolderPath); // overwrite işlemi .
-                        CopyDirectory(sourceFolderPath, destinationFolderPath, copyPermissions);
-
-                        MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully copied to the location '" + destinationFolderPath + "' and overwritten.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("An error occurred during the folder copy operation: " + ex.Message, "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-                else
-                {
-                    try
-                    {
-                        bool copyPermissions = chNtfsPermission.Checked;
-                        string sourceFolderPath = txtSourcePath.Text;
-                        string destinationFolderPath = txtTargetPath.Text + "\\" + selectedFileName;
-
-                        CopyDirectory(sourceFolderPath, destinationFolderPath, copyPermissions);
-                        MessageBox.Show("Folder '" + sourceFolderPath + "' has been copied to the location '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("An error occurred during the folder copy operation: " + ex.Message, "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-
+                MoveProcess moveProcess = new MoveProcess(this);
+                moveProcess.MoveOperation();
             }
             #endregion
         }
-
-        #region Copy Directory
-
-        private void CopyDirectory(string sourceDir, string destinationDir, bool copyPermissions)
-        {
-            if (!Directory.Exists(destinationDir))
-            {
-                Directory.CreateDirectory(destinationDir);
-            }
-
-            string[] files = Directory.GetFiles(sourceDir);
-            foreach (string file in files)
-            {
-                string fileName = Path.GetFileName(file);
-                string destFile = Path.Combine(destinationDir, fileName);
-                File.Copy(file, destFile);
-
-                if (copyPermissions)
-                {
-                    FileSecurity sourceFileSecurity = File.GetAccessControl(file); // permission process
-                    FileSecurity destFileSecurity = File.GetAccessControl(destFile);
-                    destFileSecurity.SetSecurityDescriptorBinaryForm(sourceFileSecurity.GetSecurityDescriptorBinaryForm());
-                    File.SetAccessControl(destFile, destFileSecurity);
-                }
-            }
-
-            string[] subDirectories = Directory.GetDirectories(sourceDir);
-            foreach (string subDir in subDirectories)
-            {
-                string dirName = Path.GetFileName(subDir);
-                string destSubDir = Path.Combine(destinationDir, dirName);
-                CopyDirectory(subDir, destSubDir, copyPermissions);
-
-                if (copyPermissions)
-                {
-                    DirectorySecurity sourceDirSecurity = Directory.GetAccessControl(subDir);
-                    DirectorySecurity destDirSecurity = Directory.GetAccessControl(destSubDir);
-                    destDirSecurity.SetSecurityDescriptorBinaryForm(sourceDirSecurity.GetSecurityDescriptorBinaryForm());
-                    Directory.SetAccessControl(destSubDir, destDirSecurity);
-                }
-            }
-        }
-
-        #endregion
-        #region Delete Directory
-        public void DeleteDirectory(string path)
-        {
-            string[] files = Directory.GetFiles(path);
-            string[] directories = Directory.GetDirectories(path);
-
-            foreach (string file in files)
-            {
-                File.SetAttributes(file, FileAttributes.Normal);
-                File.Delete(file);
-            }
-
-            foreach (string directory in directories)
-            {
-                DeleteDirectory(directory);
-            }
-
-            Directory.Delete(path, false);
-        }
-
-        #endregion
         private void button4_Click(object sender, EventArgs e)
         {
             #region report process 
             if (rdTxt.Checked)
             {
                 TxtProcess txtProcess = new TxtProcess();
-                txtProcess.SaveTxt(txtSourcePath.Text,fileDirectory,fileName,createDate,modifiedDate,accessDate,fileSize);
+                txtProcess.SaveTxt(txtSourcePath.Text, fileDirectory, fileName, createDate, modifiedDate, accessDate, fileSize);
             }
             else if (rdExcel.Checked)
             {
                 ExcelProcess excelProcess = new ExcelProcess();
-                excelProcess.SaveExcel(txtSourcePath.Text,GetSelectedDateType());
+                excelProcess.SaveExcel(txtSourcePath.Text, GetSelectedDateType());
             }
             else
             {
@@ -319,7 +220,6 @@ namespace FileOrbis___File_System_Reporter
             }
             #endregion
         }
-
         private void button2_Click(object sender, EventArgs e)
         {
             #region Select a path for move 
@@ -337,13 +237,11 @@ namespace FileOrbis___File_System_Reporter
             if (rdMove.Checked)
                 EnabledChecked();
         }
-
         private void radioButton6_CheckedChanged(object sender, EventArgs e)
         {
             if (rdScan.Checked)
                 DisabledChecked();
         }
-
         private void radioButton4_CheckedChanged(object sender, EventArgs e)
         {
             if (rdCopy.Checked)
