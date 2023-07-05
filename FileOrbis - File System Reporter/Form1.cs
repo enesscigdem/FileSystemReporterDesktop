@@ -32,7 +32,7 @@ namespace FileOrbis___File_System_Reporter
             {
                 string[] files = Directory.GetFiles(selectedFolder, "*", SearchOption.AllDirectories);
 
-                string fileNameAfterDate = string.Format("output{0:ddMMyyyy_HH-mm-ss}.txt", DateTime.Now);
+                string fileNameAfterDate = string.Format("output{0:dd-MM-yyyy_HH.mm.ss}.txt", DateTime.Now);
                 string textFilePath = Path.Combine(Application.StartupPath, "output", fileNameAfterDate);
 
                 using (StreamWriter sw = new StreamWriter(textFilePath))
@@ -82,6 +82,15 @@ namespace FileOrbis___File_System_Reporter
             worksheet.Cell(row, 5).Value = fileSize.ToString();
         }
 
+        private string ExcelFileName(string name)
+        {
+            return string.Format("{0}{1:dd-MM-yyyy_HH.mm.ss}.xlsx", name, DateTime.Now);
+        }
+
+        private string ExcelPath(string folder, string fileName)
+        {
+            return Path.Combine(folder, fileName);
+        }
         private void SaveExcel()
         {
             string selectedFolder = txtSourcePath.Text;
@@ -93,10 +102,15 @@ namespace FileOrbis___File_System_Reporter
             }
 
             string[] files = Directory.GetFiles(selectedFolder, "*", SearchOption.AllDirectories);
-            string fileNameAfterDate = string.Format("afterdate{0:ddMMyyyy_HH-mm-ss}.xlsx", DateTime.Now);
-            string fileNameBeforeDate = string.Format("beforedate{0:ddMMyyyy_HH-mm-ss}.xlsx", DateTime.Now);
-            string excelPathAfterDate = Path.Combine(Application.StartupPath, "output", fileNameAfterDate);
-            string excelPathBeforeDate = Path.Combine(Application.StartupPath, "output", fileNameBeforeDate);
+            string fileNameAfterDate = ExcelFileName("afterdate");
+            string fileNameBeforeDate = ExcelFileName("beforedate");
+            string excelPathAfterDate = ExcelPath(Path.Combine(Application.StartupPath, "output"), fileNameAfterDate);
+            string excelPathBeforeDate = ExcelPath(Path.Combine(Application.StartupPath, "output"), fileNameBeforeDate);
+
+            //string fileNameAfterDate = string.Format("afterdate{0:dd-MM-yyyy_HH.mm.ss}.xlsx", DateTime.Now);
+            //string fileNameBeforeDate = string.Format("beforedate{0:dd-MM-yyyy_HH.mm.ss}.xlsx", DateTime.Now);
+            //string excelPathAfterDate = Path.Combine(Application.StartupPath, "output", fileNameAfterDate);
+            //string excelPathBeforeDate = Path.Combine(Application.StartupPath, "output", fileNameBeforeDate);
 
             using (var workbookAfterDate = new XLWorkbook())
             using (var workbookBeforeDate = new XLWorkbook())
@@ -310,9 +324,10 @@ namespace FileOrbis___File_System_Reporter
                     {
                         string sourceFolderPath = txtSourcePath.Text;
                         string destinationFolderPath = txtTargetPath.Text + "\\" + selectedFileName;
-                        DeleteDirectory(destinationFolderPath); // overwrite işlemi.
-                        MoveDirectoryByDate(sourceFolderPath, destinationFolderPath, GetSelectedDateType());
+                        if (Directory.Exists(destinationFolderPath))
+                            DeleteDirectory(destinationFolderPath); // overwrite işlemi.
 
+                        MoveDirectoryByDate(sourceFolderPath, destinationFolderPath, GetSelectedDateType());
                         MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully moved from location '" + sourceFolderPath + "' to '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (Exception ex)
@@ -326,11 +341,9 @@ namespace FileOrbis___File_System_Reporter
                     {
                         string sourceFolderPath = txtSourcePath.Text;
                         string destinationFolderPath = txtTargetPath.Text + "\\" + selectedFileName;
-
                         Directory.CreateDirectory(destinationFolderPath);
                         MoveDirectoryByDate(sourceFolderPath, destinationFolderPath, GetSelectedDateType());
                         MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully moved from location '" + sourceFolderPath + "' to '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        MessageBox.Show("Klasör '" + sourceFolderPath + "' konumundan '" + destinationFolderPath + "' konumuna taşınmıştır.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (Exception ex)
                     {
