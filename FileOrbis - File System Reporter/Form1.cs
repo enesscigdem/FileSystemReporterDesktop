@@ -22,69 +22,9 @@ namespace FileOrbis___File_System_Reporter
             InitializeComponent();
         }
 
-        // Scan Process
-        #region Scan Process Save Txt and Excel
-        private void SaveTxt()
-        {
-            string selectedFolder = txtSourcePath.Text;
-
-            if (!string.IsNullOrEmpty(selectedFolder) && Directory.Exists(selectedFolder))
-            {
-                string[] files = Directory.GetFiles(selectedFolder, "*", SearchOption.AllDirectories);
-
-                string fileNameAfterDate = string.Format("output{0:dd-MM-yyyy_HH.mm.ss}.txt", DateTime.Now);
-                string textFilePath = Path.Combine(Application.StartupPath, "output", fileNameAfterDate);
-
-                using (StreamWriter sw = new StreamWriter(textFilePath))
-                {
-                    foreach (string file in files)
-                    {
-                        string fileName = Path.GetFileName(file);
-                        string fileDirectory = Path.GetDirectoryName(file);
-
-                        DateTime createDate = File.GetCreationTime(file);
-                        DateTime modifiedDate = File.GetLastWriteTime(file);
-                        DateTime accessDate = File.GetLastAccessTime(file);
-                        long fileSize = new FileInfo(file).Length;
-                        string item = $"{fileDirectory + "\\" + fileName}";
-                        item += $"  Create Date: {createDate}";
-                        item += $"  Modified Date: {modifiedDate}";
-                        item += $"  Access Date: {accessDate}";
-                        item += $"\n  File Size (bytes): {fileSize}";
-
-                        sw.WriteLine(item);
-                    }
-                }
-
-                MessageBox.Show("Data saved in text file.", "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            else
-            {
-                MessageBox.Show("Please select a valid folder.", "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-        }
-
-        private void ExcelAddHeaders(IXLWorksheet worksheet)
-        {
-            worksheet.Cell(1, 1).Value = "File Name";
-            worksheet.Cell(1, 2).Value = "Create Date";
-            worksheet.Cell(1, 3).Value = "Modified Date";
-            worksheet.Cell(1, 4).Value = "Access Date";
-            worksheet.Cell(1, 5).Value = "File Size (bytes)";
-        }
-
-        private void ExcelAddFileData(IXLWorksheet worksheet, int row, string file, DateTime createDate, DateTime modifiedDate, DateTime accessDate, long fileSize)
-        {
-            worksheet.Cell(row, 1).Value = file;
-            worksheet.Cell(row, 2).Value = createDate.ToString();
-            worksheet.Cell(row, 3).Value = modifiedDate.ToString();
-            worksheet.Cell(row, 4).Value = accessDate.ToString();
-            worksheet.Cell(row, 5).Value = fileSize.ToString();
-        }
-
-        DateTime fileDate;
-        DateTime selectedDate;
-        private void GetDateType(string dateType, string file)
+        public DateTime fileDate;
+        public DateTime selectedDate;
+        public void GetDateType(string dateType, string file)
         {
             //Move Directory and Excell Process functions use this func.
             selectedDate = dtDateOption.Value;
@@ -104,72 +44,6 @@ namespace FileOrbis___File_System_Reporter
             }
         }
 
-        private void ExcelProcess(string selectedFolder, string excelfileName, string dateType)
-        {
-
-            string[] files = Directory.GetFiles(selectedFolder, "*", SearchOption.AllDirectories);
-            string selectedExcelFileName = string.Format(excelfileName + "{0:dd-MM-yyyy_HH.mm.ss}.xlsx", DateTime.Now);
-            string excelFilePath = Path.Combine(Path.Combine(Application.StartupPath, "output", selectedExcelFileName));
-
-            using (var workbook = new XLWorkbook())
-            {
-                string worksheetName = Convert.ToString(workbook.Worksheets.Add(excelfileName));
-                ExcelAddHeaders(workbook.Worksheet(worksheetName));
-
-                int row = 2;
-
-                foreach (string file in files)
-                {
-                    string fileName = Path.GetFileName(file);
-                    string fileDirectory = Path.GetDirectoryName(file);
-                    DateTime createDate = File.GetCreationTime(file);
-                    DateTime modifiedDate = File.GetLastWriteTime(file);
-                    DateTime accessDate = File.GetLastAccessTime(file);
-                    long fileSize = new FileInfo(file).Length;
-
-                    GetDateType(dateType, file);
-
-                    if (fileDate > selectedDate && excelfileName == "afterDate")
-                    {
-                        ExcelAddFileData(workbook.Worksheet(worksheetName), row, $"{fileDirectory}\\{fileName}", createDate, modifiedDate, accessDate, fileSize);
-                        row++;
-                    }
-                    else if (fileDate < selectedDate && excelfileName == "beforeDate")
-                    {
-                        ExcelAddFileData(workbook.Worksheet(worksheetName), row, $"{fileDirectory}\\{fileName}", createDate, modifiedDate, accessDate, fileSize);
-                        row++;
-                    }
-                }
-                var range = workbook.Worksheet(worksheetName).Range("A1:E" + (row - 1));
-                range.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-                workbook.Worksheet(worksheetName).ColumnWidth = 15;
-
-                try
-                {
-                    workbook.SaveAs(excelFilePath);
-                    MessageBox.Show("The data has been saved to Excel.", "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Output failed. If your Excel file is open, close it and try.", "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
-        }
-
-        private void SaveExcel()
-        {
-            string selectedFolder = txtSourcePath.Text;
-
-            if (string.IsNullOrEmpty(selectedFolder) || !Directory.Exists(selectedFolder))
-            {
-                MessageBox.Show("Please select a valid folder.", "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-            ExcelProcess(selectedFolder, "afterDate", GetSelectedDateType());
-            ExcelProcess(selectedFolder, "beforeDate", GetSelectedDateType());
-        }
-
-        #endregion
         #region Disabled Checked Radio Buttons,CheckBoxs
         public void DisabledChecked()
         {
@@ -194,6 +68,18 @@ namespace FileOrbis___File_System_Reporter
 
             return listItem;
         }
+        public string fileName, fileDirectory;
+        public DateTime createDate, modifiedDate, accessDate;
+        public long fileSize;
+        public void Fileİnformations(string file)
+        {
+            fileName = Path.GetFileName(file);
+            fileDirectory = Path.GetDirectoryName(file);
+            createDate = File.GetCreationTime(file);
+            modifiedDate = File.GetLastWriteTime(file);
+            accessDate = File.GetLastAccessTime(file);
+            fileSize = new FileInfo(file).Length;
+        }
         private void ScanProcess(string selectedFolder, string DateType)
         {
             if (!string.IsNullOrEmpty(selectedFolder) && Directory.Exists(selectedFolder))
@@ -213,13 +99,9 @@ namespace FileOrbis___File_System_Reporter
 
                 foreach (string file in files)
                 {
-                    string fileName = Path.GetFileName(file);
-                    string fileDirectory = Path.GetDirectoryName(file);
-                    DateTime createDate = File.GetCreationTime(file);
-                    DateTime modifiedDate = File.GetLastWriteTime(file);
-                    DateTime accessDate = File.GetLastAccessTime(file);
-                    long fileSize = new FileInfo(file).Length;
-                    if ((DateType == "Created" && createDate > dtDateOption.Value) || (DateType == "Accessed" && accessDate > dtDateOption.Value) || (DateType == "Modified" && modifiedDate > dtDateOption.Value))
+                    Fileİnformations(file);
+                    GetDateType(DateType, file);
+                    if (fileDate > selectedDate)
                     {
                         string listItem = GetListBoxItem(fileDirectory, fileName, createDate, modifiedDate, accessDate, fileSize);
                         listBox1.Items.Add(listItem);
@@ -406,7 +288,7 @@ namespace FileOrbis___File_System_Reporter
             }
 
             string[] files = Directory.GetFiles(sourceFolder);
-            DateTime selectedDate = dtDateOption.Value;
+            //DateTime selectedDate = dtDateOption.Value;
 
             foreach (string file in files)
             {
@@ -444,7 +326,7 @@ namespace FileOrbis___File_System_Reporter
             Directory.Delete(sourceFolder, recursive: true);
         }
 
-        private string GetSelectedDateType()
+        public string GetSelectedDateType()
         {
             if (rdCreatedDate.Checked)
                 return "Created";
@@ -525,11 +407,14 @@ namespace FileOrbis___File_System_Reporter
             #region report process 
             if (rdTxt.Checked)
             {
-                SaveTxt();
+                TxtProcess txtProcess = new TxtProcess();
+                txtProcess.SaveTxt(txtSourcePath.Text,fileDirectory,fileName,createDate,modifiedDate,accessDate,fileSize);
             }
             else if (rdExcel.Checked)
             {
-                SaveExcel();
+                Form1 form1 = new Form1();
+                ExcelProcess excelProcess = new ExcelProcess();
+                excelProcess.SaveExcel(txtSourcePath.Text,GetSelectedDateType());
             }
             else
             {
