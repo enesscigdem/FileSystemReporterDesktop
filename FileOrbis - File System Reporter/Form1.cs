@@ -82,12 +82,35 @@ namespace FileOrbis___File_System_Reporter
             worksheet.Cell(row, 5).Value = fileSize.ToString();
         }
 
-        
-        private void ExcelProcess(string selectedFolder,string excelfileName)
+        DateTime fileDate;
+        DateTime selectedDate;
+        private void GetDateType(string dateType, string file)
         {
+            //Move Directory and Excell Process functions use this func.
+            selectedDate = dtDateOption.Value;
+            switch (dateType)
+            {
+                case "Created":
+                    fileDate = File.GetCreationTime(file);
+                    break;
+                case "Modified":
+                    fileDate = File.GetLastWriteTime(file);
+                    break;
+                case "Accessed":
+                    fileDate = File.GetLastAccessTime(file);
+                    break;
+                default:
+                    throw new ArgumentException("Invalid date type.");
+            }
+        }
+
+        private void ExcelProcess(string selectedFolder, string excelfileName, string dateType)
+        {
+
             string[] files = Directory.GetFiles(selectedFolder, "*", SearchOption.AllDirectories);
             string selectedExcelFileName = string.Format(excelfileName + "{0:dd-MM-yyyy_HH.mm.ss}.xlsx", DateTime.Now);
             string excelFilePath = Path.Combine(Path.Combine(Application.StartupPath, "output", selectedExcelFileName));
+
             using (var workbook = new XLWorkbook())
             {
                 string worksheetName = Convert.ToString(workbook.Worksheets.Add(excelfileName));
@@ -103,23 +126,18 @@ namespace FileOrbis___File_System_Reporter
                     DateTime modifiedDate = File.GetLastWriteTime(file);
                     DateTime accessDate = File.GetLastAccessTime(file);
                     long fileSize = new FileInfo(file).Length;
-                    if ((rdCreatedDate.Checked && createDate > dtDateOption.Value) ||
-                        (rdModifiedDate.Checked && accessDate > dtDateOption.Value) ||
-                        (rdAccessedDate.Checked && modifiedDate > dtDateOption.Value))
+
+                    GetDateType(dateType, file);
+
+                    if (fileDate > selectedDate && excelfileName == "afterDate")
                     {
-                        if (excelfileName == "afterDate")
-                        {
-                            ExcelAddFileData(workbook.Worksheet(worksheetName), row, $"{fileDirectory}\\{fileName}", createDate, modifiedDate, accessDate, fileSize);
-                            row++;
-                        }
+                        ExcelAddFileData(workbook.Worksheet(worksheetName), row, $"{fileDirectory}\\{fileName}", createDate, modifiedDate, accessDate, fileSize);
+                        row++;
                     }
-                    else
+                    else if (fileDate < selectedDate && excelfileName == "beforeDate")
                     {
-                        if (excelfileName=="beforeDate")
-                        {
-                            ExcelAddFileData(workbook.Worksheet(worksheetName), row, $"{fileDirectory}\\{fileName}", createDate, modifiedDate, accessDate, fileSize);
-                            row++;
-                        }
+                        ExcelAddFileData(workbook.Worksheet(worksheetName), row, $"{fileDirectory}\\{fileName}", createDate, modifiedDate, accessDate, fileSize);
+                        row++;
                     }
                 }
                 var range = workbook.Worksheet(worksheetName).Range("A1:E" + (row - 1));
@@ -147,8 +165,8 @@ namespace FileOrbis___File_System_Reporter
                 MessageBox.Show("Please select a valid folder.", "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            ExcelProcess(selectedFolder, "afterDate");
-            ExcelProcess(selectedFolder, "beforeDate");
+            ExcelProcess(selectedFolder, "afterDate", GetSelectedDateType());
+            ExcelProcess(selectedFolder, "beforeDate", GetSelectedDateType());
         }
 
         #endregion
@@ -392,22 +410,7 @@ namespace FileOrbis___File_System_Reporter
 
             foreach (string file in files)
             {
-                DateTime fileDate;
-
-                switch (dateType)
-                {
-                    case "Created":
-                        fileDate = File.GetCreationTime(file);
-                        break;
-                    case "Modified":
-                        fileDate = File.GetLastWriteTime(file);
-                        break;
-                    case "Accessed":
-                        fileDate = File.GetLastAccessTime(file);
-                        break;
-                    default:
-                        throw new ArgumentException("Invalid date type.");
-                }
+                GetDateType(dateType, file);
 
                 if (fileDate > selectedDate)
                 {
