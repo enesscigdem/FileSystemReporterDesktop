@@ -26,13 +26,14 @@ namespace FileOrbis___File_System_Reporter
         #region Scan Process Save Txt and Excel
         private void SaveTxt()
         {
-            string selectedFolder = textBox1.Text;
+            string selectedFolder = txtSourcePath.Text;
 
             if (!string.IsNullOrEmpty(selectedFolder) && Directory.Exists(selectedFolder))
             {
                 string[] files = Directory.GetFiles(selectedFolder, "*", SearchOption.AllDirectories);
 
-                string textFilePath = Path.Combine(Application.StartupPath, "output", "output.txt");
+                string fileNameAfterDate = string.Format("output{0:ddMMyyyy_HH-mm-ss}.txt", DateTime.Now);
+                string textFilePath = Path.Combine(Application.StartupPath, "output", fileNameAfterDate);
 
                 using (StreamWriter sw = new StreamWriter(textFilePath))
                 {
@@ -55,11 +56,11 @@ namespace FileOrbis___File_System_Reporter
                     }
                 }
 
-                MessageBox.Show("Veriler metin dosyasına kaydedildi.", "Başarılı İşlem", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Data saved in text file.", "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
-                MessageBox.Show("Lütfen geçerli bir klasör seçin.", "Klasör Seçin", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Please select a valid folder.", "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -83,23 +84,25 @@ namespace FileOrbis___File_System_Reporter
 
         private void SaveExcel()
         {
-            string selectedFolder = textBox1.Text;
+            string selectedFolder = txtSourcePath.Text;
 
             if (string.IsNullOrEmpty(selectedFolder) || !Directory.Exists(selectedFolder))
             {
-                MessageBox.Show("Lütfen geçerli bir klasör seçin.", "Klasör Seçin", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Please select a valid folder.", "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             string[] files = Directory.GetFiles(selectedFolder, "*", SearchOption.AllDirectories);
-            string excelPathAfterDate = Path.Combine(Application.StartupPath, "output", "afterdate.xlsx");
-            string excelPathBeforeDate = Path.Combine(Application.StartupPath, "output", "beforedate.xlsx");
+            string fileNameAfterDate = string.Format("afterdate{0:ddMMyyyy_HH-mm-ss}.xlsx", DateTime.Now);
+            string fileNameBeforeDate = string.Format("beforedate{0:ddMMyyyy_HH-mm-ss}.xlsx", DateTime.Now);
+            string excelPathAfterDate = Path.Combine(Application.StartupPath, "output", fileNameAfterDate);
+            string excelPathBeforeDate = Path.Combine(Application.StartupPath, "output", fileNameBeforeDate);
 
             using (var workbookAfterDate = new XLWorkbook())
             using (var workbookBeforeDate = new XLWorkbook())
             {
-                var worksheetAfterDate = workbookAfterDate.Worksheets.Add("Data");
-                var worksheetBeforeDate = workbookBeforeDate.Worksheets.Add("Data");
+                var worksheetAfterDate = workbookAfterDate.Worksheets.Add("AfterDate");
+                var worksheetBeforeDate = workbookBeforeDate.Worksheets.Add("BeforeDate");
 
                 AddHeaders(worksheetAfterDate);
                 AddHeaders(worksheetBeforeDate);
@@ -116,9 +119,9 @@ namespace FileOrbis___File_System_Reporter
                     DateTime accessDate = File.GetLastAccessTime(file);
                     long fileSize = new FileInfo(file).Length;
 
-                    if ((radioButton1.Checked && createDate > dateTimePicker1.Value) ||
-                        (radioButton2.Checked && accessDate > dateTimePicker1.Value) ||
-                        (radioButton3.Checked && modifiedDate > dateTimePicker1.Value))
+                    if ((rdCreatedDate.Checked && createDate > dtDateOption.Value) ||
+                        (rdModifiedDate.Checked && accessDate > dtDateOption.Value) ||
+                        (rdAccessedDate.Checked && modifiedDate > dtDateOption.Value))
                     {
                         AddFileData(worksheetAfterDate, rowAfterDate, $"{fileDirectory}\\{fileName}", createDate, modifiedDate, accessDate, fileSize);
                         rowAfterDate++;
@@ -141,11 +144,11 @@ namespace FileOrbis___File_System_Reporter
                 {
                     workbookAfterDate.SaveAs(excelPathAfterDate);
                     workbookBeforeDate.SaveAs(excelPathBeforeDate);
-                    MessageBox.Show("Veriler Excel'e kaydedildi.", "Başarılı İşlem", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("The data has been saved to Excel.", "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Çıktı alma başarısız. Excel dosyanız açık ise kapatıp deneyiniz.", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Output failed. If your Excel file is open, close it and try.", "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }
@@ -154,14 +157,14 @@ namespace FileOrbis___File_System_Reporter
         #region Disabled Checked Radio Buttons,CheckBoxs
         public void DisabledChecked()
         {
-            textBox3.Enabled = false;
-            button2.Enabled = false;
-            radioButton1.Checked = true;
-            radioButton6.Checked = true;
-            radioButton9.Checked = true;
-            checkBox1.Enabled = false;
-            checkBox2.Enabled = false;
-            checkBox3.Enabled = false;
+            txtTargetPath.Enabled = false;
+            btnTargetPath.Enabled = false;
+            rdCreatedDate.Checked = true;
+            rdScan.Checked = true;
+            rdTxt.Checked = true;
+            chEmptyFolders.Enabled = false;
+            chNtfsPermission.Enabled = false;
+            chOverWrite.Enabled = false;
         }
         #endregion
         #region Scan Process and view to listbox
@@ -200,7 +203,7 @@ namespace FileOrbis___File_System_Reporter
                     DateTime modifiedDate = File.GetLastWriteTime(file);
                     DateTime accessDate = File.GetLastAccessTime(file);
                     long fileSize = new FileInfo(file).Length;
-                    if ((DateType == "Created" && createDate > dateTimePicker1.Value) || (DateType == "Accessed" && accessDate > dateTimePicker1.Value) || (DateType == "Modified" && modifiedDate > dateTimePicker1.Value))
+                    if ((DateType == "Created" && createDate > dtDateOption.Value) || (DateType == "Accessed" && accessDate > dtDateOption.Value) || (DateType == "Modified" && modifiedDate > dtDateOption.Value))
                     {
                         string listItem = GetListBoxItem(fileDirectory, fileName, createDate, modifiedDate, accessDate, fileSize);
                         listBox1.Items.Add(listItem);
@@ -214,18 +217,19 @@ namespace FileOrbis___File_System_Reporter
                     processedFiles++;
                     progressBar1.Value = processedFiles;
 
-                    label9.Text = "PATH : " + fileDirectory + "\\" + fileName;
-                    label8.Text = $"{processedFiles} / {totalFiles} items were scanned.";
+                    lblPath.Text = "PATH : " + fileDirectory + "\\" + fileName;
+                    lblScannedItem.Text = $"{processedFiles} / {totalFiles} items were scanned.";
 
                     Application.DoEvents();
 
-                    label10.Text = $"Scan was completed. Total elapsed time {stopwatch.Elapsed.TotalSeconds} seconds";
+                    lblTotalTime.Text = $"Scan was completed. Total elapsed time {stopwatch.Elapsed.TotalSeconds} seconds";
+                    IsItDoneScan();
                 }
                 stopwatch.Stop();
             }
             else
             {
-                MessageBox.Show("Lütfen geçerli bir klasör seçin.", "Klasör Seçin", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Please select a valid folder.", "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
         #endregion
@@ -234,19 +238,26 @@ namespace FileOrbis___File_System_Reporter
         #region Enabled Checked Radio Buttons,CheckBoxs
         public void EnabledChecked()
         {
-            textBox3.Enabled = true;
-            button2.Enabled = true;
-            checkBox1.Enabled = true;
-            checkBox2.Enabled = true;
-            checkBox3.Enabled = true;
+            txtTargetPath.Enabled = true;
+            btnTargetPath.Enabled = true;
+            chEmptyFolders.Enabled = true;
+            chNtfsPermission.Enabled = true;
+            chOverWrite.Enabled = true;
+        }
+        public void IsItDoneScan()
+        {
+            rdMove.Enabled = true;
+            rdCopy.Enabled = true;
         }
         #endregion
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            dateTimePicker1.Format = DateTimePickerFormat.Custom;
-            dateTimePicker1.CustomFormat = "dd MMMM yyyy h:mm";
+            dtDateOption.Format = DateTimePickerFormat.Custom;
+            dtDateOption.CustomFormat = "dd MMMM yyyy h:mm";
             DisabledChecked();
+            rdMove.Enabled = false;
+            rdCopy.Enabled = false;
         }
         string selectedFileName;
         private void button1_Click(object sender, EventArgs e)
@@ -260,7 +271,7 @@ namespace FileOrbis___File_System_Reporter
             {
                 string selectedFolder = folderDialog.SelectedPath;
                 selectedFileName = Path.GetFileName(selectedFolder);
-                textBox1.Text = selectedFolder;
+                txtSourcePath.Text = selectedFolder;
             }
             #endregion
         }
@@ -270,19 +281,19 @@ namespace FileOrbis___File_System_Reporter
             #region Scan Process 
             listBox1.Items.Clear();
             listBox2.Items.Clear();
-            if (radioButton6.Checked)
+            if (rdScan.Checked)
             {
-                string selectedFolder = textBox1.Text;
+                string selectedFolder = txtSourcePath.Text;
 
-                if (radioButton1.Checked == true)
+                if (rdCreatedDate.Checked == true)
                 {
                     ScanProcess(selectedFolder, "Created");
                 }
-                if (radioButton2.Checked == true)
+                if (rdModifiedDate.Checked == true)
                 {
                     ScanProcess(selectedFolder, "Accessed");
                 }
-                if (radioButton3.Checked == true)
+                if (rdAccessedDate.Checked == true)
                 {
                     ScanProcess(selectedFolder, "Modified");
                 }
@@ -291,81 +302,79 @@ namespace FileOrbis___File_System_Reporter
             #endregion
 
             #region MoveProcess
-            if (radioButton5.Checked)
+            if (rdMove.Checked)
             {
-                if (checkBox3.Checked)
+                if (chOverWrite.Checked)
                 {
                     try
                     {
-                        string sourceFolderPath = textBox1.Text;
-                        string destinationFolderPath = textBox3.Text + "\\" + selectedFileName;
+                        string sourceFolderPath = txtSourcePath.Text;
+                        string destinationFolderPath = txtTargetPath.Text + "\\" + selectedFileName;
                         DeleteDirectory(destinationFolderPath); // overwrite işlemi.
                         MoveDirectoryByDate(sourceFolderPath, destinationFolderPath, GetSelectedDateType());
 
-                        MessageBox.Show("Klasör '" + sourceFolderPath + "' konumundan '" + destinationFolderPath + "' konumuna taşınmıştır.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully moved from location '" + sourceFolderPath + "' to '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Klasör taşıma işlemi sırasında bir hata oluştu: " + ex.Message, "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("An error occurred during the folder copy operation: " + ex.Message, "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
                 else
                 {
                     try
                     {
-                        string sourceFolderPath = textBox1.Text;
-                        string destinationFolderPath = textBox3.Text + "\\" + selectedFileName;
+                        string sourceFolderPath = txtSourcePath.Text;
+                        string destinationFolderPath = txtTargetPath.Text + "\\" + selectedFileName;
 
                         Directory.CreateDirectory(destinationFolderPath);
                         MoveDirectoryByDate(sourceFolderPath, destinationFolderPath, GetSelectedDateType());
-
+                        MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully moved from location '" + sourceFolderPath + "' to '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         MessageBox.Show("Klasör '" + sourceFolderPath + "' konumundan '" + destinationFolderPath + "' konumuna taşınmıştır.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Klasör taşıma işlemi sırasında bir hata oluştu: " + ex.Message, "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("An error occurred during the folder copy operation: " + ex.Message, "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }
             #endregion
 
             #region Copy Process
-            if (radioButton4.Checked)
+            if (rdCopy.Checked)
             {
-                if (checkBox3.Checked)
+                if (chOverWrite.Checked)
                 {
                     try
                     {
-                        bool copyPermissions = checkBox2.Checked;
-                        string sourceFolderPath = textBox1.Text;
-                        string destinationFolderPath = textBox3.Text + "\\" + selectedFileName;
+                        bool copyPermissions = chNtfsPermission.Checked;
+                        string sourceFolderPath = txtSourcePath.Text;
+                        string destinationFolderPath = txtTargetPath.Text + "\\" + selectedFileName;
 
                         DeleteDirectory(destinationFolderPath); // overwrite işlemi .
                         CopyDirectory(sourceFolderPath, destinationFolderPath, copyPermissions);
 
-                        MessageBox.Show("Klasör '" + sourceFolderPath + "' konumu '" + destinationFolderPath + "' konumuna kopyalanmıştır ve " +
-                            "üzerine yazılmıştır.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully copied to the location '" + destinationFolderPath + "' and overwritten.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Klasör kopyalama işlemi sırasında bir hata oluştu: " + ex.Message, "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("An error occurred during the folder copy operation: " + ex.Message, "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
                 else
                 {
                     try
                     {
-                        bool copyPermissions = checkBox2.Checked;
-                        string sourceFolderPath = textBox1.Text;
-                        string destinationFolderPath = textBox3.Text + "\\" + selectedFileName;
+                        bool copyPermissions = chNtfsPermission.Checked;
+                        string sourceFolderPath = txtSourcePath.Text;
+                        string destinationFolderPath = txtTargetPath.Text + "\\" + selectedFileName;
 
                         CopyDirectory(sourceFolderPath, destinationFolderPath, copyPermissions);
-
-                        MessageBox.Show("Klasör '" + sourceFolderPath + "' konumu '" + destinationFolderPath + "' konumuna kopyalanmıştır.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("Folder '" + sourceFolderPath + "' has been copied to the location '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Klasör kopyalama işlemi sırasında bir hata oluştu: " + ex.Message, "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("An error occurred during the folder copy operation: " + ex.Message, "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
 
@@ -374,78 +383,78 @@ namespace FileOrbis___File_System_Reporter
         }
 
         #region Move Directory
-        public void MoveDirectoryByDate(string kaynakKlasör, string hedefKlasör, string dateType)
+        public void MoveDirectoryByDate(string sourceFolder, string targetDirectory, string dateType)
         {
-            if (!Directory.Exists(hedefKlasör))
+            if (!Directory.Exists(targetDirectory))
             {
-                Directory.CreateDirectory(hedefKlasör);
+                Directory.CreateDirectory(targetDirectory);
             }
 
-            string[] dosyalar = Directory.GetFiles(kaynakKlasör);
-            DateTime selectedDate = dateTimePicker1.Value;
+            string[] files = Directory.GetFiles(sourceFolder);
+            DateTime selectedDate = dtDateOption.Value;
 
-            foreach (string dosya in dosyalar)
+            foreach (string file in files)
             {
                 DateTime fileDate;
 
                 switch (dateType)
                 {
                     case "Created":
-                        fileDate = File.GetCreationTime(dosya);
+                        fileDate = File.GetCreationTime(file);
                         break;
                     case "Modified":
-                        fileDate = File.GetLastWriteTime(dosya);
+                        fileDate = File.GetLastWriteTime(file);
                         break;
                     case "Accessed":
-                        fileDate = File.GetLastAccessTime(dosya);
+                        fileDate = File.GetLastAccessTime(file);
                         break;
                     default:
-                        throw new ArgumentException("Geçersiz tarih türü.");
+                        throw new ArgumentException("Invalid date type.");
                 }
 
                 if (fileDate > selectedDate)
                 {
-                    string dosyaAdi = Path.GetFileName(dosya);
-                    string hedefDosya = Path.Combine(hedefKlasör, dosyaAdi);
-                    File.Move(dosya, hedefDosya);
+                    string fileName = Path.GetFileName(file);
+                    string targetFile = Path.Combine(targetDirectory, fileName);
+                    File.Move(file, targetFile);
                 }
             }
 
-            string[] altDizinler = Directory.GetDirectories(kaynakKlasör);
-            foreach (string altDizin in altDizinler)
+            string[] subDirectoryies = Directory.GetDirectories(sourceFolder);
+            foreach (string subDirectory in subDirectoryies)
             {
-                string altDizinAdi = Path.GetFileName(altDizin);
-                string[] altDizinDosyalari = Directory.GetFiles(altDizin);
-                if (altDizinDosyalari.Length >= 1)
+                string subDirectoryName = Path.GetFileName(subDirectory);
+                string[] subDirectoryFiles = Directory.GetFiles(subDirectory);
+                if (subDirectoryFiles.Length >= 1)
                 {
-                    string hedefAltDizin = Path.Combine(hedefKlasör, altDizinAdi);
-                    MoveDirectoryByDate(altDizin, hedefAltDizin, dateType);
+                    string targetSubDirectory = Path.Combine(targetDirectory, subDirectoryName);
+                    MoveDirectoryByDate(subDirectory, targetSubDirectory, dateType);
                 }
                 else
                 {
-                    if (checkBox1.Checked)
+                    if (chEmptyFolders.Checked)
                     {
-                        string hedefAltDizin = Path.Combine(hedefKlasör, altDizinAdi);
-                        MoveDirectoryByDate(altDizin, hedefAltDizin, dateType);
+                        string targetSubDirectory = Path.Combine(targetDirectory, subDirectoryName);
+                        MoveDirectoryByDate(subDirectory, targetSubDirectory, dateType);
                     }
                     else
                         continue;
                 }
             }
 
-            Directory.Delete(kaynakKlasör, recursive: true);
+            Directory.Delete(sourceFolder, recursive: true);
         }
 
         private string GetSelectedDateType()
         {
-            if (radioButton1.Checked)
+            if (rdCreatedDate.Checked)
                 return "Created";
-            else if (radioButton2.Checked)
+            else if (rdModifiedDate.Checked)
                 return "Modified";
-            else if (radioButton3.Checked)
+            else if (rdAccessedDate.Checked)
                 return "Accessed";
             else
-                throw new ArgumentException("Tarih türü seçilmemiş.");
+                throw new ArgumentException("The date type is not selected.");
         }
         #endregion
         #region Copy Directory
@@ -511,21 +520,21 @@ namespace FileOrbis___File_System_Reporter
             Directory.Delete(path, false);
         }
 
-        #endregion// overrite işlemi için ilk olarak siliyorum. sonrasında tekrardan taşıma işlemi gerçekleştiricem.
+        #endregion
         private void button4_Click(object sender, EventArgs e)
         {
             #region report process 
-            if (radioButton9.Checked)
+            if (rdTxt.Checked)
             {
                 SaveTxt();
             }
-            else if (radioButton8.Checked)
+            else if (rdExcel.Checked)
             {
                 SaveExcel();
             }
             else
             {
-                MessageBox.Show("Lütfen bir seçenek seçin.", "Seçenek Seçin", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Please select an option.", "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             #endregion
         }
@@ -538,25 +547,25 @@ namespace FileOrbis___File_System_Reporter
             if (result == DialogResult.OK)
             {
                 string selectedFolderMove = folderDialog.SelectedPath;
-                textBox3.Text = selectedFolderMove;
+                txtTargetPath.Text = selectedFolderMove;
             }
             #endregion
         }
         private void radioButton5_CheckedChanged(object sender, EventArgs e)
         {
-            if (radioButton5.Checked)
+            if (rdMove.Checked)
                 EnabledChecked();
         }
 
         private void radioButton6_CheckedChanged(object sender, EventArgs e)
         {
-            if (radioButton6.Checked)
+            if (rdScan.Checked)
                 DisabledChecked();
         }
 
         private void radioButton4_CheckedChanged(object sender, EventArgs e)
         {
-            if (radioButton4.Checked)
+            if (rdCopy.Checked)
                 EnabledChecked();
         }
     }

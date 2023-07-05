@@ -30,42 +30,42 @@ namespace FileOrbis___File_System_Reporter
         private void InitializeComponent()
         {
             this.label1 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.txtSourcePath = new System.Windows.Forms.TextBox();
+            this.btnSourcePath = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
-            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
+            this.dtDateOption = new System.Windows.Forms.DateTimePicker();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.textBox2 = new System.Windows.Forms.TextBox();
-            this.radioButton4 = new System.Windows.Forms.RadioButton();
-            this.radioButton5 = new System.Windows.Forms.RadioButton();
-            this.radioButton6 = new System.Windows.Forms.RadioButton();
+            this.rdCopy = new System.Windows.Forms.RadioButton();
+            this.rdMove = new System.Windows.Forms.RadioButton();
+            this.rdScan = new System.Windows.Forms.RadioButton();
             this.label5 = new System.Windows.Forms.Label();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.button2 = new System.Windows.Forms.Button();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.chEmptyFolders = new System.Windows.Forms.CheckBox();
+            this.chNtfsPermission = new System.Windows.Forms.CheckBox();
+            this.chOverWrite = new System.Windows.Forms.CheckBox();
+            this.btnTargetPath = new System.Windows.Forms.Button();
+            this.txtTargetPath = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.textBox4 = new System.Windows.Forms.TextBox();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
+            this.btnRun = new System.Windows.Forms.Button();
+            this.btnReport = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
+            this.lblTotalTime = new System.Windows.Forms.Label();
+            this.lblPath = new System.Windows.Forms.Label();
+            this.lblScannedItem = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.radioButton3 = new System.Windows.Forms.RadioButton();
-            this.radioButton2 = new System.Windows.Forms.RadioButton();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
+            this.rdAccessedDate = new System.Windows.Forms.RadioButton();
+            this.rdModifiedDate = new System.Windows.Forms.RadioButton();
+            this.rdCreatedDate = new System.Windows.Forms.RadioButton();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.label11 = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.radioButton8 = new System.Windows.Forms.RadioButton();
-            this.radioButton9 = new System.Windows.Forms.RadioButton();
+            this.rdExcel = new System.Windows.Forms.RadioButton();
+            this.rdTxt = new System.Windows.Forms.RadioButton();
             this.listBox2 = new System.Windows.Forms.ListBox();
             this.label12 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
@@ -84,24 +84,24 @@ namespace FileOrbis___File_System_Reporter
             this.label1.TabIndex = 0;
             this.label1.Text = "Path";
             // 
-            // textBox1
+            // txtSourcePath
             // 
-            this.textBox1.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.textBox1.Location = new System.Drawing.Point(12, 43);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(751, 28);
-            this.textBox1.TabIndex = 1;
+            this.txtSourcePath.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.txtSourcePath.Location = new System.Drawing.Point(12, 43);
+            this.txtSourcePath.Name = "txtSourcePath";
+            this.txtSourcePath.Size = new System.Drawing.Size(751, 28);
+            this.txtSourcePath.TabIndex = 1;
             // 
-            // button1
+            // btnSourcePath
             // 
-            this.button1.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.button1.Location = new System.Drawing.Point(782, 43);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(96, 27);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "Browse";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.btnSourcePath.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btnSourcePath.Location = new System.Drawing.Point(782, 43);
+            this.btnSourcePath.Name = "btnSourcePath";
+            this.btnSourcePath.Size = new System.Drawing.Size(96, 27);
+            this.btnSourcePath.TabIndex = 2;
+            this.btnSourcePath.Text = "Browse";
+            this.btnSourcePath.UseVisualStyleBackColor = true;
+            this.btnSourcePath.Click += new System.EventHandler(this.button1_Click);
             // 
             // label2
             // 
@@ -113,13 +113,13 @@ namespace FileOrbis___File_System_Reporter
             this.label2.TabIndex = 3;
             this.label2.Text = "Date Option";
             // 
-            // dateTimePicker1
+            // dtDateOption
             // 
-            this.dateTimePicker1.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.dateTimePicker1.Location = new System.Drawing.Point(424, 130);
-            this.dateTimePicker1.Name = "dateTimePicker1";
-            this.dateTimePicker1.Size = new System.Drawing.Size(266, 28);
-            this.dateTimePicker1.TabIndex = 7;
+            this.dtDateOption.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.dtDateOption.Location = new System.Drawing.Point(424, 130);
+            this.dtDateOption.Name = "dtDateOption";
+            this.dtDateOption.Size = new System.Drawing.Size(266, 28);
+            this.dtDateOption.TabIndex = 7;
             // 
             // label3
             // 
@@ -149,44 +149,44 @@ namespace FileOrbis___File_System_Reporter
             this.textBox2.Size = new System.Drawing.Size(164, 28);
             this.textBox2.TabIndex = 11;
             // 
-            // radioButton4
+            // rdCopy
             // 
-            this.radioButton4.AutoSize = true;
-            this.radioButton4.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.radioButton4.Location = new System.Drawing.Point(275, 223);
-            this.radioButton4.Name = "radioButton4";
-            this.radioButton4.Size = new System.Drawing.Size(63, 25);
-            this.radioButton4.TabIndex = 15;
-            this.radioButton4.TabStop = true;
-            this.radioButton4.Text = "Copy";
-            this.radioButton4.UseVisualStyleBackColor = true;
-            this.radioButton4.CheckedChanged += new System.EventHandler(this.radioButton4_CheckedChanged);
+            this.rdCopy.AutoSize = true;
+            this.rdCopy.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.rdCopy.Location = new System.Drawing.Point(275, 223);
+            this.rdCopy.Name = "rdCopy";
+            this.rdCopy.Size = new System.Drawing.Size(63, 25);
+            this.rdCopy.TabIndex = 15;
+            this.rdCopy.TabStop = true;
+            this.rdCopy.Text = "Copy";
+            this.rdCopy.UseVisualStyleBackColor = true;
+            this.rdCopy.CheckedChanged += new System.EventHandler(this.radioButton4_CheckedChanged);
             // 
-            // radioButton5
+            // rdMove
             // 
-            this.radioButton5.AutoSize = true;
-            this.radioButton5.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.radioButton5.Location = new System.Drawing.Point(142, 223);
-            this.radioButton5.Name = "radioButton5";
-            this.radioButton5.Size = new System.Drawing.Size(68, 25);
-            this.radioButton5.TabIndex = 14;
-            this.radioButton5.TabStop = true;
-            this.radioButton5.Text = "Move";
-            this.radioButton5.UseVisualStyleBackColor = true;
-            this.radioButton5.CheckedChanged += new System.EventHandler(this.radioButton5_CheckedChanged);
+            this.rdMove.AutoSize = true;
+            this.rdMove.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.rdMove.Location = new System.Drawing.Point(142, 223);
+            this.rdMove.Name = "rdMove";
+            this.rdMove.Size = new System.Drawing.Size(68, 25);
+            this.rdMove.TabIndex = 14;
+            this.rdMove.TabStop = true;
+            this.rdMove.Text = "Move";
+            this.rdMove.UseVisualStyleBackColor = true;
+            this.rdMove.CheckedChanged += new System.EventHandler(this.radioButton5_CheckedChanged);
             // 
-            // radioButton6
+            // rdScan
             // 
-            this.radioButton6.AutoSize = true;
-            this.radioButton6.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.radioButton6.Location = new System.Drawing.Point(16, 223);
-            this.radioButton6.Name = "radioButton6";
-            this.radioButton6.Size = new System.Drawing.Size(60, 25);
-            this.radioButton6.TabIndex = 13;
-            this.radioButton6.TabStop = true;
-            this.radioButton6.Text = "Scan";
-            this.radioButton6.UseVisualStyleBackColor = true;
-            this.radioButton6.CheckedChanged += new System.EventHandler(this.radioButton6_CheckedChanged);
+            this.rdScan.AutoSize = true;
+            this.rdScan.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.rdScan.Location = new System.Drawing.Point(16, 223);
+            this.rdScan.Name = "rdScan";
+            this.rdScan.Size = new System.Drawing.Size(60, 25);
+            this.rdScan.TabIndex = 13;
+            this.rdScan.TabStop = true;
+            this.rdScan.Text = "Scan";
+            this.rdScan.UseVisualStyleBackColor = true;
+            this.rdScan.CheckedChanged += new System.EventHandler(this.radioButton6_CheckedChanged);
             // 
             // label5
             // 
@@ -198,57 +198,57 @@ namespace FileOrbis___File_System_Reporter
             this.label5.TabIndex = 12;
             this.label5.Text = "Options";
             // 
-            // checkBox1
+            // chEmptyFolders
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.checkBox1.Location = new System.Drawing.Point(424, 223);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(129, 25);
-            this.checkBox1.TabIndex = 16;
-            this.checkBox1.Text = "Empty Folders";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.chEmptyFolders.AutoSize = true;
+            this.chEmptyFolders.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.chEmptyFolders.Location = new System.Drawing.Point(424, 223);
+            this.chEmptyFolders.Name = "chEmptyFolders";
+            this.chEmptyFolders.Size = new System.Drawing.Size(129, 25);
+            this.chEmptyFolders.TabIndex = 16;
+            this.chEmptyFolders.Text = "Empty Folders";
+            this.chEmptyFolders.UseVisualStyleBackColor = true;
             // 
-            // checkBox2
+            // chNtfsPermission
             // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.checkBox2.Location = new System.Drawing.Point(557, 223);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(152, 25);
-            this.checkBox2.TabIndex = 17;
-            this.checkBox2.Text = "NTFS Permissions";
-            this.checkBox2.UseVisualStyleBackColor = true;
+            this.chNtfsPermission.AutoSize = true;
+            this.chNtfsPermission.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.chNtfsPermission.Location = new System.Drawing.Point(557, 223);
+            this.chNtfsPermission.Name = "chNtfsPermission";
+            this.chNtfsPermission.Size = new System.Drawing.Size(152, 25);
+            this.chNtfsPermission.TabIndex = 17;
+            this.chNtfsPermission.Text = "NTFS Permissions";
+            this.chNtfsPermission.UseVisualStyleBackColor = true;
             // 
-            // checkBox3
+            // chOverWrite
             // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.checkBox3.Location = new System.Drawing.Point(713, 223);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(98, 25);
-            this.checkBox3.TabIndex = 18;
-            this.checkBox3.Text = "Overwrite";
-            this.checkBox3.UseVisualStyleBackColor = true;
+            this.chOverWrite.AutoSize = true;
+            this.chOverWrite.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.chOverWrite.Location = new System.Drawing.Point(713, 223);
+            this.chOverWrite.Name = "chOverWrite";
+            this.chOverWrite.Size = new System.Drawing.Size(98, 25);
+            this.chOverWrite.TabIndex = 18;
+            this.chOverWrite.Text = "Overwrite";
+            this.chOverWrite.UseVisualStyleBackColor = true;
             // 
-            // button2
+            // btnTargetPath
             // 
-            this.button2.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.button2.Location = new System.Drawing.Point(782, 308);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(96, 27);
-            this.button2.TabIndex = 21;
-            this.button2.Text = "Browse";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.btnTargetPath.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btnTargetPath.Location = new System.Drawing.Point(782, 308);
+            this.btnTargetPath.Name = "btnTargetPath";
+            this.btnTargetPath.Size = new System.Drawing.Size(96, 27);
+            this.btnTargetPath.TabIndex = 21;
+            this.btnTargetPath.Text = "Browse";
+            this.btnTargetPath.UseVisualStyleBackColor = true;
+            this.btnTargetPath.Click += new System.EventHandler(this.button2_Click);
             // 
-            // textBox3
+            // txtTargetPath
             // 
-            this.textBox3.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.textBox3.Location = new System.Drawing.Point(12, 308);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(751, 28);
-            this.textBox3.TabIndex = 20;
+            this.txtTargetPath.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.txtTargetPath.Location = new System.Drawing.Point(12, 308);
+            this.txtTargetPath.Name = "txtTargetPath";
+            this.txtTargetPath.Size = new System.Drawing.Size(751, 28);
+            this.txtTargetPath.TabIndex = 20;
             // 
             // label6
             // 
@@ -290,27 +290,27 @@ namespace FileOrbis___File_System_Reporter
             this.textBox4.Size = new System.Drawing.Size(663, 28);
             this.textBox4.TabIndex = 24;
             // 
-            // button3
+            // btnRun
             // 
-            this.button3.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.button3.Location = new System.Drawing.Point(12, 482);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(430, 33);
-            this.button3.TabIndex = 25;
-            this.button3.Text = "Run";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.btnRun.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btnRun.Location = new System.Drawing.Point(12, 482);
+            this.btnRun.Name = "btnRun";
+            this.btnRun.Size = new System.Drawing.Size(430, 33);
+            this.btnRun.TabIndex = 25;
+            this.btnRun.Text = "Run";
+            this.btnRun.UseVisualStyleBackColor = true;
+            this.btnRun.Click += new System.EventHandler(this.button3_Click);
             // 
-            // button4
+            // btnReport
             // 
-            this.button4.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.button4.Location = new System.Drawing.Point(448, 482);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(430, 33);
-            this.button4.TabIndex = 26;
-            this.button4.Text = "Report";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.btnReport.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btnReport.Location = new System.Drawing.Point(448, 482);
+            this.btnReport.Name = "btnReport";
+            this.btnReport.Size = new System.Drawing.Size(430, 33);
+            this.btnReport.TabIndex = 26;
+            this.btnReport.Text = "Report";
+            this.btnReport.UseVisualStyleBackColor = true;
+            this.btnReport.Click += new System.EventHandler(this.button4_Click);
             // 
             // progressBar1
             // 
@@ -322,89 +322,89 @@ namespace FileOrbis___File_System_Reporter
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.panel1.Controls.Add(this.label10);
-            this.panel1.Controls.Add(this.label9);
-            this.panel1.Controls.Add(this.label8);
+            this.panel1.Controls.Add(this.lblTotalTime);
+            this.panel1.Controls.Add(this.lblPath);
+            this.panel1.Controls.Add(this.lblScannedItem);
             this.panel1.Location = new System.Drawing.Point(12, 596);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(866, 140);
             this.panel1.TabIndex = 28;
             // 
-            // label10
+            // lblTotalTime
             // 
-            this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.label10.Location = new System.Drawing.Point(13, 98);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(317, 21);
-            this.label10.TabIndex = 31;
-            this.label10.Text = "Scan was completed. Total elapsed time : .....";
+            this.lblTotalTime.AutoSize = true;
+            this.lblTotalTime.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.lblTotalTime.Location = new System.Drawing.Point(13, 98);
+            this.lblTotalTime.Name = "lblTotalTime";
+            this.lblTotalTime.Size = new System.Drawing.Size(317, 21);
+            this.lblTotalTime.TabIndex = 31;
+            this.lblTotalTime.Text = "Scan was completed. Total elapsed time : .....";
             // 
-            // label9
+            // lblPath
             // 
-            this.label9.AutoSize = true;
-            this.label9.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.label9.Location = new System.Drawing.Point(13, 51);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(70, 21);
-            this.label9.TabIndex = 30;
-            this.label9.Text = "PATH  ... ";
+            this.lblPath.AutoSize = true;
+            this.lblPath.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.lblPath.Location = new System.Drawing.Point(13, 51);
+            this.lblPath.Name = "lblPath";
+            this.lblPath.Size = new System.Drawing.Size(70, 21);
+            this.lblPath.TabIndex = 30;
+            this.lblPath.Text = "PATH  ... ";
             // 
-            // label8
+            // lblScannedItem
             // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.label8.Location = new System.Drawing.Point(13, 12);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(168, 21);
-            this.label8.TabIndex = 29;
-            this.label8.Text = "... items were scanned.";
+            this.lblScannedItem.AutoSize = true;
+            this.lblScannedItem.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.lblScannedItem.Location = new System.Drawing.Point(13, 12);
+            this.lblScannedItem.Name = "lblScannedItem";
+            this.lblScannedItem.Size = new System.Drawing.Size(168, 21);
+            this.lblScannedItem.TabIndex = 29;
+            this.lblScannedItem.Text = "... items were scanned.";
             // 
             // panel2
             // 
-            this.panel2.Controls.Add(this.radioButton3);
-            this.panel2.Controls.Add(this.radioButton2);
-            this.panel2.Controls.Add(this.radioButton1);
+            this.panel2.Controls.Add(this.rdAccessedDate);
+            this.panel2.Controls.Add(this.rdModifiedDate);
+            this.panel2.Controls.Add(this.rdCreatedDate);
             this.panel2.Location = new System.Drawing.Point(12, 121);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(397, 42);
             this.panel2.TabIndex = 29;
             // 
-            // radioButton3
+            // rdAccessedDate
             // 
-            this.radioButton3.AutoSize = true;
-            this.radioButton3.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.radioButton3.Location = new System.Drawing.Point(263, 13);
-            this.radioButton3.Name = "radioButton3";
-            this.radioButton3.Size = new System.Drawing.Size(127, 25);
-            this.radioButton3.TabIndex = 32;
-            this.radioButton3.TabStop = true;
-            this.radioButton3.Text = "Accessed Date";
-            this.radioButton3.UseVisualStyleBackColor = true;
+            this.rdAccessedDate.AutoSize = true;
+            this.rdAccessedDate.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.rdAccessedDate.Location = new System.Drawing.Point(263, 13);
+            this.rdAccessedDate.Name = "rdAccessedDate";
+            this.rdAccessedDate.Size = new System.Drawing.Size(127, 25);
+            this.rdAccessedDate.TabIndex = 32;
+            this.rdAccessedDate.TabStop = true;
+            this.rdAccessedDate.Text = "Accessed Date";
+            this.rdAccessedDate.UseVisualStyleBackColor = true;
             // 
-            // radioButton2
+            // rdModifiedDate
             // 
-            this.radioButton2.AutoSize = true;
-            this.radioButton2.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.radioButton2.Location = new System.Drawing.Point(130, 13);
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(127, 25);
-            this.radioButton2.TabIndex = 31;
-            this.radioButton2.TabStop = true;
-            this.radioButton2.Text = "Modified Date";
-            this.radioButton2.UseVisualStyleBackColor = true;
+            this.rdModifiedDate.AutoSize = true;
+            this.rdModifiedDate.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.rdModifiedDate.Location = new System.Drawing.Point(130, 13);
+            this.rdModifiedDate.Name = "rdModifiedDate";
+            this.rdModifiedDate.Size = new System.Drawing.Size(127, 25);
+            this.rdModifiedDate.TabIndex = 31;
+            this.rdModifiedDate.TabStop = true;
+            this.rdModifiedDate.Text = "Modified Date";
+            this.rdModifiedDate.UseVisualStyleBackColor = true;
             // 
-            // radioButton1
+            // rdCreatedDate
             // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.radioButton1.Location = new System.Drawing.Point(4, 13);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(118, 25);
-            this.radioButton1.TabIndex = 30;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "Created Date";
-            this.radioButton1.UseVisualStyleBackColor = true;
+            this.rdCreatedDate.AutoSize = true;
+            this.rdCreatedDate.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.rdCreatedDate.Location = new System.Drawing.Point(4, 13);
+            this.rdCreatedDate.Name = "rdCreatedDate";
+            this.rdCreatedDate.Size = new System.Drawing.Size(118, 25);
+            this.rdCreatedDate.TabIndex = 30;
+            this.rdCreatedDate.TabStop = true;
+            this.rdCreatedDate.Text = "Created Date";
+            this.rdCreatedDate.UseVisualStyleBackColor = true;
             // 
             // listBox1
             // 
@@ -430,36 +430,36 @@ namespace FileOrbis___File_System_Reporter
             // 
             // panel3
             // 
-            this.panel3.Controls.Add(this.radioButton8);
-            this.panel3.Controls.Add(this.radioButton9);
+            this.panel3.Controls.Add(this.rdExcel);
+            this.panel3.Controls.Add(this.rdTxt);
             this.panel3.Location = new System.Drawing.Point(616, 436);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(134, 42);
             this.panel3.TabIndex = 34;
             // 
-            // radioButton8
+            // rdExcel
             // 
-            this.radioButton8.AutoSize = true;
-            this.radioButton8.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.radioButton8.Location = new System.Drawing.Point(64, 10);
-            this.radioButton8.Name = "radioButton8";
-            this.radioButton8.Size = new System.Drawing.Size(62, 25);
-            this.radioButton8.TabIndex = 31;
-            this.radioButton8.TabStop = true;
-            this.radioButton8.Text = "Excel";
-            this.radioButton8.UseVisualStyleBackColor = true;
+            this.rdExcel.AutoSize = true;
+            this.rdExcel.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.rdExcel.Location = new System.Drawing.Point(64, 10);
+            this.rdExcel.Name = "rdExcel";
+            this.rdExcel.Size = new System.Drawing.Size(62, 25);
+            this.rdExcel.TabIndex = 31;
+            this.rdExcel.TabStop = true;
+            this.rdExcel.Text = "Excel";
+            this.rdExcel.UseVisualStyleBackColor = true;
             // 
-            // radioButton9
+            // rdTxt
             // 
-            this.radioButton9.AutoSize = true;
-            this.radioButton9.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.radioButton9.Location = new System.Drawing.Point(6, 10);
-            this.radioButton9.Name = "radioButton9";
-            this.radioButton9.Size = new System.Drawing.Size(52, 25);
-            this.radioButton9.TabIndex = 30;
-            this.radioButton9.TabStop = true;
-            this.radioButton9.Text = "Txt ";
-            this.radioButton9.UseVisualStyleBackColor = true;
+            this.rdTxt.AutoSize = true;
+            this.rdTxt.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.rdTxt.Location = new System.Drawing.Point(6, 10);
+            this.rdTxt.Name = "rdTxt";
+            this.rdTxt.Size = new System.Drawing.Size(52, 25);
+            this.rdTxt.TabIndex = 30;
+            this.rdTxt.TabStop = true;
+            this.rdTxt.Text = "Txt ";
+            this.rdTxt.UseVisualStyleBackColor = true;
             // 
             // listBox2
             // 
@@ -507,28 +507,28 @@ namespace FileOrbis___File_System_Reporter
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.progressBar1);
-            this.Controls.Add(this.button4);
-            this.Controls.Add(this.button3);
+            this.Controls.Add(this.btnReport);
+            this.Controls.Add(this.btnRun);
             this.Controls.Add(this.textBox4);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.label7);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.textBox3);
+            this.Controls.Add(this.btnTargetPath);
+            this.Controls.Add(this.txtTargetPath);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.checkBox3);
-            this.Controls.Add(this.checkBox2);
-            this.Controls.Add(this.checkBox1);
-            this.Controls.Add(this.radioButton4);
-            this.Controls.Add(this.radioButton5);
-            this.Controls.Add(this.radioButton6);
+            this.Controls.Add(this.chOverWrite);
+            this.Controls.Add(this.chNtfsPermission);
+            this.Controls.Add(this.chEmptyFolders);
+            this.Controls.Add(this.rdCopy);
+            this.Controls.Add(this.rdMove);
+            this.Controls.Add(this.rdScan);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.dateTimePicker1);
+            this.Controls.Add(this.dtDateOption);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.btnSourcePath);
+            this.Controls.Add(this.txtSourcePath);
             this.Controls.Add(this.label1);
             this.MaximizeBox = false;
             this.Name = "Form1";
@@ -549,42 +549,42 @@ namespace FileOrbis___File_System_Reporter
         #endregion
 
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox txtSourcePath;
+        private System.Windows.Forms.Button btnSourcePath;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.DateTimePicker dateTimePicker1;
+        private System.Windows.Forms.DateTimePicker dtDateOption;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.RadioButton radioButton4;
-        private System.Windows.Forms.RadioButton radioButton5;
-        private System.Windows.Forms.RadioButton radioButton6;
+        private System.Windows.Forms.RadioButton rdCopy;
+        private System.Windows.Forms.RadioButton rdMove;
+        private System.Windows.Forms.RadioButton rdScan;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.CheckBox checkBox2;
-        private System.Windows.Forms.CheckBox checkBox3;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.CheckBox chEmptyFolders;
+        private System.Windows.Forms.CheckBox chNtfsPermission;
+        private System.Windows.Forms.CheckBox chOverWrite;
+        private System.Windows.Forms.Button btnTargetPath;
+        private System.Windows.Forms.TextBox txtTargetPath;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button btnRun;
+        private System.Windows.Forms.Button btnReport;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label lblTotalTime;
+        private System.Windows.Forms.Label lblPath;
+        private System.Windows.Forms.Label lblScannedItem;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.RadioButton radioButton3;
-        private System.Windows.Forms.RadioButton radioButton2;
-        private System.Windows.Forms.RadioButton radioButton1;
+        private System.Windows.Forms.RadioButton rdAccessedDate;
+        private System.Windows.Forms.RadioButton rdModifiedDate;
+        private System.Windows.Forms.RadioButton rdCreatedDate;
         private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.RadioButton radioButton8;
-        private System.Windows.Forms.RadioButton radioButton9;
+        private System.Windows.Forms.RadioButton rdExcel;
+        private System.Windows.Forms.RadioButton rdTxt;
         private System.Windows.Forms.ListBox listBox2;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label13;
