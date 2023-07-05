@@ -15,22 +15,22 @@ namespace FileOrbis___File_System_Reporter
         {
             frm = form;
         }
-        public void MoveOperation()
+        public void MoveOperation(string dateType)
         {
-            CopyProcess copyProcess = new CopyProcess(frm);
-            DeleteProcess deleteProcess = new DeleteProcess(frm);
-            if (frm.rdCopy.Checked)
+            if (frm.rdMove.Checked)
             {
+                DeleteProcess deleteProcess = new DeleteProcess(frm);
                 try
                 {
-                    bool copyPermissions = frm.chNtfsPermission.Checked;
                     string sourceFolderPath = frm.txtSourcePath.Text;
                     string destinationFolderPath = frm.txtTargetPath.Text + "\\" + frm.selectedFileName;
                     if (frm.chOverWrite.Checked)
-                        deleteProcess.DeleteDirectory(destinationFolderPath); // overwrite işlemi .
-                    copyProcess.CopyDirectory(sourceFolderPath, destinationFolderPath, copyPermissions);
-
-                    MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully copied to the location '" + destinationFolderPath + "' and overwritten.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    {
+                        if (Directory.Exists(destinationFolderPath))
+                            deleteProcess.DeleteDirectory(destinationFolderPath);
+                    }
+                    MoveDirectoryByDate(sourceFolderPath, destinationFolderPath, dateType);
+                    MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully moved from location '" + sourceFolderPath + "' to '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
                 {

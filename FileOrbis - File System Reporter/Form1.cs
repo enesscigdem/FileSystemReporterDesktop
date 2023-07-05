@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Presentation;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Collections.Generic;
@@ -158,46 +159,15 @@ namespace FileOrbis___File_System_Reporter
             {
                 MoveProcess moveProcess = new MoveProcess(this);
                 DeleteProcess deleteProcess = new DeleteProcess(this);
-                if (chOverWrite.Checked)
-                {
-                    try
-                    {
-                        string sourceFolderPath = txtSourcePath.Text;
-                        string destinationFolderPath = txtTargetPath.Text + "\\" + selectedFileName;
-                        if (Directory.Exists(destinationFolderPath))
-                            deleteProcess.DeleteDirectory(destinationFolderPath);
-
-                        moveProcess.MoveDirectoryByDate(sourceFolderPath, destinationFolderPath, GetSelectedDateType());
-                        MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully moved from location '" + sourceFolderPath + "' to '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("An error occurred during the folder copy operation: " + ex.Message, "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-                else
-                {
-                    try
-                    {
-                        string sourceFolderPath = txtSourcePath.Text;
-                        string destinationFolderPath = txtTargetPath.Text + "\\" + selectedFileName;
-                        Directory.CreateDirectory(destinationFolderPath);
-                        moveProcess.MoveDirectoryByDate(sourceFolderPath, destinationFolderPath, GetSelectedDateType());
-                        MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully moved from location '" + sourceFolderPath + "' to '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("An error occurred during the folder copy operation: " + ex.Message, "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
+                moveProcess.MoveOperation(GetSelectedDateType());
             }
             #endregion
 
             #region Copy Process
             if (rdCopy.Checked)
             {
-                MoveProcess moveProcess = new MoveProcess(this);
-                moveProcess.MoveOperation();
+                CopyProcess copyProcess = new CopyProcess(this);
+                copyProcess.CopyOperation();
             }
             #endregion
         }

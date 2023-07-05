@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace FileOrbis___File_System_Reporter
 {
@@ -14,6 +15,28 @@ namespace FileOrbis___File_System_Reporter
         public CopyProcess(Form1 form)
         {
             frm = form;
+        }
+        public void CopyOperation()
+        {
+            DeleteProcess deleteProcess = new DeleteProcess(frm);
+            if (frm.rdCopy.Checked)
+            {
+                try
+                {
+                    bool copyPermissions = frm.chNtfsPermission.Checked;
+                    string sourceFolderPath = frm.txtSourcePath.Text;
+                    string destinationFolderPath = frm.txtTargetPath.Text + "\\" + frm.selectedFileName;
+                    if (frm.chOverWrite.Checked)
+                        deleteProcess.DeleteDirectory(destinationFolderPath); // overwrite işlemi .
+                    CopyDirectory(sourceFolderPath, destinationFolderPath, copyPermissions);
+
+                    MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully copied to the location '" + destinationFolderPath + "' and overwritten.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("An error occurred during the folder copy operation: " + ex.Message, "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
         public void CopyDirectory(string sourceDir, string destinationDir, bool copyPermissions)
         {
