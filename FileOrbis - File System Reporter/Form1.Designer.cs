@@ -560,9 +560,6 @@ namespace FileOrbis___File_System_Reporter
         private System.Windows.Forms.RadioButton rdMove;
         private System.Windows.Forms.RadioButton rdScan;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.CheckBox chEmptyFolders;
-        private System.Windows.Forms.CheckBox chNtfsPermission;
-        private System.Windows.Forms.CheckBox chOverWrite;
         private System.Windows.Forms.Button btnTargetPath;
         private System.Windows.Forms.TextBox txtTargetPath;
         private System.Windows.Forms.Label label6;
@@ -571,23 +568,26 @@ namespace FileOrbis___File_System_Reporter
         private System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.Button btnRun;
         private System.Windows.Forms.Button btnReport;
-        private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Label lblTotalTime;
-        private System.Windows.Forms.Label lblPath;
-        private System.Windows.Forms.Label lblScannedItem;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.RadioButton rdAccessedDate;
         private System.Windows.Forms.RadioButton rdModifiedDate;
         private System.Windows.Forms.RadioButton rdCreatedDate;
-        private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.RadioButton rdExcel;
         private System.Windows.Forms.RadioButton rdTxt;
-        private System.Windows.Forms.ListBox listBox2;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label13;
+        public System.Windows.Forms.ProgressBar progressBar1;
+        public System.Windows.Forms.Label lblTotalTime;
+        public System.Windows.Forms.Label lblPath;
+        public System.Windows.Forms.Label lblScannedItem;
+        public System.Windows.Forms.ListBox listBox1;
+        public System.Windows.Forms.ListBox listBox2;
+        public System.Windows.Forms.CheckBox chEmptyFolders;
+        public System.Windows.Forms.CheckBox chNtfsPermission;
+        public System.Windows.Forms.CheckBox chOverWrite;
     }
 }
 

@@ -67,7 +67,7 @@ namespace FileOrbis___File_System_Reporter
                     workbook.SaveAs(excelFilePath);
                     MessageBox.Show("The data has been saved to Excel.", "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-                catch (Exception ex)
+                catch
                 {
                     MessageBox.Show("Output failed. If your Excel file is open, close it and try.", "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }

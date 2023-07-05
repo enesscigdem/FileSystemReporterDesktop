@@ -22,8 +22,9 @@ namespace FileOrbis___File_System_Reporter
             InitializeComponent();
         }
 
-        public DateTime fileDate;
-        public DateTime selectedDate;
+        public DateTime selectedDate, createDate, modifiedDate, accessDate, fileDate;
+        public string fileName, fileDirectory, selectedFileName;
+        public long fileSize;
         public void GetDateType(string dateType, string file)
         {
             //Move Directory and Excell Process functions use this func.
@@ -57,82 +58,8 @@ namespace FileOrbis___File_System_Reporter
             chOverWrite.Enabled = false;
         }
         #endregion
-        #region Scan Process and view to listbox
-        public string GetListBoxItem(string fileDirectory, string fileName, DateTime createDate, DateTime modifiedDate, DateTime accessDate, long fileSize)
-        {
-            string listItem = $"{fileDirectory + "\\" + fileName}";
-            listItem += $"\n  Create Date: {createDate}";
-            listItem += $"\n  Modified Date: {modifiedDate}";
-            listItem += $"\n  Access Date: {accessDate}";
-            listItem += $"\n  File Size (bytes): {fileSize}";
 
-            return listItem;
-        }
-        public string fileName, fileDirectory;
-        public DateTime createDate, modifiedDate, accessDate;
-        public long fileSize;
-        public void Fileİnformations(string file)
-        {
-            fileName = Path.GetFileName(file);
-            fileDirectory = Path.GetDirectoryName(file);
-            createDate = File.GetCreationTime(file);
-            modifiedDate = File.GetLastWriteTime(file);
-            accessDate = File.GetLastAccessTime(file);
-            fileSize = new FileInfo(file).Length;
-        }
-        private void ScanProcess(string selectedFolder, string DateType)
-        {
-            if (!string.IsNullOrEmpty(selectedFolder) && Directory.Exists(selectedFolder))
-            {
-                string[] files = Directory.GetFiles(selectedFolder, "*", SearchOption.AllDirectories);
-
-                listBox1.Items.Clear();
-
-                int totalFiles = files.Length;
-                int processedFiles = 0;
-
-                progressBar1.Maximum = totalFiles;
-                progressBar1.Value = 0;
-
-                Stopwatch stopwatch = new Stopwatch();
-                stopwatch.Start();
-
-                foreach (string file in files)
-                {
-                    Fileİnformations(file);
-                    GetDateType(DateType, file);
-                    if (fileDate > selectedDate)
-                    {
-                        string listItem = GetListBoxItem(fileDirectory, fileName, createDate, modifiedDate, accessDate, fileSize);
-                        listBox1.Items.Add(listItem);
-                    }
-                    else
-                    {
-                        string listItem = GetListBoxItem(fileDirectory, fileName, createDate, modifiedDate, accessDate, fileSize);
-                        listBox2.Items.Add(listItem);
-                    }
-
-                    processedFiles++;
-                    progressBar1.Value = processedFiles;
-
-                    lblPath.Text = "PATH : " + fileDirectory + "\\" + fileName;
-                    lblScannedItem.Text = $"{processedFiles} / {totalFiles} items were scanned.";
-
-                    Application.DoEvents();
-
-                    lblTotalTime.Text = $"Scan was completed. Total elapsed time {stopwatch.Elapsed.TotalSeconds} seconds";
-                    IsItDoneScan();
-                }
-                stopwatch.Stop();
-            }
-            else
-            {
-                MessageBox.Show("Please select a valid folder.", "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-        }
-        #endregion
-
-        //Move Process
+        //For Move,Copy
         #region Enabled Checked Radio Buttons,CheckBoxs
         public void EnabledChecked()
         {
@@ -149,6 +76,42 @@ namespace FileOrbis___File_System_Reporter
         }
         #endregion
 
+        #region view to listbox
+        public string GetListBoxItem(string fileDirectory, string fileName, DateTime createDate, DateTime modifiedDate, DateTime accessDate, long fileSize)
+        {
+            string listItem = $"{fileDirectory + "\\" + fileName}";
+            listItem += $"\n  Create Date: {createDate}";
+            listItem += $"\n  Modified Date: {modifiedDate}";
+            listItem += $"\n  Access Date: {accessDate}";
+            listItem += $"\n  File Size (bytes): {fileSize}";
+
+            return listItem;
+        }
+       
+        public void Fileİnformations(string file)
+        {
+            fileName = Path.GetFileName(file);
+            fileDirectory = Path.GetDirectoryName(file);
+            createDate = File.GetCreationTime(file);
+            modifiedDate = File.GetLastWriteTime(file);
+            accessDate = File.GetLastAccessTime(file);
+            fileSize = new FileInfo(file).Length;
+        }
+        #endregion
+
+        #region Get Selected Data Type
+        public string GetSelectedDateType()
+        {
+            if (rdCreatedDate.Checked)
+                return "Created";
+            else if (rdModifiedDate.Checked)
+                return "Modified";
+            else if (rdAccessedDate.Checked)
+                return "Accessed";
+            else
+                throw new ArgumentException("The date type is not selected.");
+        }
+        #endregion
         private void Form1_Load(object sender, EventArgs e)
         {
             dtDateOption.Format = DateTimePickerFormat.Custom;
@@ -157,7 +120,6 @@ namespace FileOrbis___File_System_Reporter
             rdMove.Enabled = false;
             rdCopy.Enabled = false;
         }
-        string selectedFileName;
         private void button1_Click(object sender, EventArgs e)
         {
             #region Select a path for scan
@@ -181,20 +143,14 @@ namespace FileOrbis___File_System_Reporter
             listBox2.Items.Clear();
             if (rdScan.Checked)
             {
+                ScanProcess scanProcess = new ScanProcess(this); // Pass the form instance
                 string selectedFolder = txtSourcePath.Text;
-
                 if (rdCreatedDate.Checked == true)
-                {
-                    ScanProcess(selectedFolder, "Created");
-                }
+                    scanProcess.ScanOperation(selectedFolder, "Created");
                 if (rdModifiedDate.Checked == true)
-                {
-                    ScanProcess(selectedFolder, "Accessed");
-                }
+                    scanProcess.ScanOperation(selectedFolder, "Accessed");
                 if (rdAccessedDate.Checked == true)
-                {
-                    ScanProcess(selectedFolder, "Modified");
-                }
+                    scanProcess.ScanOperation(selectedFolder, "Modified");
             }
 
             #endregion
@@ -202,6 +158,7 @@ namespace FileOrbis___File_System_Reporter
             #region MoveProcess
             if (rdMove.Checked)
             {
+                MoveProcess moveProcess = new MoveProcess(this);
                 if (chOverWrite.Checked)
                 {
                     try
@@ -209,9 +166,9 @@ namespace FileOrbis___File_System_Reporter
                         string sourceFolderPath = txtSourcePath.Text;
                         string destinationFolderPath = txtTargetPath.Text + "\\" + selectedFileName;
                         if (Directory.Exists(destinationFolderPath))
-                            DeleteDirectory(destinationFolderPath); // overwrite process.
+                            DeleteDirectory(destinationFolderPath);
 
-                        MoveDirectoryByDate(sourceFolderPath, destinationFolderPath, GetSelectedDateType());
+                        moveProcess.MoveDirectoryByDate(sourceFolderPath, destinationFolderPath, GetSelectedDateType());
                         MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully moved from location '" + sourceFolderPath + "' to '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (Exception ex)
@@ -226,7 +183,7 @@ namespace FileOrbis___File_System_Reporter
                         string sourceFolderPath = txtSourcePath.Text;
                         string destinationFolderPath = txtTargetPath.Text + "\\" + selectedFileName;
                         Directory.CreateDirectory(destinationFolderPath);
-                        MoveDirectoryByDate(sourceFolderPath, destinationFolderPath, GetSelectedDateType());
+                        moveProcess.MoveDirectoryByDate(sourceFolderPath, destinationFolderPath, GetSelectedDateType());
                         MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully moved from location '" + sourceFolderPath + "' to '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (Exception ex)
@@ -279,65 +236,6 @@ namespace FileOrbis___File_System_Reporter
             #endregion
         }
 
-        #region Move Directory
-        public void MoveDirectoryByDate(string sourceFolder, string targetDirectory, string dateType)
-        {
-            if (!Directory.Exists(targetDirectory))
-            {
-                Directory.CreateDirectory(targetDirectory);
-            }
-
-            string[] files = Directory.GetFiles(sourceFolder);
-            //DateTime selectedDate = dtDateOption.Value;
-
-            foreach (string file in files)
-            {
-                GetDateType(dateType, file);
-
-                if (fileDate > selectedDate)
-                {
-                    string fileName = Path.GetFileName(file);
-                    string targetFile = Path.Combine(targetDirectory, fileName);
-                    File.Move(file, targetFile);
-                }
-            }
-
-            string[] subDirectoryies = Directory.GetDirectories(sourceFolder);
-            foreach (string subDirectory in subDirectoryies)
-            {
-                string subDirectoryName = Path.GetFileName(subDirectory);
-                string[] subDirectoryFiles = Directory.GetFiles(subDirectory);
-                string targetSubDirectory = Path.Combine(targetDirectory, subDirectoryName);
-                if (subDirectoryFiles.Length >= 1)
-                {
-                    MoveDirectoryByDate(subDirectory, targetSubDirectory, dateType);
-                }
-                else
-                {
-                    if (chEmptyFolders.Checked)
-                    {
-                        MoveDirectoryByDate(subDirectory, targetSubDirectory, dateType);
-                    }
-                    else
-                        continue;
-                }
-            }
-
-            Directory.Delete(sourceFolder, recursive: true);
-        }
-
-        public string GetSelectedDateType()
-        {
-            if (rdCreatedDate.Checked)
-                return "Created";
-            else if (rdModifiedDate.Checked)
-                return "Modified";
-            else if (rdAccessedDate.Checked)
-                return "Accessed";
-            else
-                throw new ArgumentException("The date type is not selected.");
-        }
-        #endregion
         #region Copy Directory
 
         private void CopyDirectory(string sourceDir, string destinationDir, bool copyPermissions)
@@ -412,7 +310,6 @@ namespace FileOrbis___File_System_Reporter
             }
             else if (rdExcel.Checked)
             {
-                Form1 form1 = new Form1();
                 ExcelProcess excelProcess = new ExcelProcess();
                 excelProcess.SaveExcel(txtSourcePath.Text,GetSelectedDateType());
             }
