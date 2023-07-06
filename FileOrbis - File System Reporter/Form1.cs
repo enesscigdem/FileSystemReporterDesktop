@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -18,9 +19,11 @@ namespace FileOrbis___File_System_Reporter
 {
     public partial class Form1 : Form
     {
+        private List<Thread> scanThreads;
         public Form1()
         {
             InitializeComponent();
+            scanThreads = new List<Thread>();
         }
         public DateTime selectedDate, createDate, modifiedDate, accessDate, fileDate;
         public string fileName, fileDirectory, selectedFileName;
@@ -138,6 +141,7 @@ namespace FileOrbis___File_System_Reporter
         private void button3_Click(object sender, EventArgs e)
         {
             #region Scan Process 
+
             listBox1.Items.Clear();
             listBox2.Items.Clear();
             if (rdScan.Checked)
@@ -151,7 +155,46 @@ namespace FileOrbis___File_System_Reporter
                 if (rdAccessedDate.Checked == true)
                     scanProcess.ScanOperation(selectedFolder, "Modified");
             }
+            #endregion
 
+            #region threadlı scan işlemi demo 
+            //listBox1.Items.Clear();
+            //listBox2.Items.Clear();
+
+            //if (rdScan.Checked)
+            //{
+            //    int threadCount;
+            //    if (!int.TryParse(txtThread.Text, out threadCount) || threadCount <= 0)
+            //    {
+            //        MessageBox.Show("Please enter a valid thread count.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //        return;
+            //    }
+
+            //    string selectedFolder = txtSourcePath.Text;
+            //    string dateType = "";
+            //    if (rdCreatedDate.Checked)
+            //        dateType = "Created";
+            //    else if (rdModifiedDate.Checked)
+            //        dateType = "Accessed";
+            //    else if (rdAccessedDate.Checked)
+            //        dateType = "Modified";
+            //    else
+            //    {
+            //        MessageBox.Show("Please select a date type.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //        return;
+            //    }
+
+            //    for (int i = 0; i < threadCount; i++)
+            //    {
+            //        Thread thread = new Thread(() =>
+            //        {
+            //            ScanProcess scanProcess = new ScanProcess(this);
+            //            scanProcess.ScanOperation(selectedFolder, dateType);
+            //        });
+            //        scanThreads.Add(thread);
+            //        thread.Start();
+            //    }
+            //}
             #endregion
 
             #region MoveProcess
@@ -182,7 +225,7 @@ namespace FileOrbis___File_System_Reporter
             else if (rdExcel.Checked)
             {
                 ExcelProcess excelProcess = new ExcelProcess();
-                excelProcess.SaveExcel(txtSourcePath.Text, GetSelectedDateType());
+                excelProcess.SaveExcel(txtSourcePath.Text, GetSelectedDateType(),selectedDate);
             }
             else
             {

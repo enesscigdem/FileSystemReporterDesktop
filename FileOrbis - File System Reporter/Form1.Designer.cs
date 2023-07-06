@@ -36,7 +36,7 @@ namespace FileOrbis___File_System_Reporter
             this.dtDateOption = new System.Windows.Forms.DateTimePicker();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.txtThread = new System.Windows.Forms.TextBox();
             this.rdCopy = new System.Windows.Forms.RadioButton();
             this.rdMove = new System.Windows.Forms.RadioButton();
             this.rdScan = new System.Windows.Forms.RadioButton();
@@ -141,13 +141,13 @@ namespace FileOrbis___File_System_Reporter
             this.label4.TabIndex = 10;
             this.label4.Text = "Thread Count";
             // 
-            // textBox2
+            // txtThread
             // 
-            this.textBox2.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.textBox2.Location = new System.Drawing.Point(714, 130);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(164, 28);
-            this.textBox2.TabIndex = 11;
+            this.txtThread.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.txtThread.Location = new System.Drawing.Point(714, 130);
+            this.txtThread.Name = "txtThread";
+            this.txtThread.Size = new System.Drawing.Size(164, 28);
+            this.txtThread.TabIndex = 11;
             // 
             // rdCopy
             // 
@@ -522,7 +522,7 @@ namespace FileOrbis___File_System_Reporter
             this.Controls.Add(this.rdMove);
             this.Controls.Add(this.rdScan);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.txtThread);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.dtDateOption);
@@ -551,10 +551,9 @@ namespace FileOrbis___File_System_Reporter
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnSourcePath;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.DateTimePicker dtDateOption;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox txtThread;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button btnTargetPath;
         private System.Windows.Forms.Label label6;
@@ -588,6 +587,7 @@ namespace FileOrbis___File_System_Reporter
         public System.Windows.Forms.RadioButton rdScan;
         public System.Windows.Forms.TextBox txtSourcePath;
         public System.Windows.Forms.TextBox txtTargetPath;
+        public System.Windows.Forms.DateTimePicker dtDateOption;
     }
 }
 

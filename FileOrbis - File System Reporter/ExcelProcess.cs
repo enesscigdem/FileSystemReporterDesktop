@@ -29,7 +29,7 @@ namespace FileOrbis___File_System_Reporter
             worksheet.Cell(row, 4).Value = accessDate.ToString();
             worksheet.Cell(row, 5).Value = fileSize.ToString();
         }
-        public void ExcelOperations(string selectedFolder, string excelfileName, string dateType)
+        public void ExcelOperations(string selectedFolder, string excelfileName, string dateType,DateTime selectedDate)
         {
             string[] files = Directory.GetFiles(selectedFolder, "*", SearchOption.AllDirectories);
             string selectedExcelFileName = string.Format(excelfileName + "{0:dd-MM-yyyy_HH.mm.ss}.xlsx", DateTime.Now);
@@ -41,18 +41,18 @@ namespace FileOrbis___File_System_Reporter
                 ExcelAddHeaders(workbook.Worksheet(worksheetName));
 
                 int row = 2;
-
+                // paralel for each 
                 foreach (string file in files)
                 {
                     frm.Fileİnformations(file);
                     frm.GetDateType(dateType, file);
 
-                    if (frm.fileDate > frm.selectedDate && excelfileName == "afterDate")
+                    if (frm.fileDate >selectedDate && excelfileName == "afterDate")
                     {
                         ExcelAddFileData(workbook.Worksheet(worksheetName), row, $"{frm.fileDirectory}\\{frm.fileName}", frm.createDate, frm.modifiedDate, frm.accessDate, frm.fileSize);
                         row++;
                     }
-                    else if (frm.fileDate < frm.selectedDate && excelfileName == "beforeDate")
+                    else if (frm.fileDate < selectedDate && excelfileName == "beforeDate")
                     {
                         ExcelAddFileData(workbook.Worksheet(worksheetName), row, $"{frm.fileDirectory}\\{frm.fileName}", frm.createDate, frm.modifiedDate, frm.accessDate, frm.fileSize);
                         row++;
@@ -74,7 +74,7 @@ namespace FileOrbis___File_System_Reporter
             }
         }
 
-        public void SaveExcel(string sourcePath, string dateType)
+        public void SaveExcel(string sourcePath, string dateType,DateTime selectedDate)
         {
             string selectedFolder = sourcePath;
 
@@ -84,8 +84,8 @@ namespace FileOrbis___File_System_Reporter
                 return;
             }
 
-            ExcelOperations(selectedFolder, "afterDate", dateType);
-            ExcelOperations(selectedFolder, "beforeDate", dateType);
+            ExcelOperations(selectedFolder, "afterDate", dateType, selectedDate);
+            ExcelOperations(selectedFolder, "beforeDate", dateType, selectedDate);
         }
     }
 }
