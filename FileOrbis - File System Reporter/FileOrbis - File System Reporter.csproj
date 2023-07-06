@@ -68,14 +68,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CopyProcess.cs" />
+    <Compile Include="CreationDateOptions.cs" />
     <Compile Include="DeleteProcess.cs" />
     <Compile Include="ExcelProcess.cs" />
+    <Compile Include="Fileİnformation.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="IDateOptions.cs" />
     <Compile Include="MoveProcess.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

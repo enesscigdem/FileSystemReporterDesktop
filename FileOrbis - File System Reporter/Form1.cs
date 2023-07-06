@@ -19,14 +19,16 @@ namespace FileOrbis___File_System_Reporter
 {
     public partial class Form1 : Form
     {
+        private ScanProcess scanProcess;
         private List<Thread> scanThreads;
         public Form1()
         {
             InitializeComponent();
             scanThreads = new List<Thread>();
+            scanProcess = new ScanProcess(this);
         }
         public DateTime selectedDate, createDate, modifiedDate, accessDate, fileDate;
-        public string fileName, fileDirectory, selectedFileName;
+        public string fileName, fileDirectory, selectedFileName, checkedDate = "Created";
         public long fileSize;
         public void GetDateType(string dateType, string file)
         {
@@ -102,19 +104,6 @@ namespace FileOrbis___File_System_Reporter
         }
         #endregion
 
-        #region Get Selected Data Type
-        public string GetSelectedDateType()
-        {
-            if (rdCreatedDate.Checked)
-                return "Created";
-            else if (rdModifiedDate.Checked)
-                return "Modified";
-            else if (rdAccessedDate.Checked)
-                return "Accessed";
-            else
-                throw new ArgumentException("The date type is not selected.");
-        }
-        #endregion
         private void Form1_Load(object sender, EventArgs e)
         {
             dtDateOption.Format = DateTimePickerFormat.Custom;
@@ -138,22 +127,43 @@ namespace FileOrbis___File_System_Reporter
             }
             #endregion
         }
+
+        #region Get Selected Data Type
+        private void rdCreatedDate_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rdCreatedDate.Checked)
+                checkedDate = "Created";
+        }
+
+        private void rdModifiedDate_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rdModifiedDate.Checked)
+                checkedDate = "Modified";
+        }
+        private void rdAccessedDate_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rdAccessedDate.Checked)
+                checkedDate = "Accessed";
+        }
+        #endregion
+
         private void button3_Click(object sender, EventArgs e)
         {
             #region Scan Process 
 
+            selectedDate = dtDateOption.Value;
             listBox1.Items.Clear();
             listBox2.Items.Clear();
             if (rdScan.Checked)
             {
-                ScanProcess scanProcess = new ScanProcess(this); // Pass the form instance
+                ScanProcess scanProcess = new ScanProcess(this);
                 string selectedFolder = txtSourcePath.Text;
                 if (rdCreatedDate.Checked == true)
-                    scanProcess.ScanOperation(selectedFolder, "Created");
+                    scanProcess.ScanOperation(selectedFolder, selectedDate, checkedDate,fileDate);
                 if (rdModifiedDate.Checked == true)
-                    scanProcess.ScanOperation(selectedFolder, "Accessed");
+                    scanProcess.ScanOperation(selectedFolder, selectedDate, checkedDate,fileDate);
                 if (rdAccessedDate.Checked == true)
-                    scanProcess.ScanOperation(selectedFolder, "Modified");
+                    scanProcess.ScanOperation(selectedFolder, selectedDate, checkedDate, fileDate);
             }
             #endregion
 
@@ -202,7 +212,7 @@ namespace FileOrbis___File_System_Reporter
             {
                 MoveProcess moveProcess = new MoveProcess(this);
                 DeleteProcess deleteProcess = new DeleteProcess(this);
-                moveProcess.MoveOperation(GetSelectedDateType());
+                moveProcess.MoveOperation(checkedDate, rdMove.Checked, chOverWrite.Checked, txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chEmptyFolders.Checked);
             }
             #endregion
 
@@ -210,7 +220,7 @@ namespace FileOrbis___File_System_Reporter
             if (rdCopy.Checked)
             {
                 CopyProcess copyProcess = new CopyProcess(this);
-                copyProcess.CopyOperation();
+                copyProcess.CopyOperation(txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chOverWrite.Checked, chNtfsPermission.Checked,rdCopy.Checked);
             }
             #endregion
         }
@@ -225,7 +235,7 @@ namespace FileOrbis___File_System_Reporter
             else if (rdExcel.Checked)
             {
                 ExcelProcess excelProcess = new ExcelProcess();
-                excelProcess.SaveExcel(txtSourcePath.Text, GetSelectedDateType(),selectedDate);
+                excelProcess.SaveExcel(txtSourcePath.Text, checkedDate, selectedDate, fileDate, fileDirectory, fileName, createDate, modifiedDate, accessDate, fileSize);
             }
             else
             {

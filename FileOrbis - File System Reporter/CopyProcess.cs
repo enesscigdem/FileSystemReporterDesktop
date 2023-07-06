@@ -16,17 +16,17 @@ namespace FileOrbis___File_System_Reporter
         {
             frm = form;
         }
-        public void CopyOperation()
+        public void CopyOperation(string sourcePath, string targetPath,string selectedFileName,bool OverWriteCheck, bool NtfsPermissionCheck,bool rdCopyCheck)
         {
             DeleteProcess deleteProcess = new DeleteProcess(frm);
-            if (frm.rdCopy.Checked)
+            if (rdCopyCheck)
             {
                 try
                 {
-                    bool copyPermissions = frm.chNtfsPermission.Checked;
-                    string sourceFolderPath = frm.txtSourcePath.Text;
-                    string destinationFolderPath = frm.txtTargetPath.Text + "\\" + frm.selectedFileName;
-                    if (frm.chOverWrite.Checked)
+                    bool copyPermissions = NtfsPermissionCheck;
+                    string sourceFolderPath = sourcePath;
+                    string destinationFolderPath = targetPath+ "\\" + selectedFileName;
+                    if (OverWriteCheck)
                         deleteProcess.DeleteDirectory(destinationFolderPath); // overwrite işlemi .
                     CopyDirectory(sourceFolderPath, destinationFolderPath, copyPermissions);
 

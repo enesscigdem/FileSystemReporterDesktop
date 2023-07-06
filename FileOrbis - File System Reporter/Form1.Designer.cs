@@ -381,6 +381,7 @@ namespace FileOrbis___File_System_Reporter
             this.rdAccessedDate.TabStop = true;
             this.rdAccessedDate.Text = "Accessed Date";
             this.rdAccessedDate.UseVisualStyleBackColor = true;
+            this.rdAccessedDate.CheckedChanged += new System.EventHandler(this.rdAccessedDate_CheckedChanged);
             // 
             // rdModifiedDate
             // 
@@ -393,6 +394,7 @@ namespace FileOrbis___File_System_Reporter
             this.rdModifiedDate.TabStop = true;
             this.rdModifiedDate.Text = "Modified Date";
             this.rdModifiedDate.UseVisualStyleBackColor = true;
+            this.rdModifiedDate.CheckedChanged += new System.EventHandler(this.rdModifiedDate_CheckedChanged);
             // 
             // rdCreatedDate
             // 
@@ -405,6 +407,7 @@ namespace FileOrbis___File_System_Reporter
             this.rdCreatedDate.TabStop = true;
             this.rdCreatedDate.Text = "Created Date";
             this.rdCreatedDate.UseVisualStyleBackColor = true;
+            this.rdCreatedDate.CheckedChanged += new System.EventHandler(this.rdCreatedDate_CheckedChanged);
             // 
             // listBox1
             // 

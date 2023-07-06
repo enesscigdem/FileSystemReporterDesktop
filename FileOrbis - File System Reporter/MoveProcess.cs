@@ -15,21 +15,21 @@ namespace FileOrbis___File_System_Reporter
         {
             frm = form;
         }
-        public void MoveOperation(string dateType)
+        public void MoveOperation(string dateType,bool rdMoveCheck,bool chOverWriteCheck,string sourcePath,string targetPath,string selectedFileName,bool chEmptyFoldersCheck)
         {
-            if (frm.rdMove.Checked)
+            if (rdMoveCheck)
             {
                 DeleteProcess deleteProcess = new DeleteProcess(frm);
                 try
                 {
-                    string sourceFolderPath = frm.txtSourcePath.Text;
-                    string destinationFolderPath = frm.txtTargetPath.Text + "\\" + frm.selectedFileName;
-                    if (frm.chOverWrite.Checked)
+                    string sourceFolderPath = sourcePath;
+                    string destinationFolderPath = targetPath + "\\" + selectedFileName;
+                    if (chOverWriteCheck)
                     {
                         if (Directory.Exists(destinationFolderPath))
                             deleteProcess.DeleteDirectory(destinationFolderPath);
                     }
-                    MoveDirectoryByDate(sourceFolderPath, destinationFolderPath, dateType);
+                    MoveDirectoryByDate(sourceFolderPath, destinationFolderPath, dateType,chEmptyFoldersCheck);
                     MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully moved from location '" + sourceFolderPath + "' to '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
@@ -39,7 +39,7 @@ namespace FileOrbis___File_System_Reporter
             }
         }
 
-        public void MoveDirectoryByDate(string sourceFolder, string targetDirectory, string dateType)
+        public void MoveDirectoryByDate(string sourceFolder, string targetDirectory, string dateType,bool chEmptyFoldersCheck)
         {
             if (!Directory.Exists(targetDirectory))
             {
@@ -68,13 +68,13 @@ namespace FileOrbis___File_System_Reporter
                 string targetSubDirectory = Path.Combine(targetDirectory, subDirectoryName);
                 if (subDirectoryFiles.Length >= 1)
                 {
-                    MoveDirectoryByDate(subDirectory, targetSubDirectory, dateType);
+                    MoveDirectoryByDate(subDirectory, targetSubDirectory, dateType, chEmptyFoldersCheck);
                 }
                 else
                 {
-                    if (frm.chEmptyFolders.Checked)
+                    if (chEmptyFoldersCheck)
                     {
-                        MoveDirectoryByDate(subDirectory, targetSubDirectory, dateType);
+                        MoveDirectoryByDate(subDirectory, targetSubDirectory, dateType, chEmptyFoldersCheck);
                     }
                     else
                         continue;
