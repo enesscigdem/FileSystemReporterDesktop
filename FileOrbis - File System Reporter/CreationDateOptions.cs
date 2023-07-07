@@ -9,8 +9,6 @@ namespace FileOrbis___File_System_Reporter
 {
     public class CreationDateOptions : IDateOptions
     {
-        public DateTime dateTime { get; set; }
-
         public DateTime SetDate(string file)
         {
             return File.GetCreationTime(file);

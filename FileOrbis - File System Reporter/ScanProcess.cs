@@ -20,26 +20,24 @@ namespace FileOrbis___File_System_Reporter
     public delegate void ProgressBarCallBack();
     public class ScanProcess : Fileİnformation
     {
-        public FileScannedCallback FileScannedCallback { get; set; }
-        public lblScannedMessage lblScannedMessage { get; set; }
-        public lblTotalTımeCallBack lblTotalTımeCallBack { get; set; }
-        public lblPathMessage lblPathMessage { get; set; }
-        public ProgressBarCallBack ProgressBarCallBack { get; set; }
-        ScanProcess scanProcess;
-        private static List<Fileİnformation> fileInformations = new List<Fileİnformation>();
         public ScanProcess(Form1 form)
         {
             frm = form;
             fileInformations = new List<Fileİnformation>();
         }
         private Form1 frm;
-
-        public List<Fileİnformation> GetFileInformations()
-        {
-            return fileInformations;
-        }
         string WhListBox;
-        public void ScanFiles(string[] files, DateTime dateTime, string checkedDate, DateTime fileDate)
+        int processedFiles, totalFiles;
+        Stopwatch stopwatch;
+        public FileScannedCallback FileScannedCallback { get; set; }
+        public lblScannedMessage lblScannedMessage { get; set; }
+        public lblTotalTımeCallBack lblTotalTımeCallBack { get; set; }
+        public lblPathMessage lblPathMessage { get; set; }
+        public ProgressBarCallBack ProgressBarCallBack { get; set; }
+        ScanProcess scanProcess;
+        private  List<Fileİnformation> fileInformations = new List<Fileİnformation>();
+
+        public List<Fileİnformation> ScanFiles(string[] files, DateTime dateTime, string checkedDate, DateTime fileDate)
         {
             foreach (string file in files)
             {
@@ -53,10 +51,13 @@ namespace FileOrbis___File_System_Reporter
                 fileInfo.FileCreateDate = dateOptionsCr.SetDate(file);
                 fileInfo.FileModifiedDate = dateOptionsMd.SetDate(file);
                 fileInfo.FileAccessDate = dateOptionsAc.SetDate(file);
+                FileInfo fileInformation = new FileInfo(file);
+                fileInfo.FileSize = fileInformation.Length;
+
 
                 fileInformations.Add(fileInfo);
 
-                frm.GetDateType(checkedDate, file);
+                frm.GetDateType(checkedDate, file); // bu farklı bir class olsun.
 
                 if (fileDate > dateTime)
                 {
@@ -73,7 +74,7 @@ namespace FileOrbis___File_System_Reporter
                 processedFiles++;
 
                 ProgressBarCallBack?.Invoke(); // call back
-
+                
                 lblScannedMessage?.Invoke();
 
                 lblPathMessage?.Invoke(fileInfo.FilePath);
@@ -83,30 +84,9 @@ namespace FileOrbis___File_System_Reporter
                 lblTotalTımeCallBack?.Invoke();
                 frm.IsItDoneScan();
             }
+            return fileInformations;
         }
-        //public void ShowFileInformations()
-        //{
-        //    if (fileInformations.Count > 0)
-        //    {
-        //        StringBuilder message = new StringBuilder();
-        //        foreach (Fileİnformation fileInfo in fileInformations)
-        //        {
-        //            message.AppendLine($"File Path: {fileInfo.FilePath}");
-        //            message.AppendLine($"File Name: {fileInfo.FileName}");
-        //            message.AppendLine($"File Create Date: {fileInfo.FileCreateDate}");
-        //            message.AppendLine();
-        //        }
-
-        //        MessageBox.Show(message.ToString(), "File Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        //    }
-        //    else
-        //    {
-        //        MessageBox.Show("No file information available.", "File Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        //    }
-        //}
-        int processedFiles, totalFiles;
-        Stopwatch stopwatch;
-        public void ScanOperation(string selectedFolder, DateTime dateTime, string checkedDate, DateTime fileDate)
+        public List<Fileİnformation> ScanOperation(string selectedFolder, DateTime dateTime, string checkedDate, DateTime fileDate)
         {
             if (!string.IsNullOrEmpty(selectedFolder) && Directory.Exists(selectedFolder))
             {
@@ -123,12 +103,14 @@ namespace FileOrbis___File_System_Reporter
                 lblPathMessage = UpdateLblPath;
                 lblTotalTımeCallBack = UpdateLblTotalTıme;
                 ProgressBarCallBack = UpdateProgressBar;
-                ScanFiles(files, dateTime, checkedDate, fileDate);
+                var fileList= ScanFiles(files, dateTime, checkedDate, fileDate);
                 stopwatch.Stop();
+                return fileList;
             }
             else
             {
                 MessageBox.Show("Please select a valid folder.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return null;
             }
         }
         private void AddFileToListBox(string filePath, string fileName, DateTime fileCreateDate)

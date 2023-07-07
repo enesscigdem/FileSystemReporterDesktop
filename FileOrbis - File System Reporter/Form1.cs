@@ -30,6 +30,7 @@ namespace FileOrbis___File_System_Reporter
         public DateTime selectedDate, createDate, modifiedDate, accessDate, fileDate;
         public string fileName, fileDirectory, selectedFileName, checkedDate = "Created";
         public long fileSize;
+        public List<Fileİnformation> informationList;
         public void GetDateType(string dateType, string file)
         {
             //Move Directory and Excell Process functions use this func.
@@ -158,12 +159,11 @@ namespace FileOrbis___File_System_Reporter
             {
                 ScanProcess scanProcess = new ScanProcess(this);
                 string selectedFolder = txtSourcePath.Text;
-                if (rdCreatedDate.Checked == true)
-                    scanProcess.ScanOperation(selectedFolder, selectedDate, checkedDate,fileDate);
-                if (rdModifiedDate.Checked == true)
-                    scanProcess.ScanOperation(selectedFolder, selectedDate, checkedDate,fileDate);
-                if (rdAccessedDate.Checked == true)
-                    scanProcess.ScanOperation(selectedFolder, selectedDate, checkedDate, fileDate);
+                var tempList = scanProcess.ScanOperation(selectedFolder, selectedDate, checkedDate, fileDate);
+                if (tempList != null)
+                {
+                    informationList = tempList;
+                }
             }
             #endregion
 
@@ -212,7 +212,7 @@ namespace FileOrbis___File_System_Reporter
             {
                 MoveProcess moveProcess = new MoveProcess(this);
                 DeleteProcess deleteProcess = new DeleteProcess(this);
-                moveProcess.MoveOperation(checkedDate, rdMove.Checked, chOverWrite.Checked, txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chEmptyFolders.Checked,fileDate,selectedDate);
+                moveProcess.MoveOperation(checkedDate, rdMove.Checked, chOverWrite.Checked, txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chEmptyFolders.Checked, fileDate, selectedDate);
             }
             #endregion
 
@@ -220,7 +220,7 @@ namespace FileOrbis___File_System_Reporter
             if (rdCopy.Checked)
             {
                 CopyProcess copyProcess = new CopyProcess(this);
-                copyProcess.CopyOperation(txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chOverWrite.Checked, chNtfsPermission.Checked,rdCopy.Checked);
+                copyProcess.CopyOperation(txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chOverWrite.Checked, chNtfsPermission.Checked, rdCopy.Checked);
             }
             #endregion
         }
@@ -230,7 +230,8 @@ namespace FileOrbis___File_System_Reporter
             if (rdTxt.Checked)
             {
                 TxtProcess txtProcess = new TxtProcess();
-                txtProcess.SaveTxt(txtSourcePath.Text, fileDirectory, fileName, createDate, modifiedDate, accessDate, fileSize);
+
+                txtProcess.SaveTxt(txtSourcePath.Text, fileDirectory, fileName, createDate, modifiedDate, accessDate, fileSize, informationList);
             }
             else if (rdExcel.Checked)
             {

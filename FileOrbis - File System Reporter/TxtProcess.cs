@@ -10,7 +10,7 @@ namespace FileOrbis___File_System_Reporter
 {
     public class TxtProcess
     {
-        public void SaveTxt(string sourcepath,string fileDirectory,string fileName, DateTime createDate, DateTime modifiedDate, DateTime accessDate, long fileSize)
+        public void SaveTxt(string sourcepath, string fileDirectory, string fileName, DateTime createDate, DateTime modifiedDate, DateTime accessDate, long fileSize, List<Fileİnformation> fileInformations)
         {
             string selectedFolder = sourcepath;
 
@@ -23,16 +23,13 @@ namespace FileOrbis___File_System_Reporter
 
                 using (StreamWriter sw = new StreamWriter(textFilePath))
                 {
-                    foreach (string file in files)
+                    foreach (Fileİnformation fileInfo in fileInformations)
                     {
-                        Form1 form1 = new Form1();
-                        form1.Fileİnformations(file);
-
-                        string item = $"{fileDirectory + "\\" + fileName}";
-                        item += $"  Create Date: {createDate}";
-                        item += $"  Modified Date: {modifiedDate}";
-                        item += $"  Access Date: {accessDate}";
-                        item += $"\n  File Size (bytes): {fileSize}";
+                        string item = $"{fileInfo.FilePath + "\\" + fileInfo.FileName}";
+                        item += $"  Create Date: {fileInfo.FileCreateDate}";
+                        item += $"  Modified Date: {fileInfo.FileModifiedDate}";
+                        item += $"  Access Date: {fileInfo.FileAccessDate}";
+                        item += $"\n  File Size (bytes): {fileInfo.FileSize}";
 
                         sw.WriteLine(item);
                     }
