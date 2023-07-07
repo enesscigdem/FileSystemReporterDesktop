@@ -15,7 +15,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 namespace FileOrbis___File_System_Reporter
 {
     public delegate void FileScannedCallback(string filePath, string fileName, DateTime fileCreateDate);
-    public delegate void lblScannedMessage();
+    public delegate void lblScannedMessage(int processedFiles, int totalFiles);
     public delegate void lblTotalTımeCallBack();
     public delegate void lblPathMessage(string fileInfo);
     public delegate void ProgressBarCallBack();
@@ -77,7 +77,7 @@ namespace FileOrbis___File_System_Reporter
 
                 ProgressBarCallBack?.Invoke(); // call back
 
-                lblScannedMessage?.Invoke();
+                lblScannedMessage?.Invoke(processedFiles,totalFiles);
 
                 lblPathMessage?.Invoke(fileInfo.FilePath);
 
@@ -100,7 +100,7 @@ namespace FileOrbis___File_System_Reporter
                 stopwatch.Start();
                 scanProcess = this;
                 FileScannedCallback = AddFileToListBox;
-                lblScannedMessage = UpdateLblScan;
+                //lblScannedMessage = UpdateLblScan;
                 lblPathMessage = UpdateLblPath;
                 lblTotalTımeCallBack = UpdateLblTotalTıme;
                 ProgressBarCallBack = UpdateProgressBar;
@@ -126,7 +126,7 @@ namespace FileOrbis___File_System_Reporter
             else
                 frm.listBox2.Items.Add(filePath + fileName + fileCreateDate);
         }
-        private void UpdateLblScan()
+        public void UpdateLblScan()
         {
             if (frm.InvokeRequired)
             {
@@ -135,7 +135,7 @@ namespace FileOrbis___File_System_Reporter
             }
             frm.lblScannedItem.Text = $"{processedFiles} / {totalFiles} items were scanned.";
         }
-        private void UpdateLblPath(string fileInfo)
+        public void UpdateLblPath(string fileInfo)
         {
             if (frm.InvokeRequired)
             {
@@ -144,7 +144,7 @@ namespace FileOrbis___File_System_Reporter
             }
             frm.lblPath.Text = fileInfo;
         }
-        private void UpdateLblTotalTıme()
+        public void UpdateLblTotalTıme()
         {
             if (frm.InvokeRequired)
             {
@@ -153,7 +153,7 @@ namespace FileOrbis___File_System_Reporter
             }
             frm.lblTotalTime.Text = $"Scan was completed. Total elapsed time: {stopwatch.Elapsed.TotalSeconds} seconds";
         }
-        private void UpdateProgressBar()
+        public void UpdateProgressBar()
         {
             if (frm.InvokeRequired)
             {

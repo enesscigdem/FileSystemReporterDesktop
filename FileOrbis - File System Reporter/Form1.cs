@@ -130,6 +130,20 @@ namespace FileOrbis___File_System_Reporter
         }
         #endregion
 
+
+        public void UpdateLblScan(int processedFiles, int totalFiles)
+        {
+            if (lblScannedItem.InvokeRequired)
+            {
+                void action() {
+                    UpdateLblScan(processedFiles,totalFiles);
+                }
+                lblScannedItem.Invoke((Action)action);
+                return;
+            }
+            lblScannedItem.Text = $"{processedFiles} / {totalFiles} items were scanned.";
+            lblScannedItem.Update();
+        }
         private void button3_Click(object sender, EventArgs e)
         {
             #region Scan Process 
@@ -139,7 +153,9 @@ namespace FileOrbis___File_System_Reporter
             listBox2.Items.Clear();
             if (rdScan.Checked)
             {
-                ScanProcess scanProcess = new ScanProcess(this);
+                ScanProcess scanProcess = new ScanProcess(this);// bunun invokunu ordaki fonksiyona eşitliyosun frm yi kullanmana gerek kalmıyor
+                scanProcess.lblScannedMessage = new lblScannedMessage(UpdateLblScan);
+                //scanProcess.UpdateLblPath = UpdateLblTotalTıme;
                 string selectedFolder = txtSourcePath.Text;
                 var tempList = scanProcess.ScanOperation(selectedFolder, selectedDate, checkedDate, fileDate);
                 if (tempList != null)
@@ -195,7 +211,7 @@ namespace FileOrbis___File_System_Reporter
             {
                 MoveProcess moveProcess = new MoveProcess();
                 DeleteProcess deleteProcess = new DeleteProcess();
-                moveProcess.MoveOperation(checkedDate, rdMove.Checked, chOverWrite.Checked, txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chEmptyFolders.Checked, fileDate, selectedDate);
+                moveProcess.MoveOperation(checkedDate, rdMove.Checked, chOverWrite.Checked, txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chEmptyFolders.Checked, fileDate, selectedDate, informationList);
             }
             #endregion
 
@@ -203,7 +219,7 @@ namespace FileOrbis___File_System_Reporter
             if (rdCopy.Checked)
             {
                 CopyProcess copyProcess = new CopyProcess();
-                copyProcess.CopyOperation(txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chOverWrite.Checked, chNtfsPermission.Checked, rdCopy.Checked);
+                copyProcess.CopyOperation(txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chOverWrite.Checked, chNtfsPermission.Checked, rdCopy.Checked, informationList);
             }
             #endregion
         }

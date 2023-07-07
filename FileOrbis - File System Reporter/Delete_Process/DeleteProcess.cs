@@ -9,20 +9,20 @@ namespace FileOrbis___File_System_Reporter
 {
     public class DeleteProcess
     {
-        public void DeleteDirectory(string path)
+        public void DeleteDirectory(string path, List<Fileİnformation> fileInformations)
         {
             string[] files = Directory.GetFiles(path);
             string[] directories = Directory.GetDirectories(path);
 
-            foreach (string file in files)
+            foreach (Fileİnformation fileInfo in fileInformations)
             {
-                File.SetAttributes(file, FileAttributes.Normal);
-                File.Delete(file);
+                File.SetAttributes(fileInfo.FilePath, FileAttributes.Normal);
+                File.Delete(fileInfo.FilePath);
             }
 
             foreach (string directory in directories)
             {
-                DeleteDirectory(directory);
+                DeleteDirectory(directory, fileInformations);
             }
 
             Directory.Delete(path, false);

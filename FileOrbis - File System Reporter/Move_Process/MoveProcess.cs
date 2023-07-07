@@ -12,7 +12,7 @@ namespace FileOrbis___File_System_Reporter
     public class MoveProcess
     {
         DateType dt = new DateType();
-        public void MoveOperation(string dateType,bool rdMoveCheck,bool chOverWriteCheck,string sourcePath,string targetPath,string selectedFileName,bool chEmptyFoldersCheck,DateTime fileDate,DateTime selectedDate)
+        public void MoveOperation(string dateType, bool rdMoveCheck, bool chOverWriteCheck, string sourcePath, string targetPath, string selectedFileName, bool chEmptyFoldersCheck, DateTime fileDate, DateTime selectedDate, List<Fileİnformation> fileInformations)
         {
             if (rdMoveCheck)
             {
@@ -24,9 +24,9 @@ namespace FileOrbis___File_System_Reporter
                     if (chOverWriteCheck)
                     {
                         if (Directory.Exists(destinationFolderPath))
-                            deleteProcess.DeleteDirectory(destinationFolderPath);
+                            deleteProcess.DeleteDirectory(destinationFolderPath, fileInformations);
                     }
-                    MoveDirectoryByDate(sourceFolderPath, destinationFolderPath, dateType,chEmptyFoldersCheck,fileDate,selectedDate);
+                    MoveDirectoryByDate(sourceFolderPath, destinationFolderPath, dateType, chEmptyFoldersCheck, fileDate, selectedDate, fileInformations);
                     MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully moved from location '" + sourceFolderPath + "' to '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
@@ -36,7 +36,7 @@ namespace FileOrbis___File_System_Reporter
             }
         }
 
-        public void MoveDirectoryByDate(string sourceFolder, string targetDirectory, string dateType,bool chEmptyFoldersCheck,DateTime fileDate, DateTime selectedDate)
+        public void MoveDirectoryByDate(string sourceFolder, string targetDirectory, string dateType, bool chEmptyFoldersCheck, DateTime fileDate, DateTime selectedDate, List<Fileİnformation> fileInformations)
         {
             if (!Directory.Exists(targetDirectory))
             {
@@ -45,7 +45,7 @@ namespace FileOrbis___File_System_Reporter
 
             string[] files = Directory.GetFiles(sourceFolder);
 
-            foreach (string file in files)
+            foreach (string file in files) 
             {
                 fileDate = dt.GetDateType(dateType, file);
 
@@ -65,13 +65,13 @@ namespace FileOrbis___File_System_Reporter
                 string targetSubDirectory = Path.Combine(targetDirectory, subDirectoryName);
                 if (subDirectoryFiles.Length >= 1)
                 {
-                    MoveDirectoryByDate(subDirectory, targetSubDirectory, dateType, chEmptyFoldersCheck,fileDate,selectedDate);
+                    MoveDirectoryByDate(subDirectory, targetSubDirectory, dateType, chEmptyFoldersCheck, fileDate, selectedDate, fileInformations);
                 }
                 else
                 {
                     if (chEmptyFoldersCheck)
                     {
-                        MoveDirectoryByDate(subDirectory, targetSubDirectory, dateType, chEmptyFoldersCheck, fileDate, selectedDate);
+                        MoveDirectoryByDate(subDirectory, targetSubDirectory, dateType, chEmptyFoldersCheck, fileDate, selectedDate, fileInformations);
                     }
                     else
                         continue;

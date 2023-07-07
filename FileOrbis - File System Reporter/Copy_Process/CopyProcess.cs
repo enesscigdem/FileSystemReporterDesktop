@@ -11,7 +11,7 @@ namespace FileOrbis___File_System_Reporter
 {
     public class CopyProcess
     {
-        public void CopyOperation(string sourcePath, string targetPath,string selectedFileName,bool OverWriteCheck, bool NtfsPermissionCheck,bool rdCopyCheck)
+        public void CopyOperation(string sourcePath, string targetPath,string selectedFileName,bool OverWriteCheck, bool NtfsPermissionCheck,bool rdCopyCheck, List<Fileİnformation> fileInformations)
         {
             DeleteProcess deleteProcess = new DeleteProcess();
             if (rdCopyCheck)
@@ -22,8 +22,8 @@ namespace FileOrbis___File_System_Reporter
                     string sourceFolderPath = sourcePath;
                     string destinationFolderPath = targetPath+ "\\" + selectedFileName;
                     if (OverWriteCheck)
-                        deleteProcess.DeleteDirectory(destinationFolderPath); // overwrite işlemi .
-                    CopyDirectory(sourceFolderPath, destinationFolderPath, copyPermissions);
+                        deleteProcess.DeleteDirectory(destinationFolderPath, fileInformations); // overwrite işlemi .
+                    CopyDirectory(sourceFolderPath, destinationFolderPath, copyPermissions,fileInformations);
 
                     MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully copied to the location '" + destinationFolderPath + "' and overwritten.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -33,7 +33,7 @@ namespace FileOrbis___File_System_Reporter
                 }
             }
         }
-        public void CopyDirectory(string sourceDir, string destinationDir, bool copyPermissions)
+        public void CopyDirectory(string sourceDir, string destinationDir, bool copyPermissions, List<Fileİnformation> fileInformations)
         {
             if (!Directory.Exists(destinationDir))
             {
@@ -61,7 +61,7 @@ namespace FileOrbis___File_System_Reporter
             {
                 string dirName = Path.GetFileName(subDir);
                 string destSubDir = Path.Combine(destinationDir, dirName);
-                CopyDirectory(subDir, destSubDir, copyPermissions);
+                CopyDirectory(subDir, destSubDir, copyPermissions,fileInformations);
 
                 if (copyPermissions)
                 {
