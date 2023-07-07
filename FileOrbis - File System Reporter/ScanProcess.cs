@@ -15,12 +15,16 @@ namespace FileOrbis___File_System_Reporter
 {
     public delegate void FileScannedCallback(string filePath, string fileName, DateTime fileCreateDate);
     public delegate void lblScannedMessage();
+    public delegate void lblTotalTımeCallBack();
     public delegate void lblPathMessage(string fileInfo);
+    public delegate void ProgressBarCallBack();
     public class ScanProcess : Fileİnformation
     {
         public FileScannedCallback FileScannedCallback { get; set; }
         public lblScannedMessage lblScannedMessage { get; set; }
+        public lblTotalTımeCallBack lblTotalTımeCallBack { get; set; }
         public lblPathMessage lblPathMessage { get; set; }
+        public ProgressBarCallBack ProgressBarCallBack { get; set; }
         ScanProcess scanProcess;
         private static List<Fileİnformation> fileInformations = new List<Fileİnformation>();
         public ScanProcess(Form1 form)
@@ -39,13 +43,16 @@ namespace FileOrbis___File_System_Reporter
         {
             foreach (string file in files)
             {
-                IDateOptions dateOptions = new CreationDateOptions();
+                IDateOptions dateOptionsCr = new CreationDateOptions();
+                IDateOptions dateOptionsMd = new ModifiedDateOptions();
+                IDateOptions dateOptionsAc = new AccessDateOptions();
+
                 Fileİnformation fileInfo = new Fileİnformation();
                 fileInfo.FilePath = file;
                 fileInfo.FileName = Path.GetFileName(file);
-                fileInfo.FileCreateDate = dateOptions.GetCreateDate(file);
-                fileInfo.FileModifiedDate = dateOptions.GetModifiedDate(file);
-                fileInfo.FileAccessDate = dateOptions.GetAccessDate(file);
+                fileInfo.FileCreateDate = dateOptionsCr.SetDate(file);
+                fileInfo.FileModifiedDate = dateOptionsMd.SetDate(file);
+                fileInfo.FileAccessDate = dateOptionsAc.SetDate(file);
 
                 fileInformations.Add(fileInfo);
 
@@ -64,15 +71,16 @@ namespace FileOrbis___File_System_Reporter
                 }
 
                 processedFiles++;
-                frm.progressBar1.Value = processedFiles;
 
-                lblScannedMessage?.Invoke(); // call back 2
+                ProgressBarCallBack?.Invoke(); // call back
 
-                lblPathMessage?.Invoke(fileInfo.FilePath); // call back 3
+                lblScannedMessage?.Invoke();
+
+                lblPathMessage?.Invoke(fileInfo.FilePath);
 
                 Application.DoEvents();
 
-                frm.lblTotalTime.Text = $"Scan was completed. Total elapsed time: {stopwatch.Elapsed.TotalSeconds} seconds";
+                lblTotalTımeCallBack?.Invoke();
                 frm.IsItDoneScan();
             }
         }
@@ -107,15 +115,14 @@ namespace FileOrbis___File_System_Reporter
                 totalFiles = files.Length;
                 processedFiles = 0;
 
-                frm.progressBar1.Maximum = totalFiles;
-                frm.progressBar1.Value = 0;
-
                 stopwatch = new Stopwatch();
                 stopwatch.Start();
                 scanProcess = this;
                 FileScannedCallback = AddFileToListBox;
                 lblScannedMessage = UpdateLblScan;
                 lblPathMessage = UpdateLblPath;
+                lblTotalTımeCallBack = UpdateLblTotalTıme;
+                ProgressBarCallBack = UpdateProgressBar;
                 ScanFiles(files, dateTime, checkedDate, fileDate);
                 stopwatch.Stop();
             }
@@ -149,10 +156,29 @@ namespace FileOrbis___File_System_Reporter
         {
             if (frm.InvokeRequired)
             {
-                frm.Invoke (new Action<string>(UpdateLblPath));
+                frm.Invoke(new Action<string>(UpdateLblPath));
                 return;
             }
             frm.lblPath.Text = fileInfo;
+        }
+        private void UpdateLblTotalTıme()
+        {
+            if (frm.InvokeRequired)
+            {
+                frm.Invoke(new Action(UpdateLblTotalTıme));
+                return;
+            }
+            frm.lblTotalTime.Text = $"Scan was completed. Total elapsed time: {stopwatch.Elapsed.TotalSeconds} seconds";
+        }
+        private void UpdateProgressBar()
+        {
+            if (frm.InvokeRequired)
+            {
+                frm.Invoke(new Action(UpdateProgressBar));
+                return;
+            }
+            frm.progressBar1.Maximum = totalFiles;
+            frm.progressBar1.Value = processedFiles;
         }
     }
 }

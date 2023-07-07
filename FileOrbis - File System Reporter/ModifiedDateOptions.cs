@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FileOrbis___File_System_Reporter
 {
-    public class CreationDateOptions : IDateOptions
+    public class ModifiedDateOptions : IDateOptions
     {
         public DateTime dateTime { get; set; }
 

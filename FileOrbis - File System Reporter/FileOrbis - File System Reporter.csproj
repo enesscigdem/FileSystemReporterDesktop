@@ -67,6 +67,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccessDateOptions.cs" />
     <Compile Include="CopyProcess.cs" />
     <Compile Include="CreationDateOptions.cs" />
     <Compile Include="DeleteProcess.cs" />
@@ -79,6 +80,7 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="IDateOptions.cs" />
+    <Compile Include="ModifiedDateOptions.cs" />
     <Compile Include="MoveProcess.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

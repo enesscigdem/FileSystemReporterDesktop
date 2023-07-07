@@ -15,7 +15,7 @@ namespace FileOrbis___File_System_Reporter
         {
             frm = form;
         }
-        public void MoveOperation(string dateType,bool rdMoveCheck,bool chOverWriteCheck,string sourcePath,string targetPath,string selectedFileName,bool chEmptyFoldersCheck)
+        public void MoveOperation(string dateType,bool rdMoveCheck,bool chOverWriteCheck,string sourcePath,string targetPath,string selectedFileName,bool chEmptyFoldersCheck,DateTime fileDate,DateTime selectedDate)
         {
             if (rdMoveCheck)
             {
@@ -29,7 +29,7 @@ namespace FileOrbis___File_System_Reporter
                         if (Directory.Exists(destinationFolderPath))
                             deleteProcess.DeleteDirectory(destinationFolderPath);
                     }
-                    MoveDirectoryByDate(sourceFolderPath, destinationFolderPath, dateType,chEmptyFoldersCheck);
+                    MoveDirectoryByDate(sourceFolderPath, destinationFolderPath, dateType,chEmptyFoldersCheck,fileDate,selectedDate);
                     MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully moved from location '" + sourceFolderPath + "' to '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
@@ -39,7 +39,7 @@ namespace FileOrbis___File_System_Reporter
             }
         }
 
-        public void MoveDirectoryByDate(string sourceFolder, string targetDirectory, string dateType,bool chEmptyFoldersCheck)
+        public void MoveDirectoryByDate(string sourceFolder, string targetDirectory, string dateType,bool chEmptyFoldersCheck,DateTime fileDate, DateTime selectedDate)
         {
             if (!Directory.Exists(targetDirectory))
             {
@@ -68,13 +68,13 @@ namespace FileOrbis___File_System_Reporter
                 string targetSubDirectory = Path.Combine(targetDirectory, subDirectoryName);
                 if (subDirectoryFiles.Length >= 1)
                 {
-                    MoveDirectoryByDate(subDirectory, targetSubDirectory, dateType, chEmptyFoldersCheck);
+                    MoveDirectoryByDate(subDirectory, targetSubDirectory, dateType, chEmptyFoldersCheck,fileDate,selectedDate);
                 }
                 else
                 {
                     if (chEmptyFoldersCheck)
                     {
-                        MoveDirectoryByDate(subDirectory, targetSubDirectory, dateType, chEmptyFoldersCheck);
+                        MoveDirectoryByDate(subDirectory, targetSubDirectory, dateType, chEmptyFoldersCheck, fileDate, selectedDate);
                     }
                     else
                         continue;

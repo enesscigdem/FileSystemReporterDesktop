@@ -212,7 +212,7 @@ namespace FileOrbis___File_System_Reporter
             {
                 MoveProcess moveProcess = new MoveProcess(this);
                 DeleteProcess deleteProcess = new DeleteProcess(this);
-                moveProcess.MoveOperation(checkedDate, rdMove.Checked, chOverWrite.Checked, txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chEmptyFolders.Checked);
+                moveProcess.MoveOperation(checkedDate, rdMove.Checked, chOverWrite.Checked, txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chEmptyFolders.Checked,fileDate,selectedDate);
             }
             #endregion
 

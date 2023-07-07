@@ -8,9 +8,6 @@ namespace FileOrbis___File_System_Reporter
 {
     public interface IDateOptions
     {
-        DateTime GetCreateDate(string file);
-        DateTime GetModifiedDate(string file);
-        DateTime GetAccessDate(string file);
-        void SetDate(string file);
+        DateTime SetDate(string file);
     }
 }
