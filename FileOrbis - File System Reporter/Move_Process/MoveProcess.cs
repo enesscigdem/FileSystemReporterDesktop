@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FileOrbis___File_System_Reporter.Date_Process;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace FileOrbis___File_System_Reporter
     public class MoveProcess
     {
         Form1 frm = new Form1();
+        DateType dt = new DateType();
         public MoveProcess(Form1 form)
         {
             frm = form;
@@ -50,7 +52,7 @@ namespace FileOrbis___File_System_Reporter
 
             foreach (string file in files)
             {
-                frm.GetDateType(dateType, file);
+                fileDate = dt.GetDateType(dateType, file);
 
                 if (frm.fileDate > frm.selectedDate)
                 {

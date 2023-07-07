@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using FileOrbis___File_System_Reporter.Date_Process;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,7 +12,7 @@ namespace FileOrbis___File_System_Reporter
 {
     public class ExcelProcess
     {
-        Form1 frm = new Form1();
+        DateType dt = new DateType();
         public void ExcelAddHeaders(IXLWorksheet worksheet)
         {
             worksheet.Cell(1, 1).Value = "File Name";
@@ -29,7 +30,7 @@ namespace FileOrbis___File_System_Reporter
             worksheet.Cell(row, 4).Value = accessDate.ToString();
             worksheet.Cell(row, 5).Value = fileSize.ToString();
         }
-        public void ExcelOperations(string selectedFolder, string excelfileName, string dateType,DateTime selectedDate, DateTime fileDate, string fileDirectory, string fileName, DateTime createDate, DateTime modifiedDate, DateTime accessDate, long fileSize)
+        public void ExcelOperations(string selectedFolder, string excelfileName, string dateType, DateTime selectedDate, DateTime fileDate, List<Fileİnformation> fileInformations)
         {
             string[] files = Directory.GetFiles(selectedFolder, "*", SearchOption.AllDirectories);
             string selectedExcelFileName = string.Format(excelfileName + "{0:dd-MM-yyyy_HH.mm.ss}.xlsx", DateTime.Now);
@@ -42,19 +43,18 @@ namespace FileOrbis___File_System_Reporter
 
                 int row = 2;
                 // paralel for each 
-                foreach (string file in files)
+                foreach (Fileİnformation fileInfo in fileInformations)
                 {
-                    frm.Fileİnformations(file);
-                    frm.GetDateType(dateType, file);
+                    fileDate = dt.GetDateType(dateType, fileInfo.FilePath);
 
-                    if (fileDate >selectedDate && excelfileName == "afterDate")
+                    if (fileDate > selectedDate && excelfileName == "afterDate")
                     {
-                        ExcelAddFileData(workbook.Worksheet(worksheetName), row, $"{fileDirectory}\\{fileName}", createDate, modifiedDate, accessDate, fileSize);
+                        ExcelAddFileData(workbook.Worksheet(worksheetName), row, $"{fileInfo.FilePath}\\{fileInfo.FileName}", fileInfo.FileCreateDate, fileInfo.FileModifiedDate, fileInfo.FileAccessDate, fileInfo.FileSize);
                         row++;
                     }
                     else if (fileDate < selectedDate && excelfileName == "beforeDate")
                     {
-                        ExcelAddFileData(workbook.Worksheet(worksheetName), row, $"{fileDirectory}\\{fileName}", createDate, modifiedDate, accessDate, fileSize);
+                        ExcelAddFileData(workbook.Worksheet(worksheetName), row, $"{fileInfo.FilePath} \\ {fileInfo.FileName}", fileInfo.FileCreateDate, fileInfo.FileModifiedDate, fileInfo.FileAccessDate, fileInfo.FileSize);
                         row++;
                     }
                 }
@@ -74,7 +74,7 @@ namespace FileOrbis___File_System_Reporter
             }
         }
 
-        public void SaveExcel(string sourcePath, string dateType,DateTime selectedDate, DateTime fileDate, string fileDirectory, string fileName, DateTime createDate, DateTime modifiedDate, DateTime accessDate, long fileSize)
+        public void SaveExcel(string sourcePath, string dateType, DateTime selectedDate, DateTime fileDate, string fileDirectory, string fileName, DateTime createDate, DateTime modifiedDate, DateTime accessDate, long fileSize, List<Fileİnformation> fileInformations)
         {
             string selectedFolder = sourcePath;
 
@@ -84,8 +84,8 @@ namespace FileOrbis___File_System_Reporter
                 return;
             }
 
-            ExcelOperations(selectedFolder, "afterDate", dateType, selectedDate,fileDate,fileDirectory,fileName,createDate,modifiedDate,accessDate,fileSize);
-            ExcelOperations(selectedFolder, "beforeDate", dateType, selectedDate, fileDate, fileDirectory, fileName, createDate, modifiedDate, accessDate, fileSize);
+            ExcelOperations(selectedFolder, "afterDate", dateType, selectedDate, fileDate, fileInformations);
+            ExcelOperations(selectedFolder, "beforeDate", dateType, selectedDate, fileDate, fileInformations);
         }
     }
 }

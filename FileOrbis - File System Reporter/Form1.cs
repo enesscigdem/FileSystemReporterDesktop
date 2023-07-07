@@ -31,26 +31,6 @@ namespace FileOrbis___File_System_Reporter
         public string fileName, fileDirectory, selectedFileName, checkedDate = "Created";
         public long fileSize;
         public List<Fileİnformation> informationList;
-        public void GetDateType(string dateType, string file)
-        {
-            //Move Directory and Excell Process functions use this func.
-            selectedDate = dtDateOption.Value;
-            switch (dateType)
-            {
-                case "Created":
-                    fileDate = File.GetCreationTime(file);
-                    break;
-                case "Modified":
-                    fileDate = File.GetLastWriteTime(file);
-                    break;
-                case "Accessed":
-                    fileDate = File.GetLastAccessTime(file);
-                    break;
-                default:
-                    throw new ArgumentException("Invalid date type.");
-            }
-        }
-
         #region Disabled Checked Radio Buttons,CheckBoxs
         public void DisabledChecked()
         {
@@ -163,6 +143,7 @@ namespace FileOrbis___File_System_Reporter
                 if (tempList != null)
                 {
                     informationList = tempList;
+                    IsItDoneScan();
                 }
             }
             #endregion
@@ -230,13 +211,13 @@ namespace FileOrbis___File_System_Reporter
             if (rdTxt.Checked)
             {
                 TxtProcess txtProcess = new TxtProcess();
-
                 txtProcess.SaveTxt(txtSourcePath.Text, fileDirectory, fileName, createDate, modifiedDate, accessDate, fileSize, informationList);
             }
             else if (rdExcel.Checked)
             {
                 ExcelProcess excelProcess = new ExcelProcess();
-                excelProcess.SaveExcel(txtSourcePath.Text, checkedDate, selectedDate, fileDate, fileDirectory, fileName, createDate, modifiedDate, accessDate, fileSize);
+
+                excelProcess.SaveExcel(txtSourcePath.Text, checkedDate, selectedDate, fileDate, fileDirectory, fileName, createDate, modifiedDate, accessDate, fileSize,informationList);
             }
             else
             {

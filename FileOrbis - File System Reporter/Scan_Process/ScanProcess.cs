@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml;
+using FileOrbis___File_System_Reporter.Date_Process;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -29,6 +30,7 @@ namespace FileOrbis___File_System_Reporter
         string WhListBox;
         int processedFiles, totalFiles;
         Stopwatch stopwatch;
+        DateType dt = new DateType();
         public FileScannedCallback FileScannedCallback { get; set; }
         public lblScannedMessage lblScannedMessage { get; set; }
         public lblTotalTımeCallBack lblTotalTımeCallBack { get; set; }
@@ -57,7 +59,7 @@ namespace FileOrbis___File_System_Reporter
 
                 fileInformations.Add(fileInfo);
 
-                frm.GetDateType(checkedDate, file); // bu farklı bir class olsun.
+                fileDate = dt.GetDateType(checkedDate, file);
 
                 if (fileDate > dateTime)
                 {
@@ -82,7 +84,6 @@ namespace FileOrbis___File_System_Reporter
                 Application.DoEvents();
 
                 lblTotalTımeCallBack?.Invoke();
-                frm.IsItDoneScan();
             }
             return fileInformations;
         }
