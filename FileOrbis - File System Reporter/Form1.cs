@@ -135,14 +135,29 @@ namespace FileOrbis___File_System_Reporter
         {
             if (lblScannedItem.InvokeRequired)
             {
-                void action() {
-                    UpdateLblScan(processedFiles,totalFiles);
+                void action()
+                {
+                    UpdateLblScan(processedFiles, totalFiles);
                 }
                 lblScannedItem.Invoke((Action)action);
                 return;
             }
             lblScannedItem.Text = $"{processedFiles} / {totalFiles} items were scanned.";
             lblScannedItem.Update();
+        }
+        public void UpdateLblTotalTıme(Stopwatch stopwatch)
+        {
+            if (lblTotalTime.InvokeRequired)
+            {
+                void action()
+                {
+                    UpdateLblTotalTıme(stopwatch);
+                }
+                lblTotalTime.Invoke((Action)action);
+                return;
+            }
+            lblTotalTime.Text = $"Scan was completed. Total elapsed time: {stopwatch.Elapsed.TotalSeconds} seconds";
+            lblTotalTime.Update();
         }
         private void button3_Click(object sender, EventArgs e)
         {
@@ -155,9 +170,9 @@ namespace FileOrbis___File_System_Reporter
             {
                 ScanProcess scanProcess = new ScanProcess(this);// bunun invokunu ordaki fonksiyona eşitliyosun frm yi kullanmana gerek kalmıyor
                 scanProcess.lblScannedMessage = new lblScannedMessage(UpdateLblScan);
-                //scanProcess.UpdateLblPath = UpdateLblTotalTıme;
+                scanProcess.lblTotalTımeCallBack = new lblTotalTımeCallBack(UpdateLblTotalTıme);
                 string selectedFolder = txtSourcePath.Text;
-                var tempList = scanProcess.ScanOperation(selectedFolder, selectedDate, checkedDate, fileDate);
+                var tempList = scanProcess.ScanOperation(selectedFolder, selectedDate, checkedDate, fileDate,Convert.ToInt32(txtThread.Text));
                 if (tempList != null)
                 {
                     informationList = tempList;

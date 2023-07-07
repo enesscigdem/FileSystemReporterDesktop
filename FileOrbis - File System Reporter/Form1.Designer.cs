@@ -148,6 +148,7 @@ namespace FileOrbis___File_System_Reporter
             this.txtThread.Name = "txtThread";
             this.txtThread.Size = new System.Drawing.Size(164, 28);
             this.txtThread.TabIndex = 11;
+            this.txtThread.Text = "4";
             // 
             // rdCopy
             // 

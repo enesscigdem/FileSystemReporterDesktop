@@ -16,7 +16,7 @@ namespace FileOrbis___File_System_Reporter
 {
     public delegate void FileScannedCallback(string filePath, string fileName, DateTime fileCreateDate);
     public delegate void lblScannedMessage(int processedFiles, int totalFiles);
-    public delegate void lblTotalTımeCallBack();
+    public delegate void lblTotalTımeCallBack(Stopwatch stopwatch);
     public delegate void lblPathMessage(string fileInfo);
     public delegate void ProgressBarCallBack();
     public class ScanProcess : Fileİnformation
@@ -37,11 +37,11 @@ namespace FileOrbis___File_System_Reporter
         public lblPathMessage lblPathMessage { get; set; }
         public ProgressBarCallBack ProgressBarCallBack { get; set; }
         ScanProcess scanProcess;
-        private  List<Fileİnformation> fileInformations = new List<Fileİnformation>();
+        private List<Fileİnformation> fileInformations = new List<Fileİnformation>();
 
-        public List<Fileİnformation> ScanFiles(string[] files, DateTime dateTime, string checkedDate, DateTime fileDate)
+        public List<Fileİnformation> ScanFiles(string[] files, DateTime dateTime, string checkedDate, DateTime fileDate, int threadCount)
         {
-            Parallel.ForEach(files, file =>
+            Parallel.ForEach(files, new ParallelOptions { MaxDegreeOfParallelism = threadCount }, file =>
             {
                 IDateOptions dateOptionsCr = new CreationDateOptions();
                 IDateOptions dateOptionsMd = new ModifiedDateOptions();
@@ -77,17 +77,17 @@ namespace FileOrbis___File_System_Reporter
 
                 ProgressBarCallBack?.Invoke(); // call back
 
-                lblScannedMessage?.Invoke(processedFiles,totalFiles);
+                lblScannedMessage?.Invoke(processedFiles, totalFiles);
 
                 lblPathMessage?.Invoke(fileInfo.FilePath);
 
                 Application.DoEvents();
 
-                lblTotalTımeCallBack?.Invoke();
+                lblTotalTımeCallBack?.Invoke(stopwatch);
             });
             return fileInformations;
         }
-        public List<Fileİnformation> ScanOperation(string selectedFolder, DateTime dateTime, string checkedDate, DateTime fileDate)
+        public List<Fileİnformation> ScanOperation(string selectedFolder, DateTime dateTime, string checkedDate, DateTime fileDate, int threadCount)
         {
             if (!string.IsNullOrEmpty(selectedFolder) && Directory.Exists(selectedFolder))
             {
@@ -102,9 +102,9 @@ namespace FileOrbis___File_System_Reporter
                 FileScannedCallback = AddFileToListBox;
                 //lblScannedMessage = UpdateLblScan;
                 lblPathMessage = UpdateLblPath;
-                lblTotalTımeCallBack = UpdateLblTotalTıme;
+                //lblTotalTımeCallBack = UpdateLblTotalTıme;
                 ProgressBarCallBack = UpdateProgressBar;
-                var fileList= ScanFiles(files, dateTime, checkedDate, fileDate);
+                var fileList = ScanFiles(files, dateTime, checkedDate, fileDate,threadCount);
                 stopwatch.Stop();
                 return fileList;
             }
@@ -143,15 +143,6 @@ namespace FileOrbis___File_System_Reporter
                 return;
             }
             frm.lblPath.Text = fileInfo;
-        }
-        public void UpdateLblTotalTıme()
-        {
-            if (frm.InvokeRequired)
-            {
-                frm.Invoke(new Action(UpdateLblTotalTıme));
-                return;
-            }
-            frm.lblTotalTime.Text = $"Scan was completed. Total elapsed time: {stopwatch.Elapsed.TotalSeconds} seconds";
         }
         public void UpdateProgressBar()
         {
