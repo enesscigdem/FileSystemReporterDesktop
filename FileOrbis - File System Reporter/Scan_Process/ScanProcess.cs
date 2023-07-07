@@ -41,7 +41,7 @@ namespace FileOrbis___File_System_Reporter
 
         public List<Fileİnformation> ScanFiles(string[] files, DateTime dateTime, string checkedDate, DateTime fileDate)
         {
-            foreach (string file in files)
+            Parallel.ForEach(files, file =>
             {
                 IDateOptions dateOptionsCr = new CreationDateOptions();
                 IDateOptions dateOptionsMd = new ModifiedDateOptions();
@@ -76,7 +76,7 @@ namespace FileOrbis___File_System_Reporter
                 processedFiles++;
 
                 ProgressBarCallBack?.Invoke(); // call back
-                
+
                 lblScannedMessage?.Invoke();
 
                 lblPathMessage?.Invoke(fileInfo.FilePath);
@@ -84,7 +84,7 @@ namespace FileOrbis___File_System_Reporter
                 Application.DoEvents();
 
                 lblTotalTımeCallBack?.Invoke();
-            }
+            });
             return fileInformations;
         }
         public List<Fileİnformation> ScanOperation(string selectedFolder, DateTime dateTime, string checkedDate, DateTime fileDate)
@@ -139,7 +139,7 @@ namespace FileOrbis___File_System_Reporter
         {
             if (frm.InvokeRequired)
             {
-                frm.Invoke(new Action<string>(UpdateLblPath));
+                frm.Invoke(new Action<string>(UpdateLblPath), fileInfo);
                 return;
             }
             frm.lblPath.Text = fileInfo;

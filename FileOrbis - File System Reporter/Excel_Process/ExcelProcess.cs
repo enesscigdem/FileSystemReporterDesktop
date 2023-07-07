@@ -32,7 +32,6 @@ namespace FileOrbis___File_System_Reporter
         }
         public void ExcelOperations(string selectedFolder, string excelfileName, string dateType, DateTime selectedDate, DateTime fileDate, List<Fileİnformation> fileInformations)
         {
-            string[] files = Directory.GetFiles(selectedFolder, "*", SearchOption.AllDirectories);
             string selectedExcelFileName = string.Format(excelfileName + "{0:dd-MM-yyyy_HH.mm.ss}.xlsx", DateTime.Now);
             string excelFilePath = Path.Combine(Path.Combine(Application.StartupPath, "output", selectedExcelFileName));
 
@@ -42,7 +41,6 @@ namespace FileOrbis___File_System_Reporter
                 ExcelAddHeaders(workbook.Worksheet(worksheetName));
 
                 int row = 2;
-                // paralel for each 
                 foreach (Fileİnformation fileInfo in fileInformations)
                 {
                     fileDate = dt.GetDateType(dateType, fileInfo.FilePath);
@@ -73,8 +71,7 @@ namespace FileOrbis___File_System_Reporter
                 }
             }
         }
-
-        public void SaveExcel(string sourcePath, string dateType, DateTime selectedDate, DateTime fileDate, string fileDirectory, string fileName, DateTime createDate, DateTime modifiedDate, DateTime accessDate, long fileSize, List<Fileİnformation> fileInformations)
+        public void SaveExcel(string sourcePath, string dateType, DateTime selectedDate, DateTime fileDate, List<Fileİnformation> fileInformations)
         {
             string selectedFolder = sourcePath;
 

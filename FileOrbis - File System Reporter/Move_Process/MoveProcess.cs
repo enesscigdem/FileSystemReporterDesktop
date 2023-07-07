@@ -11,17 +11,12 @@ namespace FileOrbis___File_System_Reporter
 {
     public class MoveProcess
     {
-        Form1 frm = new Form1();
         DateType dt = new DateType();
-        public MoveProcess(Form1 form)
-        {
-            frm = form;
-        }
         public void MoveOperation(string dateType,bool rdMoveCheck,bool chOverWriteCheck,string sourcePath,string targetPath,string selectedFileName,bool chEmptyFoldersCheck,DateTime fileDate,DateTime selectedDate)
         {
             if (rdMoveCheck)
             {
-                DeleteProcess deleteProcess = new DeleteProcess(frm);
+                DeleteProcess deleteProcess = new DeleteProcess();
                 try
                 {
                     string sourceFolderPath = sourcePath;
@@ -54,7 +49,7 @@ namespace FileOrbis___File_System_Reporter
             {
                 fileDate = dt.GetDateType(dateType, file);
 
-                if (frm.fileDate > frm.selectedDate)
+                if (fileDate > selectedDate)
                 {
                     string fileName = Path.GetFileName(file);
                     string targetFile = Path.Combine(targetDirectory, fileName);

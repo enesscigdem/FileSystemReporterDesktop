@@ -9,11 +9,6 @@ namespace FileOrbis___File_System_Reporter
 {
     public class DeleteProcess
     {
-        Form1 frm = new Form1();
-        public DeleteProcess(Form1 form)
-        {
-            frm = form;
-        }
         public void DeleteDirectory(string path)
         {
             string[] files = Directory.GetFiles(path);

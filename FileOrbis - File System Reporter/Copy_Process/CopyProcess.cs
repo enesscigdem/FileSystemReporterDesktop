@@ -11,14 +11,9 @@ namespace FileOrbis___File_System_Reporter
 {
     public class CopyProcess
     {
-        Form1 frm = new Form1();
-        public CopyProcess(Form1 form)
-        {
-            frm = form;
-        }
         public void CopyOperation(string sourcePath, string targetPath,string selectedFileName,bool OverWriteCheck, bool NtfsPermissionCheck,bool rdCopyCheck)
         {
-            DeleteProcess deleteProcess = new DeleteProcess(frm);
+            DeleteProcess deleteProcess = new DeleteProcess();
             if (rdCopyCheck)
             {
                 try

@@ -31,6 +31,7 @@ namespace FileOrbis___File_System_Reporter
         public string fileName, fileDirectory, selectedFileName, checkedDate = "Created";
         public long fileSize;
         public List<Fileİnformation> informationList;
+
         #region Disabled Checked Radio Buttons,CheckBoxs
         public void DisabledChecked()
         {
@@ -121,6 +122,7 @@ namespace FileOrbis___File_System_Reporter
             if (rdModifiedDate.Checked)
                 checkedDate = "Modified";
         }
+
         private void rdAccessedDate_CheckedChanged(object sender, EventArgs e)
         {
             if (rdAccessedDate.Checked)
@@ -191,8 +193,8 @@ namespace FileOrbis___File_System_Reporter
             #region MoveProcess
             if (rdMove.Checked)
             {
-                MoveProcess moveProcess = new MoveProcess(this);
-                DeleteProcess deleteProcess = new DeleteProcess(this);
+                MoveProcess moveProcess = new MoveProcess();
+                DeleteProcess deleteProcess = new DeleteProcess();
                 moveProcess.MoveOperation(checkedDate, rdMove.Checked, chOverWrite.Checked, txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chEmptyFolders.Checked, fileDate, selectedDate);
             }
             #endregion
@@ -200,7 +202,7 @@ namespace FileOrbis___File_System_Reporter
             #region Copy Process
             if (rdCopy.Checked)
             {
-                CopyProcess copyProcess = new CopyProcess(this);
+                CopyProcess copyProcess = new CopyProcess();
                 copyProcess.CopyOperation(txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chOverWrite.Checked, chNtfsPermission.Checked, rdCopy.Checked);
             }
             #endregion
@@ -217,7 +219,7 @@ namespace FileOrbis___File_System_Reporter
             {
                 ExcelProcess excelProcess = new ExcelProcess();
 
-                excelProcess.SaveExcel(txtSourcePath.Text, checkedDate, selectedDate, fileDate, fileDirectory, fileName, createDate, modifiedDate, accessDate, fileSize,informationList);
+                excelProcess.SaveExcel(txtSourcePath.Text, checkedDate, selectedDate, fileDate, informationList);
             }
             else
             {
