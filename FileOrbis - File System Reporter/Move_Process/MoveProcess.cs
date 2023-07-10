@@ -58,7 +58,7 @@ namespace FileOrbis___File_System_Reporter
 
                     if (!Directory.Exists(targetFile))
                         Directory.CreateDirectory(targetFile);
-                    if (subDirectoryFiles.Length==0 && !chEmptyFoldersCheck)
+                    if (subDirectoryFiles.Length == 0 && !chEmptyFoldersCheck)
                         Directory.Delete(targetFile);
                     for (int i = 0; i < subDirectoryFiles.Length; i++)
                     {
@@ -70,7 +70,7 @@ namespace FileOrbis___File_System_Reporter
                 }
             }
             Directory.Delete(sourceFolder);
-          
+
         }
     }
 }

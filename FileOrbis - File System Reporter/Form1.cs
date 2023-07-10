@@ -148,13 +148,14 @@ namespace FileOrbis___File_System_Reporter
         {
             if (InvokeRequired)
             {
-                Invoke(new Action<int,int>(UpdateProgressBar),processedFiles,totalFiles);
+                Invoke(new Action<int, int>(UpdateProgressBar), processedFiles, totalFiles);
                 return;
             }
             progressBar1.Maximum = totalFiles;
             progressBar1.Value = processedFiles;
             progressBar1.Update();
         }
+
         public void UpdateLblPath(string fileInfo)
         {
             if (InvokeRequired)
@@ -207,7 +208,7 @@ namespace FileOrbis___File_System_Reporter
                 scanProcess.lblTotalTımeCallBack = new lblTotalTımeCallBack(UpdateLblTotalTıme);
                 scanProcess.lblPathMessage = new lblPathMessage(UpdateLblPath);
                 scanProcess.FileScannedCallback = new FileScannedCallback(AddFileToListBox);
-                scanProcess.ProgressBarCallBack = new ProgressBarCallBack(UpdateProgressBar);
+                scanProcess.ProgressBarCallBack = UpdateProgressBar;
                 string selectedFolder = txtSourcePath.Text;
                 var result = scanProcess.ScanOperation(selectedFolder, selectedDate, checkedDate, fileDate, Convert.ToInt32(txtThread.Text));
 
@@ -221,52 +222,12 @@ namespace FileOrbis___File_System_Reporter
             }
             #endregion
 
-            #region threadlı scan işlemi demo 
-            //listBox1.Items.Clear();
-            //listBox2.Items.Clear();
-
-            //if (rdScan.Checked)
-            //{
-            //    int threadCount;
-            //    if (!int.TryParse(txtThread.Text, out threadCount) || threadCount <= 0)
-            //    {
-            //        MessageBox.Show("Please enter a valid thread count.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            //        return;
-            //    }
-
-            //    string selectedFolder = txtSourcePath.Text;
-            //    string dateType = "";
-            //    if (rdCreatedDate.Checked)
-            //        dateType = "Created";
-            //    else if (rdModifiedDate.Checked)
-            //        dateType = "Accessed";
-            //    else if (rdAccessedDate.Checked)
-            //        dateType = "Modified";
-            //    else
-            //    {
-            //        MessageBox.Show("Please select a date type.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            //        return;
-            //    }
-
-            //    for (int i = 0; i < threadCount; i++)
-            //    {
-            //        Thread thread = new Thread(() =>
-            //        {
-            //            ScanProcess scanProcess = new ScanProcess(this);
-            //            scanProcess.ScanOperation(selectedFolder, dateType);
-            //        });
-            //        scanThreads.Add(thread);
-            //        thread.Start();
-            //    }
-            //}
-            #endregion
-
             #region MoveProcess
             if (rdMove.Checked)
             {
                 MoveProcess moveProcess = new MoveProcess();
                 DeleteProcess deleteProcess = new DeleteProcess();
-                moveProcess.MoveOperation(checkedDate, rdMove.Checked, chOverWrite.Checked, txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chEmptyFolders.Checked, fileDate, selectedDate, informationList,folderList);
+                moveProcess.MoveOperation(checkedDate, rdMove.Checked, chOverWrite.Checked, txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chEmptyFolders.Checked, fileDate, selectedDate, informationList, folderList);
             }
             #endregion
 
@@ -274,7 +235,7 @@ namespace FileOrbis___File_System_Reporter
             if (rdCopy.Checked)
             {
                 CopyProcess copyProcess = new CopyProcess();
-                copyProcess.CopyOperation(txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chOverWrite.Checked, chNtfsPermission.Checked, rdCopy.Checked, informationList,folderList,fileDate,selectedDate,checkedDate,chEmptyFolders.Checked);
+                copyProcess.CopyOperation(txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chOverWrite.Checked, chNtfsPermission.Checked, rdCopy.Checked, informationList, folderList, fileDate, selectedDate, checkedDate, chEmptyFolders.Checked);
             }
             #endregion
         }
