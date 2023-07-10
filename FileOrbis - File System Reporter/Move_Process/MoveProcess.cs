@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -21,7 +22,7 @@ namespace FileOrbis___File_System_Reporter
                 try
                 {
                     string sourceFolderPath = sourcePath;
-                    string destinationFolderPath = targetPath + "\\" + selectedFileName;
+                    string destinationFolderPath = Path.Combine(targetPath, selectedFileName);
                     if (chOverWriteCheck)
                     {
                         if (Directory.Exists(destinationFolderPath))
@@ -32,7 +33,7 @@ namespace FileOrbis___File_System_Reporter
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("An error occurred during the folder copy operation: " + ex.Message, "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("An error occurred during the folder move operation: " + ex.Message, "Info", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
@@ -46,31 +47,58 @@ namespace FileOrbis___File_System_Reporter
 
             foreach (Folderİnformation folderInfo in folderInformations)
             {
-                fileDate = dt.GetDateType(dateType, folderInfo.FolderPath);
+                MoveFolderContents(sourceFolder,folderInfo.FolderPath, Path.Combine(targetDirectory, folderInfo.FolderName), dateType, chEmptyFoldersCheck, fileDate, selectedDate, fileInformations, folderInformations);
+            }
 
-                if (fileDate > selectedDate)
+            if (Directory.GetFileSystemEntries(sourceFolder).Length == 0)
+            {
+                Directory.Delete(sourceFolder);
+            }
+        }
+
+        private void MoveFolderContents(string sourceFolder,string sourceDir, string targetDir, string dateType, bool chEmptyFoldersCheck, DateTime fileDate, DateTime selectedDate, List<Fileİnformation> fileInformations, List<Folderİnformation> folderInformations)
+        {
+            DirectoryInfo sourceDirectoryInfo = new DirectoryInfo(sourceDir);
+            DirectoryInfo targetDirectoryInfo = Directory.CreateDirectory(targetDir);
+
+            try
+            {
+                foreach (FileInfo file in sourceDirectoryInfo.GetFiles())
                 {
-                    string fileName = Path.GetFileName(folderInfo.FolderPath);
-                    string targetFile = Path.Combine(targetDirectory, fileName);
-                    string subDirectoryName = Path.GetFileName(folderInfo.FolderPath);
-                    string[] subDirectoryFiles = Directory.GetFiles(folderInfo.FolderPath);
-                    string targetSubDirectory = Path.Combine(targetDirectory, subDirectoryName);
+                    fileDate = dt.GetDateType(dateType, file.FullName);
 
-                    if (!Directory.Exists(targetFile))
-                        Directory.CreateDirectory(targetFile);
-                    if (subDirectoryFiles.Length == 0 && !chEmptyFoldersCheck)
-                        Directory.Delete(targetFile);
-                    for (int i = 0; i < subDirectoryFiles.Length; i++)
+                    if (fileDate > selectedDate)
                     {
-                        string subFileName = Path.GetFileName(subDirectoryFiles[i]);
-                        File.Move(subDirectoryFiles[i], targetSubDirectory + "\\" + subFileName);
-                        File.Delete(subDirectoryFiles[i]);
+                        string targetFilePath = Path.Combine(targetDirectoryInfo.FullName, file.Name);
+                        file.CopyTo(targetFilePath, true);
+                        file.Delete();
                     }
-                    Directory.Delete(folderInfo.FolderPath);
                 }
             }
-            Directory.Delete(sourceFolder);
+            catch
+            {
+                Directory.Delete(sourceFolder);
+            }
 
+
+            foreach (DirectoryInfo subDirectory in sourceDirectoryInfo.GetDirectories())
+            {
+                string subDirectoryName = subDirectory.Name;
+                string targetSubDirectory = Path.Combine(targetDirectoryInfo.FullName, subDirectoryName);
+
+                MoveFolderContents(sourceFolder, subDirectory.FullName, targetSubDirectory, dateType, chEmptyFoldersCheck, fileDate, selectedDate, fileInformations, folderInformations);
+
+                //if (Directory.GetFileSystemEntries(subDirectory.FullName).Length == 0)
+                //{
+                //    subDirectory.Delete();
+                //}
+            }
+
+            if (Directory.GetFileSystemEntries(sourceDir).Length == 0)
+            {
+                sourceDirectoryInfo.Delete();
+            }
         }
+
     }
 }

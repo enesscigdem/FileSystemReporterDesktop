@@ -46,43 +46,46 @@ namespace FileOrbis___File_System_Reporter
 
             foreach (Folderİnformation folderInfo in folderInformations)
             {
-                fileDate = dt.GetDateType(dateType, folderInfo.FolderPath);
+                CopyFolderContents(folderInfo.FolderPath, destinationDir, selectedDate, dateType, chEmptyFoldersCheck, copyPermissions);
+            }
+        }
+        private void CopyFolderContents(string sourceDir, string targetDir, DateTime selectedDate, string dateType, bool chEmptyFoldersCheck, bool copyPermissions)
+        {
+            DirectoryInfo sourceDirectoryInfo = new DirectoryInfo(sourceDir);
+
+            if (!sourceDirectoryInfo.Exists)
+                return;
+
+            DirectoryInfo targetDirectoryInfo = Directory.CreateDirectory(Path.Combine(targetDir, sourceDirectoryInfo.Name));
+
+            foreach (FileInfo file in sourceDirectoryInfo.GetFiles())
+            {
+                DateTime fileDate = dt.GetDateType(dateType, file.FullName);
 
                 if (fileDate > selectedDate)
                 {
-                    string fileName = Path.GetFileName(folderInfo.FolderPath);
-                    string targetFile = Path.Combine(destinationDir, fileName);
-                    string subDirectoryName = Path.GetFileName(folderInfo.FolderPath);
-                    string[] subDirectoryFiles = Directory.GetFiles(folderInfo.FolderPath);
-                    string targetSubDirectory = Path.Combine(destinationDir, subDirectoryName);
+                    string targetFilePath = Path.Combine(targetDirectoryInfo.FullName, file.Name);
+                    file.CopyTo(targetFilePath, true);
 
-                    if (!Directory.Exists(targetFile))
-                        Directory.CreateDirectory(targetFile);
-                    if (subDirectoryFiles.Length == 0 && !chEmptyFoldersCheck)
-                        Directory.Delete(targetFile);
-                    for (int i = 0; i < subDirectoryFiles.Length; i++)
+                    if (copyPermissions)
                     {
-                        string subFileName = Path.GetFileName(subDirectoryFiles[i]);
-                        File.Copy(subDirectoryFiles[i], targetSubDirectory + "\\" + subFileName);
-
-                        if (copyPermissions)
-                        {
-                            FileSecurity sourceFileSecurity = File.GetAccessControl(subDirectoryFiles[i]);
-                            FileSecurity destFileSecurity = File.GetAccessControl(targetSubDirectory + "\\" + subFileName);
-                            destFileSecurity.SetSecurityDescriptorBinaryForm(sourceFileSecurity.GetSecurityDescriptorBinaryForm());
-                            File.SetAccessControl(targetSubDirectory + "\\" + subFileName, destFileSecurity);
-                        }
-                    }
-                    if (copyPermissions && chEmptyFoldersCheck)
-                    {
-                        DirectorySecurity sourceDirSecurity = Directory.GetAccessControl(folderInfo.FolderPath);
-                        DirectorySecurity destDirSecurity = Directory.GetAccessControl(targetSubDirectory);
-                        destDirSecurity.SetSecurityDescriptorBinaryForm(sourceDirSecurity.GetSecurityDescriptorBinaryForm());
-                        Directory.SetAccessControl(targetSubDirectory, destDirSecurity);
+                        FileSecurity sourceFileSecurity = file.GetAccessControl();
+                        FileSecurity destFileSecurity = new FileSecurity();
+                        destFileSecurity.SetSecurityDescriptorBinaryForm(sourceFileSecurity.GetSecurityDescriptorBinaryForm());
+                        File.SetAccessControl(targetFilePath, destFileSecurity);
                     }
                 }
             }
-        }
 
+            foreach (DirectoryInfo subDirectory in sourceDirectoryInfo.GetDirectories())
+            {
+                CopyFolderContents(subDirectory.FullName, targetDirectoryInfo.FullName, selectedDate, dateType, chEmptyFoldersCheck, copyPermissions);
+            }
+
+            if (chEmptyFoldersCheck && targetDirectoryInfo.GetFiles().Length == 0 && targetDirectoryInfo.GetDirectories().Length == 0)
+            {
+                targetDirectoryInfo.Delete();
+            }
+        }
     }
 }

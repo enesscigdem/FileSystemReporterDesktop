@@ -47,9 +47,6 @@ namespace FileOrbis___File_System_Reporter
             this.btnTargetPath = new System.Windows.Forms.Button();
             this.txtTargetPath = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.textBox4 = new System.Windows.Forms.TextBox();
             this.btnRun = new System.Windows.Forms.Button();
             this.btnReport = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
@@ -148,7 +145,7 @@ namespace FileOrbis___File_System_Reporter
             this.txtThread.Name = "txtThread";
             this.txtThread.Size = new System.Drawing.Size(164, 28);
             this.txtThread.TabIndex = 11;
-            this.txtThread.Text = "4";
+            this.txtThread.Text = "1";
             // 
             // rdCopy
             // 
@@ -261,40 +258,10 @@ namespace FileOrbis___File_System_Reporter
             this.label6.TabIndex = 19;
             this.label6.Text = "Target Path";
             // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.label7.Location = new System.Drawing.Point(12, 363);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(131, 21);
-            this.label7.TabIndex = 22;
-            this.label7.Text = "Folder Exceptions";
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.Font = new System.Drawing.Font("Calibri", 12F);
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
-            "Custom Regex"});
-            this.comboBox1.Location = new System.Drawing.Point(12, 400);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(197, 27);
-            this.comboBox1.TabIndex = 23;
-            this.comboBox1.Text = "Custom Regex";
-            // 
-            // textBox4
-            // 
-            this.textBox4.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.textBox4.Location = new System.Drawing.Point(215, 400);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(663, 28);
-            this.textBox4.TabIndex = 24;
-            // 
             // btnRun
             // 
             this.btnRun.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.btnRun.Location = new System.Drawing.Point(12, 482);
+            this.btnRun.Location = new System.Drawing.Point(12, 383);
             this.btnRun.Name = "btnRun";
             this.btnRun.Size = new System.Drawing.Size(430, 33);
             this.btnRun.TabIndex = 25;
@@ -305,7 +272,7 @@ namespace FileOrbis___File_System_Reporter
             // btnReport
             // 
             this.btnReport.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.btnReport.Location = new System.Drawing.Point(448, 482);
+            this.btnReport.Location = new System.Drawing.Point(448, 383);
             this.btnReport.Name = "btnReport";
             this.btnReport.Size = new System.Drawing.Size(430, 33);
             this.btnReport.TabIndex = 26;
@@ -315,7 +282,7 @@ namespace FileOrbis___File_System_Reporter
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(12, 528);
+            this.progressBar1.Location = new System.Drawing.Point(12, 429);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(866, 62);
             this.progressBar1.TabIndex = 27;
@@ -326,7 +293,7 @@ namespace FileOrbis___File_System_Reporter
             this.panel1.Controls.Add(this.lblTotalTime);
             this.panel1.Controls.Add(this.lblPath);
             this.panel1.Controls.Add(this.lblScannedItem);
-            this.panel1.Location = new System.Drawing.Point(12, 596);
+            this.panel1.Location = new System.Drawing.Point(12, 497);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(866, 140);
             this.panel1.TabIndex = 28;
@@ -416,7 +383,7 @@ namespace FileOrbis___File_System_Reporter
             this.listBox1.FormattingEnabled = true;
             this.listBox1.HorizontalScrollbar = true;
             this.listBox1.ItemHeight = 18;
-            this.listBox1.Location = new System.Drawing.Point(12, 771);
+            this.listBox1.Location = new System.Drawing.Point(12, 672);
             this.listBox1.Name = "listBox1";
             this.listBox1.ScrollAlwaysVisible = true;
             this.listBox1.Size = new System.Drawing.Size(430, 130);
@@ -426,7 +393,7 @@ namespace FileOrbis___File_System_Reporter
             // 
             this.label11.AutoSize = true;
             this.label11.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.label11.Location = new System.Drawing.Point(528, 448);
+            this.label11.Location = new System.Drawing.Point(528, 352);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(73, 21);
             this.label11.TabIndex = 35;
@@ -436,7 +403,7 @@ namespace FileOrbis___File_System_Reporter
             // 
             this.panel3.Controls.Add(this.rdExcel);
             this.panel3.Controls.Add(this.rdTxt);
-            this.panel3.Location = new System.Drawing.Point(616, 436);
+            this.panel3.Location = new System.Drawing.Point(616, 340);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(134, 42);
             this.panel3.TabIndex = 34;
@@ -471,7 +438,7 @@ namespace FileOrbis___File_System_Reporter
             this.listBox2.FormattingEnabled = true;
             this.listBox2.HorizontalScrollbar = true;
             this.listBox2.ItemHeight = 18;
-            this.listBox2.Location = new System.Drawing.Point(448, 771);
+            this.listBox2.Location = new System.Drawing.Point(448, 672);
             this.listBox2.Name = "listBox2";
             this.listBox2.ScrollAlwaysVisible = true;
             this.listBox2.Size = new System.Drawing.Size(430, 130);
@@ -481,7 +448,7 @@ namespace FileOrbis___File_System_Reporter
             // 
             this.label12.AutoSize = true;
             this.label12.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.label12.Location = new System.Drawing.Point(183, 747);
+            this.label12.Location = new System.Drawing.Point(183, 648);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(44, 21);
             this.label12.TabIndex = 37;
@@ -491,7 +458,7 @@ namespace FileOrbis___File_System_Reporter
             // 
             this.label13.AutoSize = true;
             this.label13.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.label13.Location = new System.Drawing.Point(612, 747);
+            this.label13.Location = new System.Drawing.Point(612, 648);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(55, 21);
             this.label13.TabIndex = 38;
@@ -501,7 +468,7 @@ namespace FileOrbis___File_System_Reporter
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(888, 917);
+            this.ClientSize = new System.Drawing.Size(888, 811);
             this.Controls.Add(this.label13);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.listBox2);
@@ -513,9 +480,6 @@ namespace FileOrbis___File_System_Reporter
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.btnReport);
             this.Controls.Add(this.btnRun);
-            this.Controls.Add(this.textBox4);
-            this.Controls.Add(this.comboBox1);
-            this.Controls.Add(this.label7);
             this.Controls.Add(this.btnTargetPath);
             this.Controls.Add(this.txtTargetPath);
             this.Controls.Add(this.label6);
@@ -561,9 +525,6 @@ namespace FileOrbis___File_System_Reporter
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button btnTargetPath;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.Button btnRun;
         private System.Windows.Forms.Button btnReport;
         private System.Windows.Forms.Panel panel1;

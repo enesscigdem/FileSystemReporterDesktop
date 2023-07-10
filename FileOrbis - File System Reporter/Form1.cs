@@ -92,6 +92,7 @@ namespace FileOrbis___File_System_Reporter
         {
             dtDateOption.Format = DateTimePickerFormat.Custom;
             dtDateOption.CustomFormat = "dd MMMM yyyy h:mm";
+            dtDateOption.Value = DateTime.Now.AddDays(-7);
             DisabledChecked();
             rdMove.Enabled = false;
             rdCopy.Enabled = false;
@@ -108,6 +109,9 @@ namespace FileOrbis___File_System_Reporter
                 string selectedFolder = folderDialog.SelectedPath;
                 selectedFileName = Path.GetFileName(selectedFolder);
                 txtSourcePath.Text = selectedFolder;
+                rdMove.Enabled = false;
+                rdCopy.Enabled = false;
+                rdScan.Checked = true;
             }
             #endregion
         }
@@ -180,6 +184,7 @@ namespace FileOrbis___File_System_Reporter
             lblScannedItem.Text = $"{processedFiles} / {totalFiles} items were scanned.";
             lblScannedItem.Update();
         }
+
         public void UpdateLblTotalTıme(Stopwatch stopwatch)
         {
             if (lblTotalTime.InvokeRequired)

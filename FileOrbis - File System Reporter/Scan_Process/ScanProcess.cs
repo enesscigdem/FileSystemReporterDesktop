@@ -96,27 +96,45 @@ namespace FileOrbis___File_System_Reporter
                 lblTotalTımeCallBack?.Invoke(stopwatch);
 
             });
+            Parallel.ForEach(directories, new ParallelOptions { MaxDegreeOfParallelism = threadCount }, directory =>
+            {
+                Folderİnformation folderInfo = new Folderİnformation();
+                folderInfo.FolderName = Path.GetFileName(directory);
+                folderInfo.subDirectoryFiles = Directory.GetFiles(directory);
+                folderInfo.FolderPath = directory;
 
+                folderInformations.Add(folderInfo);
+
+            });
             return (fileInformations, folderInformations);
         }
         public (List<Fileİnformation> files, List<Folderİnformation> folders) ScanOperation(string selectedFolder, DateTime dateTime, string checkedDate, DateTime fileDate, int threadCount)
         {
             if (!string.IsNullOrEmpty(selectedFolder) && Directory.Exists(selectedFolder))
             {
-                string[] files = Directory.GetFiles(selectedFolder, "*", SearchOption.AllDirectories);
-                string[] subDirectories = Directory.GetDirectories(selectedFolder, "*", SearchOption.AllDirectories);
+                try
+                {
+                    string[] files = Directory.GetFiles(selectedFolder, "*", SearchOption.AllDirectories);
+                    string[] subDirectories = Directory.GetDirectories(selectedFolder, "*", SearchOption.AllDirectories);
 
-                totalFiles = files.Length;
-                processedFiles = 0;
+                    totalFiles = files.Length;
+                    processedFiles = 0;
 
-                stopwatch = new Stopwatch();
-                stopwatch.Start();
+                    stopwatch = new Stopwatch();
+                    stopwatch.Start();
 
-                var (fileInformations, folderInformations) = ScanFiles(files, subDirectories, dateTime, checkedDate, fileDate, threadCount);
+                    var (fileInformations, folderInformations) = ScanFiles(files, subDirectories, dateTime, checkedDate, fileDate, threadCount);
 
-                stopwatch.Stop();
+                    stopwatch.Stop();
 
-                return (fileInformations, folderInformations);
+                    return (fileInformations, folderInformations);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return (null, null);
+                }
+
             }
             else
             {
