@@ -130,7 +130,39 @@ namespace FileOrbis___File_System_Reporter
         }
         #endregion
 
-
+        private void AddFileToListBox(string filePath, string fileName, DateTime fileCreateDate, string WhListBox)
+        {
+            if (InvokeRequired) // ana iş parçacığı dışından erişilmeye çalışılıp çalışılmadığını belirlemek için kullanılır.
+            {
+                Invoke(new Action<string, string, DateTime, string>(AddFileToListBox), filePath, fileName, fileCreateDate, WhListBox);
+                return;
+            }
+            if (WhListBox == "listbox1")
+                listBox1.Items.Add(filePath + fileName + fileCreateDate);
+            else
+                listBox2.Items.Add(filePath + fileName + fileCreateDate);
+        }
+        public void UpdateProgressBar(int processedFiles, int totalFiles)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action<int,int>(UpdateProgressBar),processedFiles,totalFiles);
+                return;
+            }
+            progressBar1.Maximum = totalFiles;
+            progressBar1.Value = processedFiles;
+            progressBar1.Update();
+        }
+        public void UpdateLblPath(string fileInfo)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action<string>(UpdateLblPath), fileInfo);
+                return;
+            }
+            lblPath.Text = fileInfo;
+            lblPath.Update();
+        }
         public void UpdateLblScan(int processedFiles, int totalFiles)
         {
             if (lblScannedItem.InvokeRequired)
@@ -171,8 +203,11 @@ namespace FileOrbis___File_System_Reporter
                 ScanProcess scanProcess = new ScanProcess(this);// bunun invokunu ordaki fonksiyona eşitliyosun frm yi kullanmana gerek kalmıyor
                 scanProcess.lblScannedMessage = new lblScannedMessage(UpdateLblScan);
                 scanProcess.lblTotalTımeCallBack = new lblTotalTımeCallBack(UpdateLblTotalTıme);
+                scanProcess.lblPathMessage = new lblPathMessage(UpdateLblPath);
+                scanProcess.FileScannedCallback = new FileScannedCallback(AddFileToListBox);
+                scanProcess.ProgressBarCallBack = new ProgressBarCallBack(UpdateProgressBar);
                 string selectedFolder = txtSourcePath.Text;
-                var tempList = scanProcess.ScanOperation(selectedFolder, selectedDate, checkedDate, fileDate,Convert.ToInt32(txtThread.Text));
+                var tempList = scanProcess.ScanOperation(selectedFolder, selectedDate, checkedDate, fileDate, Convert.ToInt32(txtThread.Text));
                 if (tempList != null)
                 {
                     informationList = tempList;

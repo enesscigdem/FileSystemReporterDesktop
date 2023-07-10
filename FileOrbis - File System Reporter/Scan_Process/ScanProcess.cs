@@ -14,11 +14,11 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace FileOrbis___File_System_Reporter
 {
-    public delegate void FileScannedCallback(string filePath, string fileName, DateTime fileCreateDate);
+    public delegate void FileScannedCallback(string filePath, string fileName, DateTime fileCreateDate,string WhListBox);
     public delegate void lblScannedMessage(int processedFiles, int totalFiles);
     public delegate void lblTotalTımeCallBack(Stopwatch stopwatch);
     public delegate void lblPathMessage(string fileInfo);
-    public delegate void ProgressBarCallBack();
+    public delegate void ProgressBarCallBack(int processedFiles, int totalFiles);
     public class ScanProcess : Fileİnformation
     {
         public ScanProcess(Form1 form)
@@ -65,17 +65,17 @@ namespace FileOrbis___File_System_Reporter
                 {
                     // cal back
                     WhListBox = "listbox1";
-                    FileScannedCallback?.Invoke(fileInfo.FilePath, fileInfo.FileName, fileInfo.FileCreateDate);
+                    FileScannedCallback?.Invoke(fileInfo.FilePath, fileInfo.FileName, fileInfo.FileCreateDate,WhListBox);
                 }
                 else
                 {
                     WhListBox = "listbox2";
-                    FileScannedCallback?.Invoke(fileInfo.FilePath, fileInfo.FileName, fileInfo.FileCreateDate);
+                    FileScannedCallback?.Invoke(fileInfo.FilePath, fileInfo.FileName, fileInfo.FileCreateDate,WhListBox);
                 }
 
                 processedFiles++;
 
-                ProgressBarCallBack?.Invoke(); // call back
+                ProgressBarCallBack?.Invoke(processedFiles,totalFiles); // call back
 
                 lblScannedMessage?.Invoke(processedFiles, totalFiles);
 
@@ -99,11 +99,6 @@ namespace FileOrbis___File_System_Reporter
                 stopwatch = new Stopwatch();
                 stopwatch.Start();
                 scanProcess = this;
-                FileScannedCallback = AddFileToListBox;
-                //lblScannedMessage = UpdateLblScan;
-                lblPathMessage = UpdateLblPath;
-                //lblTotalTımeCallBack = UpdateLblTotalTıme;
-                ProgressBarCallBack = UpdateProgressBar;
                 var fileList = ScanFiles(files, dateTime, checkedDate, fileDate,threadCount);
                 stopwatch.Stop();
                 return fileList;
@@ -113,46 +108,6 @@ namespace FileOrbis___File_System_Reporter
                 MessageBox.Show("Please select a valid folder.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return null;
             }
-        }
-        private void AddFileToListBox(string filePath, string fileName, DateTime fileCreateDate)
-        {
-            if (frm.InvokeRequired) // ana iş parçacığı dışından erişilmeye çalışılıp çalışılmadığını belirlemek için kullanılır.
-            {
-                frm.Invoke(new Action<string, string, DateTime>(AddFileToListBox), filePath, fileName, fileCreateDate);
-                return;
-            }
-            if (WhListBox == "listbox1")
-                frm.listBox1.Items.Add(filePath + fileName + fileCreateDate);
-            else
-                frm.listBox2.Items.Add(filePath + fileName + fileCreateDate);
-        }
-        public void UpdateLblScan()
-        {
-            if (frm.InvokeRequired)
-            {
-                frm.Invoke(new Action(UpdateLblScan));
-                return;
-            }
-            frm.lblScannedItem.Text = $"{processedFiles} / {totalFiles} items were scanned.";
-        }
-        public void UpdateLblPath(string fileInfo)
-        {
-            if (frm.InvokeRequired)
-            {
-                frm.Invoke(new Action<string>(UpdateLblPath), fileInfo);
-                return;
-            }
-            frm.lblPath.Text = fileInfo;
-        }
-        public void UpdateProgressBar()
-        {
-            if (frm.InvokeRequired)
-            {
-                frm.Invoke(new Action(UpdateProgressBar));
-                return;
-            }
-            frm.progressBar1.Maximum = totalFiles;
-            frm.progressBar1.Value = processedFiles;
         }
     }
 }
