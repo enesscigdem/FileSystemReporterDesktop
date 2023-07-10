@@ -1,6 +1,7 @@
 ﻿using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Presentation;
 using DocumentFormat.OpenXml.Spreadsheet;
+using FileOrbis___File_System_Reporter.File_İnformation;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -31,6 +32,7 @@ namespace FileOrbis___File_System_Reporter
         public string fileName, fileDirectory, selectedFileName, checkedDate = "Created";
         public long fileSize;
         public List<Fileİnformation> informationList;
+        public List<Folderİnformation> folderList;
 
         #region Disabled Checked Radio Buttons,CheckBoxs
         public void DisabledChecked()
@@ -207,12 +209,15 @@ namespace FileOrbis___File_System_Reporter
                 scanProcess.FileScannedCallback = new FileScannedCallback(AddFileToListBox);
                 scanProcess.ProgressBarCallBack = new ProgressBarCallBack(UpdateProgressBar);
                 string selectedFolder = txtSourcePath.Text;
-                var tempList = scanProcess.ScanOperation(selectedFolder, selectedDate, checkedDate, fileDate, Convert.ToInt32(txtThread.Text));
-                if (tempList != null)
+                var result = scanProcess.ScanOperation(selectedFolder, selectedDate, checkedDate, fileDate, Convert.ToInt32(txtThread.Text));
+
+                if (result.files != null && result.folders != null)
                 {
-                    informationList = tempList;
+                    informationList = result.files;
+                    folderList = result.folders;
                     IsItDoneScan();
                 }
+
             }
             #endregion
 
@@ -261,7 +266,7 @@ namespace FileOrbis___File_System_Reporter
             {
                 MoveProcess moveProcess = new MoveProcess();
                 DeleteProcess deleteProcess = new DeleteProcess();
-                moveProcess.MoveOperation(checkedDate, rdMove.Checked, chOverWrite.Checked, txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chEmptyFolders.Checked, fileDate, selectedDate, informationList);
+                moveProcess.MoveOperation(checkedDate, rdMove.Checked, chOverWrite.Checked, txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chEmptyFolders.Checked, fileDate, selectedDate, informationList,folderList);
             }
             #endregion
 
@@ -269,7 +274,7 @@ namespace FileOrbis___File_System_Reporter
             if (rdCopy.Checked)
             {
                 CopyProcess copyProcess = new CopyProcess();
-                copyProcess.CopyOperation(txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chOverWrite.Checked, chNtfsPermission.Checked, rdCopy.Checked, informationList);
+                copyProcess.CopyOperation(txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chOverWrite.Checked, chNtfsPermission.Checked, rdCopy.Checked, informationList,folderList,fileDate,selectedDate,checkedDate,chEmptyFolders.Checked);
             }
             #endregion
         }

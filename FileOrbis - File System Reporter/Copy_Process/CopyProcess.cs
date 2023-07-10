@@ -1,5 +1,8 @@
-﻿using System;
+﻿using FileOrbis___File_System_Reporter.Date_Process;
+using FileOrbis___File_System_Reporter.File_İnformation;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
@@ -11,7 +14,8 @@ namespace FileOrbis___File_System_Reporter
 {
     public class CopyProcess
     {
-        public void CopyOperation(string sourcePath, string targetPath,string selectedFileName,bool OverWriteCheck, bool NtfsPermissionCheck,bool rdCopyCheck, List<Fileİnformation> fileInformations)
+        DateType dt = new DateType();
+        public void CopyOperation(string sourcePath, string targetPath, string selectedFileName, bool OverWriteCheck, bool NtfsPermissionCheck, bool rdCopyCheck, List<Fileİnformation> fileInformations, List<Folderİnformation> folderInformations, DateTime fileDate, DateTime selectedDate, string dateType, bool chEmptyFoldersCheck)
         {
             DeleteProcess deleteProcess = new DeleteProcess();
             if (rdCopyCheck)
@@ -20,10 +24,10 @@ namespace FileOrbis___File_System_Reporter
                 {
                     bool copyPermissions = NtfsPermissionCheck;
                     string sourceFolderPath = sourcePath;
-                    string destinationFolderPath = targetPath+ "\\" + selectedFileName;
+                    string destinationFolderPath = targetPath + "\\" + selectedFileName;
                     if (OverWriteCheck)
                         deleteProcess.DeleteDirectory(destinationFolderPath, fileInformations); // overwrite işlemi .
-                    CopyDirectory(sourceFolderPath, destinationFolderPath, copyPermissions,fileInformations);
+                    CopyDirectory(sourceFolderPath, destinationFolderPath, copyPermissions, fileInformations, folderInformations, fileDate, selectedDate, dateType, chEmptyFoldersCheck);
 
                     MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully copied to the location '" + destinationFolderPath + "' and overwritten.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -33,42 +37,49 @@ namespace FileOrbis___File_System_Reporter
                 }
             }
         }
-        public void CopyDirectory(string sourceDir, string destinationDir, bool copyPermissions, List<Fileİnformation> fileInformations)
+        public void CopyDirectory(string sourceDir, string destinationDir, bool copyPermissions, List<Fileİnformation> fileInformations, List<Folderİnformation> folderInformations, DateTime fileDate, DateTime selectedDate, string dateType, bool chEmptyFoldersCheck)
         {
             if (!Directory.Exists(destinationDir))
             {
                 Directory.CreateDirectory(destinationDir);
             }
 
-            string[] files = Directory.GetFiles(sourceDir);
-            foreach (string file in files)
+            foreach (Folderİnformation folderInfo in folderInformations)
             {
-                string fileName = Path.GetFileName(file);
-                string destFile = Path.Combine(destinationDir, fileName);
-                File.Copy(file, destFile);
+                fileDate = dt.GetDateType(dateType, folderInfo.FolderPath);
 
-                if (copyPermissions)
+                if (fileDate > selectedDate)
                 {
-                    FileSecurity sourceFileSecurity = File.GetAccessControl(file); // permission process
-                    FileSecurity destFileSecurity = File.GetAccessControl(destFile);
-                    destFileSecurity.SetSecurityDescriptorBinaryForm(sourceFileSecurity.GetSecurityDescriptorBinaryForm());
-                    File.SetAccessControl(destFile, destFileSecurity);
-                }
-            }
+                    string fileName = Path.GetFileName(folderInfo.FolderPath);
+                    string targetFile = Path.Combine(destinationDir, fileName);
+                    string subDirectoryName = Path.GetFileName(folderInfo.FolderPath);
+                    string[] subDirectoryFiles = Directory.GetFiles(folderInfo.FolderPath);
+                    string targetSubDirectory = Path.Combine(destinationDir, subDirectoryName);
 
-            string[] subDirectories = Directory.GetDirectories(sourceDir);
-            foreach (string subDir in subDirectories)
-            {
-                string dirName = Path.GetFileName(subDir);
-                string destSubDir = Path.Combine(destinationDir, dirName);
-                CopyDirectory(subDir, destSubDir, copyPermissions,fileInformations);
+                    if (!Directory.Exists(targetFile))
+                        Directory.CreateDirectory(targetFile);
+                    if (subDirectoryFiles.Length == 0 && !chEmptyFoldersCheck)
+                        Directory.Delete(targetFile);
+                    for (int i = 0; i < subDirectoryFiles.Length; i++)
+                    {
+                        string subFileName = Path.GetFileName(subDirectoryFiles[i]);
+                        File.Copy(subDirectoryFiles[i], targetSubDirectory + "\\" + subFileName);
 
-                if (copyPermissions)
-                {
-                    DirectorySecurity sourceDirSecurity = Directory.GetAccessControl(subDir);
-                    DirectorySecurity destDirSecurity = Directory.GetAccessControl(destSubDir);
-                    destDirSecurity.SetSecurityDescriptorBinaryForm(sourceDirSecurity.GetSecurityDescriptorBinaryForm());
-                    Directory.SetAccessControl(destSubDir, destDirSecurity);
+                        if (copyPermissions)
+                        {
+                            FileSecurity sourceFileSecurity = File.GetAccessControl(subDirectoryFiles[i]);
+                            FileSecurity destFileSecurity = File.GetAccessControl(targetSubDirectory + "\\" + subFileName);
+                            destFileSecurity.SetSecurityDescriptorBinaryForm(sourceFileSecurity.GetSecurityDescriptorBinaryForm());
+                            File.SetAccessControl(targetSubDirectory + "\\" + subFileName, destFileSecurity);
+                        }
+                    }
+                    if (copyPermissions && chEmptyFoldersCheck)
+                    {
+                        DirectorySecurity sourceDirSecurity = Directory.GetAccessControl(folderInfo.FolderPath);
+                        DirectorySecurity destDirSecurity = Directory.GetAccessControl(targetSubDirectory);
+                        destDirSecurity.SetSecurityDescriptorBinaryForm(sourceDirSecurity.GetSecurityDescriptorBinaryForm());
+                        Directory.SetAccessControl(targetSubDirectory, destDirSecurity);
+                    }
                 }
             }
         }

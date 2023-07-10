@@ -14,10 +14,10 @@ namespace FileOrbis___File_System_Reporter
             string[] files = Directory.GetFiles(path);
             string[] directories = Directory.GetDirectories(path);
 
-            foreach (Fileİnformation fileInfo in fileInformations)
+            foreach (string file in files)
             {
-                File.SetAttributes(fileInfo.FilePath, FileAttributes.Normal);
-                File.Delete(fileInfo.FilePath);
+                File.SetAttributes(file, FileAttributes.Normal);
+                File.Delete(file);
             }
 
             foreach (string directory in directories)
