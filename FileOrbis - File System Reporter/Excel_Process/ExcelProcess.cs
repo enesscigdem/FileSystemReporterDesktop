@@ -45,7 +45,6 @@ namespace FileOrbis___File_System_Reporter
                 foreach (Fileİnformation fileInfo in fileInformations)
                 {
                     fileDate = dateOptions.SetDate(fileInfo.FilePath);
-                    //fileDate = dt.GetDateType(dateType, fileInfo.FilePath);
 
                     if (fileDate > selectedDate && excelfileName == "afterDate")
                     {

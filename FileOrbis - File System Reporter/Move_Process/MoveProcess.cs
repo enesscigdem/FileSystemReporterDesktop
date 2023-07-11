@@ -13,7 +13,6 @@ namespace FileOrbis___File_System_Reporter
 {
     public class MoveProcess
     {
-        DateType dt = new DateType();
         DeleteProcess deleteProcess = new DeleteProcess();
         public void MoveOperation(string dateType, bool rdMoveCheck, bool chOverWriteCheck, string sourcePath, string targetPath, string selectedFileName, bool chEmptyFoldersCheck, DateTime fileDate, DateTime selectedDate, List<Fileİnformation> fileInformations, List<Folderİnformation> folderInformations, IDateOptions dateOptions)
         {
@@ -47,7 +46,6 @@ namespace FileOrbis___File_System_Reporter
                 if (chEmptyFoldersCheck || Directory.GetFiles(dirPath.FolderPath).Length > 0 || Directory.GetDirectories(dirPath.FolderPath).Length > 0)
                 {
                     fileDate = dateOptions.SetDate(dirPath.FolderPath);
-                    //fileDate = dt.GetDateType(dateType, dirPath.FolderPath);
                     if (fileDate > selectedDate)
                         Directory.CreateDirectory(targetDirPath);
                 }

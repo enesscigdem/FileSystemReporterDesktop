@@ -9,7 +9,6 @@ namespace FileOrbis___File_System_Reporter
 {
     public class Fileİnformation
     {
-        // classa çevirelim
         public string FilePath { get; set; }
         public string FileName { get; set; }
         public long FileSize { get; set; }

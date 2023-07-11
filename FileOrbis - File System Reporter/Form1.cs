@@ -62,30 +62,6 @@ namespace FileOrbis___File_System_Reporter
             rdCopy.Enabled = true;
         }
         #endregion
-
-        #region view to listbox
-        public string GetListBoxItem(string fileDirectory, string fileName, DateTime createDate, DateTime modifiedDate, DateTime accessDate, long fileSize)
-        {
-            string listItem = $"{fileDirectory + "\\" + fileName}";
-            listItem += $"\n  Create Date: {createDate}";
-            listItem += $"\n  Modified Date: {modifiedDate}";
-            listItem += $"\n  Access Date: {accessDate}";
-            listItem += $"\n  File Size (bytes): {fileSize}";
-
-            return listItem;
-        }
-
-        public void Fileİnformations(string file)
-        {
-            fileName = Path.GetFileName(file);
-            fileDirectory = Path.GetDirectoryName(file);
-            createDate = File.GetCreationTime(file);
-            modifiedDate = File.GetLastWriteTime(file);
-            accessDate = File.GetLastAccessTime(file);
-            fileSize = new FileInfo(file).Length;
-        }
-        #endregion
-
         private void Form1_Load(object sender, EventArgs e)
         {
             dtDateOption.Format = DateTimePickerFormat.Custom;
@@ -133,22 +109,6 @@ namespace FileOrbis___File_System_Reporter
                 checkedDate = "Accessed";
         }
         #endregion
-
-        //private void AddFileToListBox(string filePath, string fileName, DateTime fileCreateDate, string WhListBox)
-        //{
-        //    if (InvokeRequired) // ana iş parçacığı dışından erişilmeye çalışılıp çalışılmadığını belirlemek için kullanılır.
-        //    {
-        //        BeginInvoke(new Action<string, string, DateTime, string>(AddFileToListBox), filePath, fileName, fileCreateDate, WhListBox);
-        //        return;
-        //    }
-        //    if (stopwatch2.Elapsed.Seconds % 2 == 0)
-        //    {
-        //        if (WhListBox == "listbox1")
-        //            lstAfterItems.Items.Add(filePath + fileName + fileCreateDate);
-        //        else
-        //            listBox2.Items.Add(filePath + fileName + fileCreateDate);
-        //    }
-        //}
         public void UpdateProgressBar(int processedFiles, int totalFiles)
         {
             if (InvokeRequired)
@@ -209,7 +169,6 @@ namespace FileOrbis___File_System_Reporter
                 scanProcess.lblScannedMessage = new lblScannedMessage(UpdateLblScan);
                 scanProcess.lblTotalTımeCallBack = new lblTotalTımeCallBack(UpdateLblTotalTıme);
                 scanProcess.lblPathMessage = new lblPathMessage(UpdateLblPath);
-                //scanProcess.FileScannedCallback = new FileScannedCallback(AddFileToListBox);
                 scanProcess.ProgressBarCallBack = UpdateProgressBar;
                 string selectedFolder = txtSourcePath.Text;
                 var result = scanProcess.ScanOperation(selectedFolder, selectedDate, checkedDate, fileDate, Convert.ToInt32(txtThread.Text));
