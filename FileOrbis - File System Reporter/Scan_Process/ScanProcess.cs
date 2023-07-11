@@ -1,5 +1,6 @@
 ﻿using DocumentFormat.OpenXml;
 using FileOrbis___File_System_Reporter.Date_Process;
+using FileOrbis___File_System_Reporter.DateOptions;
 using FileOrbis___File_System_Reporter.File_İnformation;
 using System;
 using System.Collections;
@@ -47,14 +48,16 @@ namespace FileOrbis___File_System_Reporter
             fileInformations.Clear();
             folderInformations.Clear();
             IDateOptions dateOptionsMd = new ModifiedDateOptions();
+            IDateOptions dateOptionsCr = new CreatedDateOption();
+            IDateOptions dateOptionsAc = new AccessedDateOption();
             Parallel.ForEach(Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories), new ParallelOptions { MaxDegreeOfParallelism = threadCount }, newPath =>
             {
                 Fileİnformation fileInfo = new Fileİnformation();
                 fileInfo.FilePath = newPath;
                 fileInfo.FileName = Path.GetFileName(newPath);
-                fileInfo.FileCreateDate = dateOptionsMd.SetCreationDate(newPath);
-                fileInfo.FileModifiedDate = dateOptionsMd.SetModifiedDate(newPath);
-                fileInfo.FileAccessDate = dateOptionsMd.SetAccessedDate(newPath);
+                fileInfo.FileCreateDate = dateOptionsMd.SetDate(newPath);
+                fileInfo.FileModifiedDate = dateOptionsMd.SetDate(newPath);
+                fileInfo.FileAccessDate = dateOptionsMd.SetDate(newPath);
                 fileInfo.FileSize = fileInfo.FileSize;
 
                 lock (fileInformationLock)
@@ -100,7 +103,7 @@ namespace FileOrbis___File_System_Reporter
                     stopwatch = new Stopwatch();
                     stopwatch.Start();
 
-                    var (fileInformations, folderInformations) = ScanFiles(selectedFolder,files, subDirectories, dateTime, checkedDate, fileDate, threadCount);
+                    var (fileInformations, folderInformations) = ScanFiles(selectedFolder, files, subDirectories, dateTime, checkedDate, fileDate, threadCount);
 
                     stopwatch.Stop();
 

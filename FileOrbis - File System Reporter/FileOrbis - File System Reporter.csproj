@@ -68,6 +68,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Copy_Process\CopyProcess.cs" />
+    <Compile Include="DateOptions\AccessedDateOption.cs" />
+    <Compile Include="DateOptions\CreatedDateOption.cs" />
     <Compile Include="Date_Process\DateType.cs" />
     <Compile Include="Delete_Process\DeleteProcess.cs" />
     <Compile Include="Excel_Process\ExcelProcess.cs" />

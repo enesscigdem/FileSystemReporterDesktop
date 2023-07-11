@@ -32,6 +32,7 @@ namespace FileOrbis___File_System_Reporter
         }
         public void ExcelOperations(string selectedFolder, string excelfileName, string dateType, DateTime selectedDate, DateTime fileDate, List<Fileİnformation> fileInformations)
         {
+            IDateOptions dateOptions = dt.GetDateType(dateType);
             string selectedExcelFileName = string.Format(excelfileName + "{0:dd-MM-yyyy_HH.mm.ss}.xlsx", DateTime.Now);
             string excelFilePath = Path.Combine(Path.Combine(Application.StartupPath, "output", selectedExcelFileName));
 
@@ -43,7 +44,8 @@ namespace FileOrbis___File_System_Reporter
                 int row = 2;
                 foreach (Fileİnformation fileInfo in fileInformations)
                 {
-                    fileDate = dt.GetDateType(dateType, fileInfo.FilePath);
+                    fileDate = dateOptions.SetDate(fileInfo.FilePath);
+                    //fileDate = dt.GetDateType(dateType, fileInfo.FilePath);
 
                     if (fileDate > selectedDate && excelfileName == "afterDate")
                     {

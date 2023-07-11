@@ -5,13 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FileOrbis___File_System_Reporter
+namespace FileOrbis___File_System_Reporter.DateOptions
 {
-    public class ModifiedDateOptions : IDateOptions
+    public class CreatedDateOption : IDateOptions
     {
         public DateTime SetDate(string file)
         {
-            return File.GetLastWriteTime(file);
+            return File.GetCreationTime(file);
         }
     }
 }

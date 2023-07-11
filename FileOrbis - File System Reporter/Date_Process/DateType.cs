@@ -1,5 +1,7 @@
-﻿using System;
+﻿using FileOrbis___File_System_Reporter.DateOptions;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,27 +11,24 @@ namespace FileOrbis___File_System_Reporter.Date_Process
 {
     public class DateType
     {
-        public DateTime fileDate;
-        public string file;
-        public DateTime GetDateType(string dateType, string file)
+        public IDateOptions GetDateType(string dateType)
         {
-            DateTime result;
+            IDateOptions result;
             switch (dateType)
             {
                 case "Created":
-                    result = File.GetCreationTime(file);
+                    result = new CreatedDateOption();
                     break;
                 case "Modified":
-                    result = File.GetLastWriteTime(file);
+                    result = new ModifiedDateOptions();
                     break;
                 case "Accessed":
-                    result = File.GetLastAccessTime(file);
+                    result = new AccessedDateOption();
                     break;
                 default:
                     throw new ArgumentException("Invalid date type.");
             }
             return result;
         }
-
-    }
+    }  // bu cs. bana bir obje döndürecek, bu döndürdüğü obje de örneğin created, created ise CreatedDateOption fonksiyonu çalışacak
 }

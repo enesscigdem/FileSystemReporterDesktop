@@ -1,4 +1,5 @@
 ﻿using FileOrbis___File_System_Reporter.Date_Process;
+using FileOrbis___File_System_Reporter.DateOptions;
 using FileOrbis___File_System_Reporter.File_İnformation;
 using System;
 using System.Collections.Generic;
@@ -14,8 +15,8 @@ namespace FileOrbis___File_System_Reporter
 {
     public class CopyProcess
     {
-        DateType dt = new DateType();
-        public void CopyOperation(string sourcePath, string targetPath, string selectedFileName, bool OverWriteCheck, bool NtfsPermissionCheck, bool rdCopyCheck, List<Fileİnformation> fileInformations, List<Folderİnformation> folderInformations, DateTime fileDate, DateTime selectedDate, string dateType, bool chEmptyFoldersCheck)
+        DateType dt = new DateType(); // burda bir kere oluşturduktan sonra copy işlemi yaparken döngü içinde dt den gelen değeri dt.CreatedDateOption yapacaksın örneğin //
+        public void CopyOperation(string sourcePath, string targetPath, string selectedFileName, bool OverWriteCheck, bool NtfsPermissionCheck, bool rdCopyCheck, List<Fileİnformation> fileInformations, List<Folderİnformation> folderInformations, DateTime fileDate, DateTime selectedDate, string dateType, bool chEmptyFoldersCheck, IDateOptions dateOptions)
         {
             DeleteProcess deleteProcess = new DeleteProcess();
             if (rdCopyCheck)
@@ -27,7 +28,7 @@ namespace FileOrbis___File_System_Reporter
                     string destinationFolderPath = targetPath + "\\" + selectedFileName;
                     if (OverWriteCheck)
                         deleteProcess.DeleteDirectory(destinationFolderPath, fileInformations); // overwrite işlemi .
-                    CopyFiles(sourceFolderPath, destinationFolderPath, copyPermissions, fileDate, selectedDate, dateType, chEmptyFoldersCheck,fileInformations,folderInformations);
+                    CopyFiles(sourceFolderPath, destinationFolderPath, copyPermissions, fileDate, selectedDate, dateType, chEmptyFoldersCheck, fileInformations, folderInformations, dateOptions);
 
                     MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully copied to the location '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -37,8 +38,7 @@ namespace FileOrbis___File_System_Reporter
                 }
             }
         }
-
-        public void CopyFiles(string sourcePath, string targetPath, bool copyPermissions, DateTime fileDate, DateTime selectedDate, string dateType, bool chEmptyFoldersCheck, List<Fileİnformation> fileInformations, List<Folderİnformation> folderInformations)
+        public void CopyFiles(string sourcePath, string targetPath, bool copyPermissions, DateTime fileDate, DateTime selectedDate, string dateType, bool chEmptyFoldersCheck, List<Fileİnformation> fileInformations, List<Folderİnformation> folderInformations, IDateOptions dateOptions)
         {
             foreach (Folderİnformation dirPath in folderInformations)
             {
@@ -46,15 +46,16 @@ namespace FileOrbis___File_System_Reporter
 
                 if (chEmptyFoldersCheck || Directory.GetFiles(dirPath.FolderPath).Length > 0 || Directory.GetDirectories(dirPath.FolderPath).Length > 0)
                 {
-                    fileDate = dt.GetDateType(dateType, dirPath.FolderPath);
+                    fileDate = dateOptions.SetDate(dirPath.FolderPath);
+
                     if (fileDate > selectedDate)
                         Directory.CreateDirectory(targetDirPath);
                 }
             }
-
             foreach (Fileİnformation newPath in fileInformations)
             {
-                fileDate = dt.GetDateType(dateType, newPath.FilePath);
+                fileDate = dateOptions.SetDate(newPath.FilePath);
+
                 if (fileDate > selectedDate)
                     File.Copy(newPath.FilePath, newPath.FilePath.Replace(sourcePath, targetPath), true);
 

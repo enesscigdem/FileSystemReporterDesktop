@@ -1,6 +1,7 @@
 ﻿using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Presentation;
 using DocumentFormat.OpenXml.Spreadsheet;
+using FileOrbis___File_System_Reporter.Date_Process;
 using FileOrbis___File_System_Reporter.File_İnformation;
 using System;
 using System.Collections.Generic;
@@ -174,7 +175,7 @@ namespace FileOrbis___File_System_Reporter
         {
             if (InvokeRequired)
             {
-                BeginInvoke(new Action<int,int>(UpdateLblScan), processedFiles,totalFiles);
+                BeginInvoke(new Action<int, int>(UpdateLblScan), processedFiles, totalFiles);
                 return;
             }
             lblScannedItem.Text = $"{processedFiles} / {totalFiles} items were scanned.";
@@ -192,10 +193,14 @@ namespace FileOrbis___File_System_Reporter
             lblTotalTime.Update();
         }
         ScanProcess scanProcess = new ScanProcess();
+        DateType dt = new DateType();
+        IDateOptions dateOptions;
+
         private void button3_Click(object sender, EventArgs e)
         {
             #region Scan Process 
 
+            dateOptions = dt.GetDateType(checkedDate);
             selectedDate = dtDateOption.Value;
             lstAfterItems.Items.Clear();
             listBox2.Items.Clear();
@@ -224,7 +229,7 @@ namespace FileOrbis___File_System_Reporter
             {
                 MoveProcess moveProcess = new MoveProcess();
                 DeleteProcess deleteProcess = new DeleteProcess();
-                moveProcess.MoveOperation(checkedDate, rdMove.Checked, chOverWrite.Checked, txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chEmptyFolders.Checked, fileDate, selectedDate, informationList, folderList);
+                moveProcess.MoveOperation(checkedDate, rdMove.Checked, chOverWrite.Checked, txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chEmptyFolders.Checked, fileDate, selectedDate, informationList, folderList, dateOptions);
             }
             #endregion
 
@@ -232,7 +237,7 @@ namespace FileOrbis___File_System_Reporter
             if (rdCopy.Checked)
             {
                 CopyProcess copyProcess = new CopyProcess();
-                copyProcess.CopyOperation(txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chOverWrite.Checked, chNtfsPermission.Checked, rdCopy.Checked, informationList, folderList, fileDate, selectedDate, checkedDate, chEmptyFolders.Checked);
+                copyProcess.CopyOperation(txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chOverWrite.Checked, chNtfsPermission.Checked, rdCopy.Checked, informationList, folderList, fileDate, selectedDate, checkedDate, chEmptyFolders.Checked,dateOptions);
             }
             #endregion
         }
