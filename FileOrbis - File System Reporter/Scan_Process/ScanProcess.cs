@@ -42,17 +42,19 @@ namespace FileOrbis___File_System_Reporter
         private object fileInformationLock = new object();
         private object folderInformationLock = new object();
 
-        public (List<Fileİnformation> files, List<Folderİnformation> folders) ScanFiles(string[] files, string[] directories, DateTime dateTime, string checkedDate, DateTime fileDate, int threadCount)
+        public (List<Fileİnformation> files, List<Folderİnformation> folders) ScanFiles(string sourcePath, string[] files, string[] directories, DateTime dateTime, string checkedDate, DateTime fileDate, int threadCount)
         {
+            fileInformations.Clear();
+            folderInformations.Clear();
             IDateOptions dateOptionsMd = new ModifiedDateOptions();
-            Parallel.ForEach(files, new ParallelOptions { MaxDegreeOfParallelism = threadCount }, file =>
+            Parallel.ForEach(Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories), new ParallelOptions { MaxDegreeOfParallelism = threadCount }, newPath =>
             {
                 Fileİnformation fileInfo = new Fileİnformation();
-                fileInfo.FilePath = file;
-                fileInfo.FileName = Path.GetFileName(file);
-                fileInfo.FileCreateDate = dateOptionsMd.SetCreationDate(file);
-                fileInfo.FileModifiedDate = dateOptionsMd.SetModifiedDate(file);
-                fileInfo.FileAccessDate = dateOptionsMd.SetAccessedDate(file);
+                fileInfo.FilePath = newPath;
+                fileInfo.FileName = Path.GetFileName(newPath);
+                fileInfo.FileCreateDate = dateOptionsMd.SetCreationDate(newPath);
+                fileInfo.FileModifiedDate = dateOptionsMd.SetModifiedDate(newPath);
+                fileInfo.FileAccessDate = dateOptionsMd.SetAccessedDate(newPath);
                 fileInfo.FileSize = fileInfo.FileSize;
 
                 lock (fileInformationLock)
@@ -60,7 +62,7 @@ namespace FileOrbis___File_System_Reporter
 
                 processedFiles++;
 
-                ProgressBarCallBack?.Invoke(processedFiles, totalFiles); // call back
+                ProgressBarCallBack?.Invoke(processedFiles, totalFiles); // callback
 
                 lblScannedMessage?.Invoke(processedFiles, totalFiles);
 
@@ -69,14 +71,13 @@ namespace FileOrbis___File_System_Reporter
                 Application.DoEvents();
 
                 lblTotalTımeCallBack?.Invoke(stopwatch);
-
             });
-            Parallel.ForEach(directories, new ParallelOptions { MaxDegreeOfParallelism = threadCount }, directory =>
+            Parallel.ForEach(Directory.GetDirectories(sourcePath, "*.*", SearchOption.AllDirectories), new ParallelOptions { MaxDegreeOfParallelism = threadCount }, dirPath =>
             {
                 Folderİnformation folderInfo = new Folderİnformation();
-                folderInfo.FolderName = Path.GetFileName(directory);
-                folderInfo.subDirectoryFiles = Directory.GetFiles(directory);
-                folderInfo.FolderPath = directory;
+                folderInfo.FolderName = Path.GetFileName(dirPath);
+                folderInfo.subDirectoryFiles = Directory.GetFiles(dirPath);
+                folderInfo.FolderPath = dirPath;
 
                 lock (folderInformationLock)
                     folderInformations.Add(folderInfo);
@@ -99,7 +100,7 @@ namespace FileOrbis___File_System_Reporter
                     stopwatch = new Stopwatch();
                     stopwatch.Start();
 
-                    var (fileInformations, folderInformations) = ScanFiles(files, subDirectories, dateTime, checkedDate, fileDate, threadCount);
+                    var (fileInformations, folderInformations) = ScanFiles(selectedFolder,files, subDirectories, dateTime, checkedDate, fileDate, threadCount);
 
                     stopwatch.Stop();
 

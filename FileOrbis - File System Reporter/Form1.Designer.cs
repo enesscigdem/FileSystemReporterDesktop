@@ -388,6 +388,7 @@ namespace FileOrbis___File_System_Reporter
             this.lstAfterItems.ScrollAlwaysVisible = true;
             this.lstAfterItems.Size = new System.Drawing.Size(430, 130);
             this.lstAfterItems.TabIndex = 31;
+            this.lstAfterItems.Visible = false;
             // 
             // label11
             // 
@@ -443,6 +444,7 @@ namespace FileOrbis___File_System_Reporter
             this.listBox2.ScrollAlwaysVisible = true;
             this.listBox2.Size = new System.Drawing.Size(430, 130);
             this.listBox2.TabIndex = 36;
+            this.listBox2.Visible = false;
             // 
             // label12
             // 
@@ -453,6 +455,7 @@ namespace FileOrbis___File_System_Reporter
             this.label12.Size = new System.Drawing.Size(44, 21);
             this.label12.TabIndex = 37;
             this.label12.Text = "After";
+            this.label12.Visible = false;
             // 
             // label13
             // 
@@ -463,12 +466,13 @@ namespace FileOrbis___File_System_Reporter
             this.label13.Size = new System.Drawing.Size(55, 21);
             this.label13.TabIndex = 38;
             this.label13.Text = "Before";
+            this.label13.Visible = false;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(888, 811);
+            this.ClientSize = new System.Drawing.Size(888, 648);
             this.Controls.Add(this.label13);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.listBox2);

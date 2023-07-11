@@ -27,9 +27,9 @@ namespace FileOrbis___File_System_Reporter
                     string destinationFolderPath = targetPath + "\\" + selectedFileName;
                     if (OverWriteCheck)
                         deleteProcess.DeleteDirectory(destinationFolderPath, fileInformations); // overwrite işlemi .
-                    CopyDirectory(sourceFolderPath, destinationFolderPath, copyPermissions, fileInformations, folderInformations, fileDate, selectedDate, dateType, chEmptyFoldersCheck);
+                    CopyFiles(sourceFolderPath, destinationFolderPath, copyPermissions, fileDate, selectedDate, dateType, chEmptyFoldersCheck,fileInformations,folderInformations);
 
-                    MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully copied to the location '" + destinationFolderPath + "' and overwritten.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully copied to the location '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
                 {
@@ -37,52 +37,35 @@ namespace FileOrbis___File_System_Reporter
                 }
             }
         }
-        public void CopyDirectory(string sourceDir, string destinationDir, bool copyPermissions, List<Fileİnformation> fileInformations, List<Folderİnformation> folderInformations, DateTime fileDate, DateTime selectedDate, string dateType, bool chEmptyFoldersCheck)
+
+        public void CopyFiles(string sourcePath, string targetPath, bool copyPermissions, DateTime fileDate, DateTime selectedDate, string dateType, bool chEmptyFoldersCheck, List<Fileİnformation> fileInformations, List<Folderİnformation> folderInformations)
         {
-            if (!Directory.Exists(destinationDir))
+            foreach (Folderİnformation dirPath in folderInformations)
             {
-                Directory.CreateDirectory(destinationDir);
-            }
+                string targetDirPath = dirPath.FolderPath.Replace(sourcePath, targetPath);
 
-            // İlk klasörün içindeki dosyaları kopyala
-
-            foreach (Folderİnformation folderInfo in folderInformations)
-            {
-                CopyFolderContents(folderInfo.FolderPath, destinationDir, selectedDate, dateType, chEmptyFoldersCheck, copyPermissions);
-            }
-        }
-
-        private void CopyFolderContents(string sourceDir, string targetDir, DateTime selectedDate, string dateType, bool chEmptyFoldersCheck, bool copyPermissions)
-        {
-            DirectoryInfo sourceDirectoryInfo = new DirectoryInfo(sourceDir);
-
-            if (!sourceDirectoryInfo.Exists)
-                return;
-
-            DirectoryInfo targetDirectoryInfo = Directory.CreateDirectory(Path.Combine(targetDir, sourceDirectoryInfo.Name));
-
-            foreach (FileInfo file in sourceDirectoryInfo.GetFiles())
-            {
-                DateTime fileDate = dt.GetDateType(dateType, file.FullName);
-
-                if (fileDate > selectedDate)
+                if (chEmptyFoldersCheck || Directory.GetFiles(dirPath.FolderPath).Length > 0 || Directory.GetDirectories(dirPath.FolderPath).Length > 0)
                 {
-                    string targetFilePath = Path.Combine(targetDirectoryInfo.FullName, file.Name);
-                    file.CopyTo(targetFilePath, true);
-
-                    if (copyPermissions)
-                    {
-                        FileSecurity sourceFileSecurity = file.GetAccessControl();
-                        FileSecurity destFileSecurity = new FileSecurity();
-                        destFileSecurity.SetSecurityDescriptorBinaryForm(sourceFileSecurity.GetSecurityDescriptorBinaryForm());
-                        File.SetAccessControl(targetFilePath, destFileSecurity);
-                    }
+                    fileDate = dt.GetDateType(dateType, dirPath.FolderPath);
+                    if (fileDate > selectedDate)
+                        Directory.CreateDirectory(targetDirPath);
                 }
             }
 
-            foreach (DirectoryInfo subDirectory in sourceDirectoryInfo.GetDirectories())
+            foreach (Fileİnformation newPath in fileInformations)
             {
-                CopyFolderContents(subDirectory.FullName, targetDirectoryInfo.FullName, selectedDate, dateType, chEmptyFoldersCheck, copyPermissions);
+                fileDate = dt.GetDateType(dateType, newPath.FilePath);
+                if (fileDate > selectedDate)
+                    File.Copy(newPath.FilePath, newPath.FilePath.Replace(sourcePath, targetPath), true);
+
+                if (copyPermissions)
+                {
+                    FileInfo sourceFileInfo = new FileInfo(newPath.FilePath);
+                    FileSecurity sourceFileSecurity = sourceFileInfo.GetAccessControl();
+                    FileSecurity destFileSecurity = new FileSecurity();
+                    destFileSecurity.SetSecurityDescriptorBinaryForm(sourceFileSecurity.GetSecurityDescriptorBinaryForm());
+                    File.SetAccessControl(newPath.FilePath.Replace(sourcePath, targetPath), destFileSecurity);
+                }
             }
         }
     }

@@ -14,11 +14,11 @@ namespace FileOrbis___File_System_Reporter
     public class MoveProcess
     {
         DateType dt = new DateType();
+        DeleteProcess deleteProcess = new DeleteProcess();
         public void MoveOperation(string dateType, bool rdMoveCheck, bool chOverWriteCheck, string sourcePath, string targetPath, string selectedFileName, bool chEmptyFoldersCheck, DateTime fileDate, DateTime selectedDate, List<Fileİnformation> fileInformations, List<Folderİnformation> folderInformations)
         {
             if (rdMoveCheck)
             {
-                DeleteProcess deleteProcess = new DeleteProcess();
                 try
                 {
                     string sourceFolderPath = sourcePath;
@@ -28,7 +28,7 @@ namespace FileOrbis___File_System_Reporter
                         if (Directory.Exists(destinationFolderPath))
                             deleteProcess.DeleteDirectory(destinationFolderPath, fileInformations);
                     }
-                    MoveDirectoryByDate(sourceFolderPath, destinationFolderPath, dateType, chEmptyFoldersCheck, fileDate, selectedDate, fileInformations, folderInformations);
+                    MoveFiles(sourceFolderPath, destinationFolderPath, fileDate, selectedDate, dateType, chEmptyFoldersCheck, fileInformations, folderInformations);
                     MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully moved from location '" + sourceFolderPath + "' to '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
@@ -38,67 +38,30 @@ namespace FileOrbis___File_System_Reporter
             }
         }
 
-        public void MoveDirectoryByDate(string sourceFolder, string targetDirectory, string dateType, bool chEmptyFoldersCheck, DateTime fileDate, DateTime selectedDate, List<Fileİnformation> fileInformations, List<Folderİnformation> folderInformations)
+        public void MoveFiles(string sourcePath, string targetPath, DateTime fileDate, DateTime selectedDate, string dateType, bool chEmptyFoldersCheck, List<Fileİnformation> fileInformations,List<Folderİnformation> folderInformations)
         {
-            if (!Directory.Exists(targetDirectory))
+            foreach (Folderİnformation dirPath in folderInformations)
             {
-                Directory.CreateDirectory(targetDirectory);
-            }
+                string targetDirPath = dirPath.FolderPath.Replace(sourcePath, targetPath);
 
-            foreach (Folderİnformation folderInfo in folderInformations)
-            {
-                MoveFolderContents(sourceFolder,folderInfo.FolderPath, Path.Combine(targetDirectory, folderInfo.FolderName), dateType, chEmptyFoldersCheck, fileDate, selectedDate, fileInformations, folderInformations);
-            }
-
-            if (Directory.GetFileSystemEntries(sourceFolder).Length == 0)
-            {
-                Directory.Delete(sourceFolder);
-            }
-        }
-
-        private void MoveFolderContents(string sourceFolder,string sourceDir, string targetDir, string dateType, bool chEmptyFoldersCheck, DateTime fileDate, DateTime selectedDate, List<Fileİnformation> fileInformations, List<Folderİnformation> folderInformations)
-        {
-            DirectoryInfo sourceDirectoryInfo = new DirectoryInfo(sourceDir);
-            DirectoryInfo targetDirectoryInfo = Directory.CreateDirectory(targetDir);
-
-            try
-            {
-                foreach (FileInfo file in sourceDirectoryInfo.GetFiles())
+                if (chEmptyFoldersCheck || Directory.GetFiles(dirPath.FolderPath).Length > 0 || Directory.GetDirectories(dirPath.FolderPath).Length > 0)
                 {
-                    fileDate = dt.GetDateType(dateType, file.FullName);
-
+                    fileDate = dt.GetDateType(dateType, dirPath.FolderPath);
                     if (fileDate > selectedDate)
-                    {
-                        string targetFilePath = Path.Combine(targetDirectoryInfo.FullName, file.Name);
-                        file.CopyTo(targetFilePath, true);
-                        file.Delete();
-                    }
+                        Directory.CreateDirectory(targetDirPath);
                 }
             }
-            catch
+
+            foreach (Fileİnformation newPath in fileInformations)
             {
-                Directory.Delete(sourceFolder);
+                fileDate = dt.GetDateType(dateType, newPath.FilePath);
+                if (fileDate > selectedDate)
+                {
+                    string newFilePath = newPath.FilePath.Replace(sourcePath, targetPath);
+                    File.Move(newPath.FilePath, newFilePath);
+                }
             }
-
-
-            foreach (DirectoryInfo subDirectory in sourceDirectoryInfo.GetDirectories())
-            {
-                string subDirectoryName = subDirectory.Name;
-                string targetSubDirectory = Path.Combine(targetDirectoryInfo.FullName, subDirectoryName);
-
-                MoveFolderContents(sourceFolder, subDirectory.FullName, targetSubDirectory, dateType, chEmptyFoldersCheck, fileDate, selectedDate, fileInformations, folderInformations);
-
-                //if (Directory.GetFileSystemEntries(subDirectory.FullName).Length == 0)
-                //{
-                //    subDirectory.Delete();
-                //}
-            }
-
-            if (Directory.GetFileSystemEntries(sourceDir).Length == 0)
-            {
-                sourceDirectoryInfo.Delete();
-            }
+            deleteProcess.DeleteDirectory(sourcePath, fileInformations);
         }
-
     }
 }
