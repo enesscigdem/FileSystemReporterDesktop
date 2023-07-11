@@ -15,7 +15,7 @@ namespace FileOrbis___File_System_Reporter
 {
     public class CopyProcess
     {
-        DateType dt = new DateType(); // burda bir kere oluşturduktan sonra copy işlemi yaparken döngü içinde dt den gelen değeri dt.CreatedDateOption yapacaksın örneğin //
+        DateType dt = new DateType();
         public void CopyOperation(string sourcePath, string targetPath, string selectedFileName, bool OverWriteCheck, bool NtfsPermissionCheck, bool rdCopyCheck, List<Fileİnformation> fileInformations, List<Folderİnformation> folderInformations, DateTime fileDate, DateTime selectedDate, string dateType, bool chEmptyFoldersCheck, IDateOptions dateOptions)
         {
             DeleteProcess deleteProcess = new DeleteProcess();

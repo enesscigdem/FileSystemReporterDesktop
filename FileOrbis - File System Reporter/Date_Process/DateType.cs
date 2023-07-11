@@ -30,5 +30,5 @@ namespace FileOrbis___File_System_Reporter.Date_Process
             }
             return result;
         }
-    }  // bu cs. bana bir obje döndürecek, bu döndürdüğü obje de örneğin created, created ise CreatedDateOption fonksiyonu çalışacak
+    }
 }

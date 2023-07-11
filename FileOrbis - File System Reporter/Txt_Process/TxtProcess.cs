@@ -10,14 +10,12 @@ namespace FileOrbis___File_System_Reporter
 {
     public class TxtProcess
     {
-        public void SaveTxt(string sourcepath, string fileDirectory, string fileName, DateTime createDate, DateTime modifiedDate, DateTime accessDate, long fileSize, List<Fileİnformation> fileInformations)
+        public void SaveTxt(string sourcepath, List<Fileİnformation> fileInformations)
         {
             string selectedFolder = sourcepath;
 
             if (!string.IsNullOrEmpty(selectedFolder) && Directory.Exists(selectedFolder))
             {
-                string[] files = Directory.GetFiles(selectedFolder, "*", SearchOption.AllDirectories);
-
                 string fileNameAfterDate = string.Format("output{0:dd-MM-yyyy_HH.mm.ss}.txt", DateTime.Now);
                 string textFilePath = Path.Combine(Application.StartupPath, "output", fileNameAfterDate);
 

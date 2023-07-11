@@ -247,7 +247,7 @@ namespace FileOrbis___File_System_Reporter
             if (rdTxt.Checked)
             {
                 TxtProcess txtProcess = new TxtProcess();
-                txtProcess.SaveTxt(txtSourcePath.Text, fileDirectory, fileName, createDate, modifiedDate, accessDate, fileSize, informationList);
+                txtProcess.SaveTxt(txtSourcePath.Text, informationList);
             }
             else if (rdExcel.Checked)
             {
