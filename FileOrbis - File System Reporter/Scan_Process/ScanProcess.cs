@@ -23,13 +23,11 @@ namespace FileOrbis___File_System_Reporter
     public delegate void ProgressBarCallBack(int processedFiles, int totalFiles);
     public class ScanProcess : Fileİnformation
     {
-        public ScanProcess(Form1 form)
+        public ScanProcess()
         {
-            frm = form;
             fileInformations = new List<Fileİnformation>();
             folderInformations = new List<Folderİnformation>();
         }
-        private Form1 frm;
         string WhListBox;
         int processedFiles, totalFiles;
         Stopwatch stopwatch;
@@ -39,49 +37,26 @@ namespace FileOrbis___File_System_Reporter
         public lblTotalTımeCallBack lblTotalTımeCallBack { get; set; }
         public lblPathMessage lblPathMessage { get; set; }
         public ProgressBarCallBack ProgressBarCallBack { get; set; }
-        ScanProcess scanProcess;
         private List<Fileİnformation> fileInformations = new List<Fileİnformation>();
         private List<Folderİnformation> folderInformations = new List<Folderİnformation>();
         private object fileInformationLock = new object();
         private object folderInformationLock = new object();
-        private object progressbarlock = new object();
-        private object itemlock = new object();
-        private object saniyelock = new object();
-        private object pathlock = new object();
+
         public (List<Fileİnformation> files, List<Folderİnformation> folders) ScanFiles(string[] files, string[] directories, DateTime dateTime, string checkedDate, DateTime fileDate, int threadCount)
         {
-            
+            IDateOptions dateOptionsMd = new ModifiedDateOptions();
             Parallel.ForEach(files, new ParallelOptions { MaxDegreeOfParallelism = threadCount }, file =>
             {
-
-                IDateOptions dateOptionsCr = new CreationDateOptions();
-                IDateOptions dateOptionsMd = new ModifiedDateOptions();
-                IDateOptions dateOptionsAc = new AccessDateOptions();
-
                 Fileİnformation fileInfo = new Fileİnformation();
                 fileInfo.FilePath = file;
                 fileInfo.FileName = Path.GetFileName(file);
-                fileInfo.FileCreateDate = dateOptionsCr.SetDate(file);
-                fileInfo.FileModifiedDate = dateOptionsMd.SetDate(file);
-                fileInfo.FileAccessDate = dateOptionsAc.SetDate(file);
-                FileInfo fileInformation = new FileInfo(file);
-                fileInfo.FileSize = fileInformation.Length;
+                fileInfo.FileCreateDate = dateOptionsMd.SetCreationDate(file);
+                fileInfo.FileModifiedDate = dateOptionsMd.SetModifiedDate(file);
+                fileInfo.FileAccessDate = dateOptionsMd.SetAccessedDate(file);
+                fileInfo.FileSize = fileInfo.FileSize;
 
-
-                fileInformations.Add(fileInfo);
-                fileDate = dt.GetDateType(checkedDate, file);
-
-                if (fileDate > dateTime)
-                {
-                    // cal back
-                    WhListBox = "listbox1";
-                    FileScannedCallback?.Invoke(fileInfo.FilePath, fileInfo.FileName, fileInfo.FileCreateDate, WhListBox);
-                }
-                else
-                {
-                    WhListBox = "listbox2";
-                    FileScannedCallback?.Invoke(fileInfo.FilePath, fileInfo.FileName, fileInfo.FileCreateDate, WhListBox);
-                }
+                lock (fileInformationLock)
+                    fileInformations.Add(fileInfo);
 
                 processedFiles++;
 
@@ -103,7 +78,8 @@ namespace FileOrbis___File_System_Reporter
                 folderInfo.subDirectoryFiles = Directory.GetFiles(directory);
                 folderInfo.FolderPath = directory;
 
-                folderInformations.Add(folderInfo);
+                lock (folderInformationLock)
+                    folderInformations.Add(folderInfo);
 
             });
             return (fileInformations, folderInformations);

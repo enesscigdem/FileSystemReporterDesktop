@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.AccessControl;
 using System.Text;
 using System.Threading;
@@ -20,13 +21,9 @@ namespace FileOrbis___File_System_Reporter
 {
     public partial class Form1 : Form
     {
-        private ScanProcess scanProcess;
-        private List<Thread> scanThreads;
         public Form1()
         {
             InitializeComponent();
-            scanThreads = new List<Thread>();
-            scanProcess = new ScanProcess(this);
         }
         public DateTime selectedDate, createDate, modifiedDate, accessDate, fileDate;
         public string fileName, fileDirectory, selectedFileName, checkedDate = "Created";
@@ -136,23 +133,26 @@ namespace FileOrbis___File_System_Reporter
         }
         #endregion
 
-        private void AddFileToListBox(string filePath, string fileName, DateTime fileCreateDate, string WhListBox)
-        {
-            if (InvokeRequired) // ana iş parçacığı dışından erişilmeye çalışılıp çalışılmadığını belirlemek için kullanılır.
-            {
-                Invoke(new Action<string, string, DateTime, string>(AddFileToListBox), filePath, fileName, fileCreateDate, WhListBox);
-                return;
-            }
-            if (WhListBox == "listbox1")
-                listBox1.Items.Add(filePath + fileName + fileCreateDate);
-            else
-                listBox2.Items.Add(filePath + fileName + fileCreateDate);
-        }
+        //private void AddFileToListBox(string filePath, string fileName, DateTime fileCreateDate, string WhListBox)
+        //{
+        //    if (InvokeRequired) // ana iş parçacığı dışından erişilmeye çalışılıp çalışılmadığını belirlemek için kullanılır.
+        //    {
+        //        BeginInvoke(new Action<string, string, DateTime, string>(AddFileToListBox), filePath, fileName, fileCreateDate, WhListBox);
+        //        return;
+        //    }
+        //    if (stopwatch2.Elapsed.Seconds % 2 == 0)
+        //    {
+        //        if (WhListBox == "listbox1")
+        //            lstAfterItems.Items.Add(filePath + fileName + fileCreateDate);
+        //        else
+        //            listBox2.Items.Add(filePath + fileName + fileCreateDate);
+        //    }
+        //}
         public void UpdateProgressBar(int processedFiles, int totalFiles)
         {
             if (InvokeRequired)
             {
-                Invoke(new Action<int, int>(UpdateProgressBar), processedFiles, totalFiles);
+                BeginInvoke(new Action<int, int>(UpdateProgressBar), processedFiles, totalFiles);
                 return;
             }
             progressBar1.Maximum = totalFiles;
@@ -164,7 +164,7 @@ namespace FileOrbis___File_System_Reporter
         {
             if (InvokeRequired)
             {
-                Invoke(new Action<string>(UpdateLblPath), fileInfo);
+                BeginInvoke(new Action<string>(UpdateLblPath), fileInfo);
                 return;
             }
             lblPath.Text = fileInfo;
@@ -172,13 +172,9 @@ namespace FileOrbis___File_System_Reporter
         }
         public void UpdateLblScan(int processedFiles, int totalFiles)
         {
-            if (lblScannedItem.InvokeRequired)
+            if (InvokeRequired)
             {
-                void action()
-                {
-                    UpdateLblScan(processedFiles, totalFiles);
-                }
-                lblScannedItem.Invoke((Action)action);
+                BeginInvoke(new Action<int,int>(UpdateLblScan), processedFiles,totalFiles);
                 return;
             }
             lblScannedItem.Text = $"{processedFiles} / {totalFiles} items were scanned.";
@@ -187,32 +183,28 @@ namespace FileOrbis___File_System_Reporter
 
         public void UpdateLblTotalTıme(Stopwatch stopwatch)
         {
-            if (lblTotalTime.InvokeRequired)
+            if (InvokeRequired)
             {
-                void action()
-                {
-                    UpdateLblTotalTıme(stopwatch);
-                }
-                lblTotalTime.Invoke((Action)action);
+                BeginInvoke(new Action<Stopwatch>(UpdateLblTotalTıme), stopwatch);
                 return;
             }
             lblTotalTime.Text = $"Scan was completed. Total elapsed time: {stopwatch.Elapsed.TotalSeconds} seconds";
             lblTotalTime.Update();
         }
+        ScanProcess scanProcess = new ScanProcess();
         private void button3_Click(object sender, EventArgs e)
         {
             #region Scan Process 
 
             selectedDate = dtDateOption.Value;
-            listBox1.Items.Clear();
+            lstAfterItems.Items.Clear();
             listBox2.Items.Clear();
             if (rdScan.Checked)
             {
-                ScanProcess scanProcess = new ScanProcess(this);// bunun invokunu ordaki fonksiyona eşitliyosun frm yi kullanmana gerek kalmıyor
                 scanProcess.lblScannedMessage = new lblScannedMessage(UpdateLblScan);
                 scanProcess.lblTotalTımeCallBack = new lblTotalTımeCallBack(UpdateLblTotalTıme);
                 scanProcess.lblPathMessage = new lblPathMessage(UpdateLblPath);
-                scanProcess.FileScannedCallback = new FileScannedCallback(AddFileToListBox);
+                //scanProcess.FileScannedCallback = new FileScannedCallback(AddFileToListBox);
                 scanProcess.ProgressBarCallBack = UpdateProgressBar;
                 string selectedFolder = txtSourcePath.Text;
                 var result = scanProcess.ScanOperation(selectedFolder, selectedDate, checkedDate, fileDate, Convert.ToInt32(txtThread.Text));

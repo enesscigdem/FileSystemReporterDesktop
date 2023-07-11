@@ -44,11 +44,14 @@ namespace FileOrbis___File_System_Reporter
                 Directory.CreateDirectory(destinationDir);
             }
 
+            // İlk klasörün içindeki dosyaları kopyala
+
             foreach (Folderİnformation folderInfo in folderInformations)
             {
                 CopyFolderContents(folderInfo.FolderPath, destinationDir, selectedDate, dateType, chEmptyFoldersCheck, copyPermissions);
             }
         }
+
         private void CopyFolderContents(string sourceDir, string targetDir, DateTime selectedDate, string dateType, bool chEmptyFoldersCheck, bool copyPermissions)
         {
             DirectoryInfo sourceDirectoryInfo = new DirectoryInfo(sourceDir);
@@ -80,11 +83,6 @@ namespace FileOrbis___File_System_Reporter
             foreach (DirectoryInfo subDirectory in sourceDirectoryInfo.GetDirectories())
             {
                 CopyFolderContents(subDirectory.FullName, targetDirectoryInfo.FullName, selectedDate, dateType, chEmptyFoldersCheck, copyPermissions);
-            }
-
-            if (chEmptyFoldersCheck && targetDirectoryInfo.GetFiles().Length == 0 && targetDirectoryInfo.GetDirectories().Length == 0)
-            {
-                targetDirectoryInfo.Delete();
             }
         }
     }
