@@ -70,6 +70,10 @@ namespace FileOrbis___File_System_Reporter
             DisabledChecked();
             rdMove.Enabled = false;
             rdCopy.Enabled = false;
+            scanProcess.lblScannedMessage = new lblScannedMessage(UpdateLblScan);
+            scanProcess.lblTotalTımeCallBack = new lblTotalTımeCallBack(UpdateLblTotalTıme);
+            scanProcess.lblPathMessage = new lblPathMessage(UpdateLblPath);
+            scanProcess.ProgressBarCallBack = UpdateProgressBar;
         }
         private void button1_Click(object sender, EventArgs e)
         {
@@ -154,6 +158,7 @@ namespace FileOrbis___File_System_Reporter
         }
         ScanProcess scanProcess = new ScanProcess();
         DateType dt = new DateType();
+
         IDateOptions dateOptions;
 
         private void button3_Click(object sender, EventArgs e)
@@ -162,14 +167,12 @@ namespace FileOrbis___File_System_Reporter
 
             dateOptions = dt.GetDateType(checkedDate);
             selectedDate = dtDateOption.Value;
-            lstAfterItems.Items.Clear();
-            listBox2.Items.Clear();
             if (rdScan.Checked)
             {
-                scanProcess.lblScannedMessage = new lblScannedMessage(UpdateLblScan);
-                scanProcess.lblTotalTımeCallBack = new lblTotalTımeCallBack(UpdateLblTotalTıme);
-                scanProcess.lblPathMessage = new lblPathMessage(UpdateLblPath);
-                scanProcess.ProgressBarCallBack = UpdateProgressBar;
+                //scanProcess.lblScannedMessage = new lblScannedMessage(UpdateLblScan);
+                //scanProcess.lblTotalTımeCallBack = new lblTotalTımeCallBack(UpdateLblTotalTıme);
+                //scanProcess.lblPathMessage = new lblPathMessage(UpdateLblPath);
+                //scanProcess.ProgressBarCallBack = UpdateProgressBar;
                 string selectedFolder = txtSourcePath.Text;
                 var result = scanProcess.ScanOperation(selectedFolder, selectedDate, checkedDate, fileDate, Convert.ToInt32(txtThread.Text));
 

@@ -18,26 +18,23 @@ namespace FileOrbis___File_System_Reporter
         public void CopyOperation(string sourcePath, string targetPath, string selectedFileName, bool OverWriteCheck, bool NtfsPermissionCheck, bool rdCopyCheck, List<Fileİnformation> fileInformations, List<Folderİnformation> folderInformations, DateTime fileDate, DateTime selectedDate, string dateType, bool chEmptyFoldersCheck, IDateOptions dateOptions)
         {
             DeleteProcess deleteProcess = new DeleteProcess();
-            if (rdCopyCheck)
+            try
             {
-                try
-                {
-                    bool copyPermissions = NtfsPermissionCheck;
-                    string sourceFolderPath = sourcePath;
-                    string destinationFolderPath = targetPath + "\\" + selectedFileName;
-                    if (OverWriteCheck)
-                        deleteProcess.DeleteDirectory(destinationFolderPath, fileInformations); // overwrite işlemi .
-                    CopyFiles(sourceFolderPath, destinationFolderPath, copyPermissions, fileDate, selectedDate, dateType, chEmptyFoldersCheck, fileInformations, folderInformations, dateOptions);
+                bool copyPermissions = NtfsPermissionCheck;
+                string sourceFolderPath = sourcePath;
+                string destinationFolderPath = targetPath + "\\" + selectedFileName;
+                //if (OverWriteCheck)
+                //    deleteProcess.DeleteDirectory(destinationFolderPath, fileInformations); // overwrite işlemi .
+                CopyFiles(sourceFolderPath, destinationFolderPath, copyPermissions, fileDate, selectedDate, dateType, chEmptyFoldersCheck, OverWriteCheck, fileInformations, folderInformations, dateOptions);
 
-                    MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully copied to the location '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("An error occurred during the folder copy operation: " + ex.Message, "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully copied to the location '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred during the folder copy operation: " + ex.Message, "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        public void CopyFiles(string sourcePath, string targetPath, bool copyPermissions, DateTime fileDate, DateTime selectedDate, string dateType, bool chEmptyFoldersCheck, List<Fileİnformation> fileInformations, List<Folderİnformation> folderInformations, IDateOptions dateOptions)
+        public void CopyFiles(string sourcePath, string targetPath, bool copyPermissions, DateTime fileDate, DateTime selectedDate, string dateType, bool chEmptyFoldersCheck, bool OverWriteCheck, List<Fileİnformation> fileInformations, List<Folderİnformation> folderInformations, IDateOptions dateOptions)
         {
             foreach (Folderİnformation dirPath in folderInformations)
             {
@@ -55,8 +52,10 @@ namespace FileOrbis___File_System_Reporter
             {
                 fileDate = dateOptions.SetDate(newPath.FilePath);
 
-                if (fileDate > selectedDate)
+                if (fileDate > selectedDate && OverWriteCheck)
                     File.Copy(newPath.FilePath, newPath.FilePath.Replace(sourcePath, targetPath), true);
+                else if (fileDate > selectedDate && !OverWriteCheck)
+                    File.Copy(newPath.FilePath, newPath.FilePath.Replace(sourcePath, targetPath), false);
 
                 if (copyPermissions)
                 {

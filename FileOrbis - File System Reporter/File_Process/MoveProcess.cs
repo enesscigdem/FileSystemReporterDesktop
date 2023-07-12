@@ -16,24 +16,21 @@ namespace FileOrbis___File_System_Reporter
         DeleteProcess deleteProcess = new DeleteProcess();
         public void MoveOperation(string dateType, bool rdMoveCheck, bool chOverWriteCheck, string sourcePath, string targetPath, string selectedFileName, bool chEmptyFoldersCheck, DateTime fileDate, DateTime selectedDate, List<Fileİnformation> fileInformations, List<Folderİnformation> folderInformations, IDateOptions dateOptions)
         {
-            if (rdMoveCheck)
+            try
             {
-                try
+                string sourceFolderPath = sourcePath;
+                string destinationFolderPath = Path.Combine(targetPath, selectedFileName);
+                if (chOverWriteCheck)
                 {
-                    string sourceFolderPath = sourcePath;
-                    string destinationFolderPath = Path.Combine(targetPath, selectedFileName);
-                    if (chOverWriteCheck)
-                    {
-                        if (Directory.Exists(destinationFolderPath))
-                            deleteProcess.DeleteDirectory(destinationFolderPath, fileInformations);
-                    }
-                    MoveFiles(sourceFolderPath, destinationFolderPath, fileDate, selectedDate, dateType, chEmptyFoldersCheck, fileInformations, folderInformations,dateOptions);
-                    MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully moved from location '" + sourceFolderPath + "' to '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    if (Directory.Exists(destinationFolderPath))
+                        deleteProcess.DeleteDirectory(destinationFolderPath, fileInformations);
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("An error occurred during the folder move operation: " + ex.Message, "Info", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                MoveFiles(sourceFolderPath, destinationFolderPath, fileDate, selectedDate, dateType, chEmptyFoldersCheck, fileInformations, folderInformations, dateOptions);
+                MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully moved from location '" + sourceFolderPath + "' to '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred during the folder move operation: " + ex.Message, "Info", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -43,7 +40,8 @@ namespace FileOrbis___File_System_Reporter
             {
                 string targetDirPath = dirPath.FolderPath.Replace(sourcePath, targetPath);
 
-                if (chEmptyFoldersCheck || Directory.GetFiles(dirPath.FolderPath).Length > 0 || Directory.GetDirectories(dirPath.FolderPath).Length > 0)
+                // burada 2. ve 3. koşullar için direk şunu kullanabilirsin. Directory.GetFileSystemEntries.count>0 
+                if (chEmptyFoldersCheck || Directory.GetFileSystemEntries(dirPath.FolderPath).Count() > 0)
                 {
                     fileDate = dateOptions.SetDate(dirPath.FolderPath);
                     if (fileDate > selectedDate)
