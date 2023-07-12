@@ -88,6 +88,7 @@ namespace FileOrbis___File_System_Reporter
             this.txtSourcePath.Name = "txtSourcePath";
             this.txtSourcePath.Size = new System.Drawing.Size(751, 28);
             this.txtSourcePath.TabIndex = 1;
+            this.txtSourcePath.TextChanged += new System.EventHandler(this.txtSourcePath_TextChanged);
             // 
             // btnSourcePath
             // 
@@ -284,6 +285,7 @@ namespace FileOrbis___File_System_Reporter
             // 
             this.progressBar1.Location = new System.Drawing.Point(12, 429);
             this.progressBar1.Name = "progressBar1";
+            this.progressBar1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.progressBar1.Size = new System.Drawing.Size(866, 62);
             this.progressBar1.TabIndex = 27;
             // 

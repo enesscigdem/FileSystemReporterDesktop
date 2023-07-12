@@ -9,7 +9,7 @@ namespace FileOrbis___File_System_Reporter
 {
     public class DeleteProcess
     {
-        public void DeleteDirectory(string path, List<Fileİnformation> fileInformations)
+        public void DeleteDirectory(string path)
         {
             string[] files = Directory.GetFiles(path);
             string[] directories = Directory.GetDirectories(path);
@@ -22,7 +22,7 @@ namespace FileOrbis___File_System_Reporter
 
             foreach (string directory in directories)
             {
-                DeleteDirectory(directory, fileInformations);
+                DeleteDirectory(directory);
             }
 
             Directory.Delete(path, false);

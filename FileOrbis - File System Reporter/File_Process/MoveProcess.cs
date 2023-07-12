@@ -23,10 +23,14 @@ namespace FileOrbis___File_System_Reporter
                 if (chOverWriteCheck)
                 {
                     if (Directory.Exists(destinationFolderPath))
-                        deleteProcess.DeleteDirectory(destinationFolderPath, fileInformations);
+                        deleteProcess.DeleteDirectory(destinationFolderPath);
+                    MoveFiles(sourceFolderPath, destinationFolderPath, fileDate, selectedDate, dateType, chEmptyFoldersCheck, fileInformations, folderInformations, dateOptions);
+                    MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully moved from location '" + sourceFolderPath + "' to '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-                MoveFiles(sourceFolderPath, destinationFolderPath, fileDate, selectedDate, dateType, chEmptyFoldersCheck, fileInformations, folderInformations, dateOptions);
-                MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully moved from location '" + sourceFolderPath + "' to '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                else
+                {
+                    MessageBox.Show("You want to overwrite an existing file at the destination. Check the OverWrite option. ", "Info", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             catch (Exception ex)
             {
@@ -41,7 +45,7 @@ namespace FileOrbis___File_System_Reporter
                 string targetDirPath = dirPath.FolderPath.Replace(sourcePath, targetPath);
 
                 // burada 2. ve 3. koşullar için direk şunu kullanabilirsin. Directory.GetFileSystemEntries.count>0 
-                if (chEmptyFoldersCheck || Directory.GetFileSystemEntries(dirPath.FolderPath).Count() > 0)
+                if ((chEmptyFoldersCheck || Directory.GetFileSystemEntries(dirPath.FolderPath).Count() > 0))
                 {
                     fileDate = dateOptions.SetDate(dirPath.FolderPath);
                     if (fileDate > selectedDate)
@@ -55,10 +59,12 @@ namespace FileOrbis___File_System_Reporter
                 if (fileDate > selectedDate)
                 {
                     string newFilePath = newPath.FilePath.Replace(sourcePath, targetPath);
+                    if (File.Exists(newFilePath))
+                        File.Delete(newFilePath);
                     File.Move(newPath.FilePath, newFilePath);
                 }
             }
-            deleteProcess.DeleteDirectory(sourcePath, fileInformations);
+            deleteProcess.DeleteDirectory(sourcePath);
         }
     }
 }

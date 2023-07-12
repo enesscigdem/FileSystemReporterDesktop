@@ -3,6 +3,8 @@ using DocumentFormat.OpenXml.Presentation;
 using DocumentFormat.OpenXml.Spreadsheet;
 using FileOrbis___File_System_Reporter.Date_Process;
 using FileOrbis___File_System_Reporter.File_İnformation;
+using FileOrbis___File_System_Reporter.FluentValidation;
+using FluentValidation.Results;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -31,6 +33,12 @@ namespace FileOrbis___File_System_Reporter
         public long fileSize;
         public List<Fileİnformation> informationList;
         public List<Folderİnformation> folderList;
+        ScanProcess scanProcess = new ScanProcess();
+        DateType dt = new DateType();
+        IDateOptions dateOptions;
+        Validation validator = new Validation();
+        int totalFiles;
+        FormValidate model = new FormValidate();
 
         #region Disabled Checked Radio Buttons,CheckBoxs
         public void DisabledChecked()
@@ -156,52 +164,81 @@ namespace FileOrbis___File_System_Reporter
             lblTotalTime.Text = $"Scan was completed. Total elapsed time: {stopwatch.Elapsed.TotalSeconds} seconds";
             lblTotalTime.Update();
         }
-        ScanProcess scanProcess = new ScanProcess();
-        DateType dt = new DateType();
-
-        IDateOptions dateOptions;
-
+       
+        private async void txtSourcePath_TextChanged(object sender, EventArgs e)
+        {
+            FluentValidation();
+            if (validationResult.IsValid)
+            {
+                btnRun.Enabled = false;
+                await Task.Run(() =>
+                {
+                    totalFiles = Directory.GetFiles(txtSourcePath.Text, "*", SearchOption.AllDirectories).Length;
+                });
+                btnRun.Enabled = true;
+            }
+            else
+            {
+                string errorMessage = string.Join(Environment.NewLine, validationResult.Errors);
+                MessageBox.Show(errorMessage, "Doğrulama Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        ValidationResult validationResult;
+        private void FluentValidation()
+        {
+            model.Thread = txtThread.Text;
+            model.Path = txtSourcePath.Text;
+            validationResult = validator.Validate(model);
+        }
         private void button3_Click(object sender, EventArgs e)
         {
-            #region Scan Process 
-
-            dateOptions = dt.GetDateType(checkedDate);
-            selectedDate = dtDateOption.Value;
-            if (rdScan.Checked)
+            FluentValidation();
+            if (validationResult.IsValid)
             {
-                //scanProcess.lblScannedMessage = new lblScannedMessage(UpdateLblScan);
-                //scanProcess.lblTotalTımeCallBack = new lblTotalTımeCallBack(UpdateLblTotalTıme);
-                //scanProcess.lblPathMessage = new lblPathMessage(UpdateLblPath);
-                //scanProcess.ProgressBarCallBack = UpdateProgressBar;
-                string selectedFolder = txtSourcePath.Text;
-                var result = scanProcess.ScanOperation(selectedFolder, selectedDate, checkedDate, fileDate, Convert.ToInt32(txtThread.Text));
-
-                if (result.files != null && result.folders != null)
+                #region Scan Process 
+                dateOptions = dt.GetDateType(checkedDate);
+                selectedDate = dtDateOption.Value;
+                if (rdScan.Checked)
                 {
-                    informationList = result.files;
-                    folderList = result.folders;
-                    IsItDoneScan();
+                    progressBar1.Value = 0;
+                    string selectedFolder = txtSourcePath.Text;
+
+                    var result = scanProcess.ScanOperation(selectedFolder, Convert.ToInt32(txtThread.Text), totalFiles);
+
+                    if (result.files != null && result.folders != null)
+                    {
+                        informationList = result.files;
+                        folderList = result.folders;
+                        IsItDoneScan();
+                    }
+
                 }
+                #endregion
 
+                #region MoveProcess
+                if (rdMove.Checked)
+                {
+                    MoveProcess moveProcess = new MoveProcess();
+                    DeleteProcess deleteProcess = new DeleteProcess();
+                    moveProcess.MoveOperation(checkedDate, rdMove.Checked, chOverWrite.Checked, txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chEmptyFolders.Checked, fileDate, selectedDate, informationList, folderList, dateOptions);
+                }
+                #endregion
+
+                #region Copy Process
+                if (rdCopy.Checked)
+                {
+                    CopyProcess copyProcess = new CopyProcess();
+                    copyProcess.CopyOperation(txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chOverWrite.Checked, chNtfsPermission.Checked, rdCopy.Checked, informationList, folderList, fileDate, selectedDate, checkedDate, chEmptyFolders.Checked, dateOptions);
+                }
+                #endregion
             }
-            #endregion
-
-            #region MoveProcess
-            if (rdMove.Checked)
+            else
             {
-                MoveProcess moveProcess = new MoveProcess();
-                DeleteProcess deleteProcess = new DeleteProcess();
-                moveProcess.MoveOperation(checkedDate, rdMove.Checked, chOverWrite.Checked, txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chEmptyFolders.Checked, fileDate, selectedDate, informationList, folderList, dateOptions);
+                string errorMessage = string.Join(Environment.NewLine, validationResult.Errors);
+                MessageBox.Show(errorMessage, "Doğrulama Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            #endregion
 
-            #region Copy Process
-            if (rdCopy.Checked)
-            {
-                CopyProcess copyProcess = new CopyProcess();
-                copyProcess.CopyOperation(txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chOverWrite.Checked, chNtfsPermission.Checked, rdCopy.Checked, informationList, folderList, fileDate, selectedDate, checkedDate, chEmptyFolders.Checked,dateOptions);
-            }
-            #endregion
+
         }
         private void button4_Click(object sender, EventArgs e)
         {

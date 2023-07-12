@@ -46,7 +46,7 @@ namespace FileOrbis___File_System_Reporter
         IDateOptions dateOptionsMd = new ModifiedDateOptions();
         IDateOptions dateOptionsCr = new CreatedDateOption();
         IDateOptions dateOptionsAc = new AccessedDateOption();
-        public (List<Fileİnformation> files, List<Folderİnformation> folders) ScanFiles(string sourcePath, DateTime dateTime, string checkedDate, DateTime fileDate, int threadCount)
+        public (List<Fileİnformation> files, List<Folderİnformation> folders) ScanFiles(string sourcePath, int threadCount, int totalFiles)
         {
             fileInformations.Clear();
             folderInformations.Clear();
@@ -66,73 +66,45 @@ namespace FileOrbis___File_System_Reporter
 
                 processedFiles++;
 
-                if (processedFiles % Math.Max(totalFiles / 10, 1) == 0 || processedFiles == totalFiles)
+                if (Convert.ToInt16(stopwatch.Elapsed.Milliseconds) % 200 == 0 || processedFiles==totalFiles || processedFiles > totalFiles)
                 {
                     ProgressBarCallBack?.Invoke(processedFiles, totalFiles); // callback
-
                     lblScannedMessage?.Invoke(processedFiles, totalFiles);
-
                     lblPathMessage?.Invoke(fileInfo.FilePath);
-
-                    Application.DoEvents();
-
                     lblTotalTımeCallBack?.Invoke(stopwatch);
+                    Application.DoEvents();
                 }
-
             });
-
-            //ProgressBarCallBack?.Invoke(processedFiles, totalFiles); // callback
-            //lblScannedMessage?.Invoke(processedFiles, totalFiles);
-            //lblPathMessage?.Invoke(sourcePath);
-            //lblTotalTımeCallBack?.Invoke(stopwatch);
-
-            MessageBox.Show("Dosyalar bitti");
-            Parallel.ForEach(Directory.GetDirectories(sourcePath, "*.*", SearchOption.AllDirectories), new ParallelOptions { MaxDegreeOfParallelism = threadCount }, dirPath =>
+            Parallel.ForEach(Directory.GetDirectories(sourcePath, "*.*", SearchOption.AllDirectories), new ParallelOptions
             {
-                Folderİnformation folderInfo = new Folderİnformation();
-                folderInfo.FolderName = Path.GetFileName(dirPath);
-                folderInfo.subDirectoryFiles = Directory.GetFiles(dirPath);
-                folderInfo.FolderPath = dirPath;
+                MaxDegreeOfParallelism = threadCount
+            }, dirPath =>
+                    {
+                        Folderİnformation folderInfo = new Folderİnformation();
+                        folderInfo.FolderName = Path.GetFileName(dirPath);
+                        folderInfo.subDirectoryFiles = Directory.GetFiles(dirPath);
+                        folderInfo.FolderPath = dirPath;
 
-                lock (folderInformationLock)
-                    folderInformations.Add(folderInfo);
+                        lock (folderInformationLock)
+                            folderInformations.Add(folderInfo);
 
-            });
+                        Application.DoEvents();
+                    });
             return (fileInformations, folderInformations);
         }
-        public (List<Fileİnformation> files, List<Folderİnformation> folders) ScanOperation(string selectedFolder, DateTime dateTime, string checkedDate, DateTime fileDate, int threadCount)
+        public (List<Fileİnformation> files, List<Folderİnformation> folders) ScanOperation(string selectedFolder, int threadCount, int totalfiles)
         {
-            if (!string.IsNullOrEmpty(selectedFolder) && Directory.Exists(selectedFolder))
-            {
-                try
-                {
-                    //string[] files = Directory.GetFiles(selectedFolder, "*", SearchOption.AllDirectories);
-                    //string[] subDirectories = Directory.GetDirectories(selectedFolder, "*", SearchOption.AllDirectories);
+            processedFiles = 0;
 
-                    totalFiles = Directory.GetFiles(selectedFolder, "*", SearchOption.AllDirectories).Count();
-                    processedFiles = 0;
+            stopwatch = new Stopwatch();
+            stopwatch.Start();
 
-                    stopwatch = new Stopwatch();
-                    stopwatch.Start();
+            var (fileInformations, folderInformations) = ScanFiles(selectedFolder, threadCount, totalfiles);
 
-                    var (fileInformations, folderInformations) = ScanFiles(selectedFolder, dateTime, checkedDate, fileDate, threadCount);
+            stopwatch.Stop();
 
-                    stopwatch.Stop();
+            return (fileInformations, folderInformations);
 
-                    return (fileInformations, folderInformations);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return (null, null);
-                }
-
-            }
-            else
-            {
-                MessageBox.Show("Please select a valid folder.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return (null, null);
-            }
         }
     }
 }
