@@ -27,9 +27,12 @@ namespace FileOrbis___File_System_Reporter
                     MoveFiles(sourceFolderPath, destinationFolderPath, fileDate, selectedDate, dateType, chEmptyFoldersCheck, fileInformations, folderInformations, dateOptions);
                     MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully moved from location '" + sourceFolderPath + "' to '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
+                else if (!chOverWriteCheck && Directory.Exists(destinationFolderPath))
+                    MessageBox.Show("You want to overwrite an existing file at the destination. Check the OverWrite option. ", "Info", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 else
                 {
-                    MessageBox.Show("You want to overwrite an existing file at the destination. Check the OverWrite option. ", "Info", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MoveFiles(sourceFolderPath, destinationFolderPath, fileDate, selectedDate, dateType, chEmptyFoldersCheck, fileInformations, folderInformations, dateOptions);
+                    MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully moved from location '" + sourceFolderPath + "' to '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
