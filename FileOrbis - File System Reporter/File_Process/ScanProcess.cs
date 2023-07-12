@@ -50,7 +50,7 @@ namespace FileOrbis___File_System_Reporter
         {
             fileInformations.Clear();
             folderInformations.Clear();
-            int UIupdate = 123;
+            int UIupdate = totalFiles / 4;
             Parallel.ForEach(Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories), new ParallelOptions { MaxDegreeOfParallelism = threadCount }, newPath =>
             {
                 Fileİnformation fileInfo = new Fileİnformation();
@@ -62,22 +62,22 @@ namespace FileOrbis___File_System_Reporter
                 fileInfo.FileSize = fileInfo.FileSize;
 
                 lock (fileInformationLock)
-                    fileInformations.Add(fileInfo);
-
-                processedFiles++;
-
-                if (processedFiles % UIupdate == 0 || processedFiles == totalFiles || processedFiles > totalFiles)
                 {
-                    lblTotalTımeCallBack?.Invoke(stopwatch);
+                    fileInformations.Add(fileInfo);
+                    processedFiles++;
+                }
+                if (Convert.ToInt16(stopwatch.Elapsed.TotalMilliseconds) % 100 == 0 || processedFiles == totalFiles || processedFiles > totalFiles)
+                {
                     lblPathMessage?.Invoke(fileInfo.FilePath);
+                    lblTotalTımeCallBack?.Invoke(stopwatch);
                     lblScannedMessage?.Invoke(processedFiles, totalFiles);
                     ProgressBarCallBack?.Invoke(processedFiles, totalFiles);
                 }
             });
-            MessageBox.Show("Scan Process is Finished");
+            MessageBox.Show("Scan Process is finished.");
             Parallel.ForEach(Directory.GetDirectories(sourcePath, "*.*", SearchOption.AllDirectories), new ParallelOptions
             {
-                MaxDegreeOfParallelism = threadCount
+                MaxDegreeOfParallelism = 1
             }, dirPath =>
                     {
                         Folderİnformation folderInfo = new Folderİnformation();
@@ -89,6 +89,7 @@ namespace FileOrbis___File_System_Reporter
                             folderInformations.Add(folderInfo);
 
                     });
+            
             return (fileInformations, folderInformations);
         }
         public (List<Fileİnformation> files, List<Folderİnformation> folders) ScanOperation(string selectedFolder, int threadCount, int totalfiles)
