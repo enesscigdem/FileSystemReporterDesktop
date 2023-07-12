@@ -58,14 +58,10 @@ namespace FileOrbis___File_System_Reporter
             this.rdAccessedDate = new System.Windows.Forms.RadioButton();
             this.rdModifiedDate = new System.Windows.Forms.RadioButton();
             this.rdCreatedDate = new System.Windows.Forms.RadioButton();
-            this.lstAfterItems = new System.Windows.Forms.ListBox();
             this.label11 = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
             this.rdExcel = new System.Windows.Forms.RadioButton();
             this.rdTxt = new System.Windows.Forms.RadioButton();
-            this.listBox2 = new System.Windows.Forms.ListBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.label13 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -379,19 +375,6 @@ namespace FileOrbis___File_System_Reporter
             this.rdCreatedDate.UseVisualStyleBackColor = true;
             this.rdCreatedDate.CheckedChanged += new System.EventHandler(this.rdCreatedDate_CheckedChanged);
             // 
-            // lstAfterItems
-            // 
-            this.lstAfterItems.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.lstAfterItems.FormattingEnabled = true;
-            this.lstAfterItems.HorizontalScrollbar = true;
-            this.lstAfterItems.ItemHeight = 18;
-            this.lstAfterItems.Location = new System.Drawing.Point(12, 672);
-            this.lstAfterItems.Name = "lstAfterItems";
-            this.lstAfterItems.ScrollAlwaysVisible = true;
-            this.lstAfterItems.Size = new System.Drawing.Size(430, 130);
-            this.lstAfterItems.TabIndex = 31;
-            this.lstAfterItems.Visible = false;
-            // 
             // label11
             // 
             this.label11.AutoSize = true;
@@ -435,52 +418,13 @@ namespace FileOrbis___File_System_Reporter
             this.rdTxt.Text = "Txt ";
             this.rdTxt.UseVisualStyleBackColor = true;
             // 
-            // listBox2
-            // 
-            this.listBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.listBox2.FormattingEnabled = true;
-            this.listBox2.HorizontalScrollbar = true;
-            this.listBox2.ItemHeight = 18;
-            this.listBox2.Location = new System.Drawing.Point(448, 672);
-            this.listBox2.Name = "listBox2";
-            this.listBox2.ScrollAlwaysVisible = true;
-            this.listBox2.Size = new System.Drawing.Size(430, 130);
-            this.listBox2.TabIndex = 36;
-            this.listBox2.Visible = false;
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.label12.Location = new System.Drawing.Point(183, 648);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(44, 21);
-            this.label12.TabIndex = 37;
-            this.label12.Text = "After";
-            this.label12.Visible = false;
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.label13.Location = new System.Drawing.Point(612, 648);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(55, 21);
-            this.label13.TabIndex = 38;
-            this.label13.Text = "Before";
-            this.label13.Visible = false;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(888, 648);
-            this.Controls.Add(this.label13);
-            this.Controls.Add(this.label12);
-            this.Controls.Add(this.listBox2);
+            this.ClientSize = new System.Drawing.Size(888, 641);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.panel3);
-            this.Controls.Add(this.lstAfterItems);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.progressBar1);
@@ -542,14 +486,10 @@ namespace FileOrbis___File_System_Reporter
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.RadioButton rdExcel;
         private System.Windows.Forms.RadioButton rdTxt;
-        private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.Label label13;
         public System.Windows.Forms.ProgressBar progressBar1;
         public System.Windows.Forms.Label lblTotalTime;
         public System.Windows.Forms.Label lblPath;
         public System.Windows.Forms.Label lblScannedItem;
-        public System.Windows.Forms.ListBox lstAfterItems;
-        public System.Windows.Forms.ListBox listBox2;
         public System.Windows.Forms.CheckBox chEmptyFolders;
         public System.Windows.Forms.CheckBox chNtfsPermission;
         public System.Windows.Forms.CheckBox chOverWrite;

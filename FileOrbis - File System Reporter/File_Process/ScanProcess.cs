@@ -50,7 +50,7 @@ namespace FileOrbis___File_System_Reporter
         {
             fileInformations.Clear();
             folderInformations.Clear();
-
+            int UIupdate = 123;
             Parallel.ForEach(Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories), new ParallelOptions { MaxDegreeOfParallelism = threadCount }, newPath =>
             {
                 Fileİnformation fileInfo = new Fileİnformation();
@@ -66,15 +66,15 @@ namespace FileOrbis___File_System_Reporter
 
                 processedFiles++;
 
-                if (Convert.ToInt16(stopwatch.Elapsed.Milliseconds) % 200 == 0 || processedFiles==totalFiles || processedFiles > totalFiles)
+                if (processedFiles % UIupdate == 0 || processedFiles == totalFiles || processedFiles > totalFiles)
                 {
-                    ProgressBarCallBack?.Invoke(processedFiles, totalFiles); // callback
-                    lblScannedMessage?.Invoke(processedFiles, totalFiles);
-                    lblPathMessage?.Invoke(fileInfo.FilePath);
                     lblTotalTımeCallBack?.Invoke(stopwatch);
-                    Application.DoEvents();
+                    lblPathMessage?.Invoke(fileInfo.FilePath);
+                    lblScannedMessage?.Invoke(processedFiles, totalFiles);
+                    ProgressBarCallBack?.Invoke(processedFiles, totalFiles);
                 }
             });
+            MessageBox.Show("Scan Process is Finished");
             Parallel.ForEach(Directory.GetDirectories(sourcePath, "*.*", SearchOption.AllDirectories), new ParallelOptions
             {
                 MaxDegreeOfParallelism = threadCount
@@ -88,7 +88,6 @@ namespace FileOrbis___File_System_Reporter
                         lock (folderInformationLock)
                             folderInformations.Add(folderInfo);
 
-                        Application.DoEvents();
                     });
             return (fileInformations, folderInformations);
         }
