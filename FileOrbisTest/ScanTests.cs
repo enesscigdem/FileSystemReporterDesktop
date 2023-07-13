@@ -59,7 +59,7 @@ namespace FileOrbisTest
             Assert.IsTrue(folderInformations.Count > 0);
         }
         [TestMethod]
-        public void InvalidSourcePath_ThrowsException()
+        public void InvalidSourcePath()
         {
             string invalidSourcePath = "C:\\InvalidPath";
 
