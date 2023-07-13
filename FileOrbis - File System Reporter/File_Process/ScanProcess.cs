@@ -29,8 +29,7 @@ namespace FileOrbis___File_System_Reporter
             fileInformations = new List<Fileİnformation>();
             folderInformations = new List<Folderİnformation>();
         }
-        string WhListBox;
-        int processedFiles, totalFiles;
+        int processedFiles;
         Stopwatch stopwatch;
         DateType dt = new DateType();
         public FileScannedCallback FileScannedCallback { get; set; }
@@ -50,7 +49,6 @@ namespace FileOrbis___File_System_Reporter
         {
             fileInformations.Clear();
             folderInformations.Clear();
-            int UIupdate = totalFiles / 4;
             Parallel.ForEach(Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories), new ParallelOptions { MaxDegreeOfParallelism = threadCount }, newPath =>
             {
                 Fileİnformation fileInfo = new Fileİnformation();
@@ -66,15 +64,15 @@ namespace FileOrbis___File_System_Reporter
                     fileInformations.Add(fileInfo);
                     processedFiles++;
                 }
-                if (Convert.ToInt16(stopwatch.Elapsed.TotalMilliseconds) % 100 == 0 || processedFiles == totalFiles || processedFiles > totalFiles)
-                {
-                    lblPathMessage?.Invoke(fileInfo.FilePath);
-                    lblTotalTımeCallBack?.Invoke(stopwatch);
-                    lblScannedMessage?.Invoke(processedFiles, totalFiles);
-                    ProgressBarCallBack?.Invoke(processedFiles, totalFiles);
-                }
+                //if (Convert.ToInt16(stopwatch.Elapsed.TotalMilliseconds) % 100 == 0 || processedFiles == totalFiles || processedFiles > totalFiles)
+                //{
+                //    lblPathMessage?.Invoke(fileInfo.FilePath);
+                //    lblTotalTımeCallBack?.Invoke(stopwatch);
+                //    lblScannedMessage?.Invoke(processedFiles, totalFiles);
+                //    ProgressBarCallBack?.Invoke(processedFiles, totalFiles);
+                //}
             });
-            MessageBox.Show("Scan Process is finished.");
+            //MessageBox.Show("Scan Process is finished.");
             Parallel.ForEach(Directory.GetDirectories(sourcePath, "*.*", SearchOption.AllDirectories), new ParallelOptions
             {
                 MaxDegreeOfParallelism = 1
