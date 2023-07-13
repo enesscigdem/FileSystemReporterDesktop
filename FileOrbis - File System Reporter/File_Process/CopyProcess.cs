@@ -23,8 +23,6 @@ namespace FileOrbis___File_System_Reporter
                 bool copyPermissions = NtfsPermissionCheck;
                 string sourceFolderPath = sourcePath;
                 string destinationFolderPath = targetPath + "\\" + selectedFileName;
-                //if (OverWriteCheck)
-                //    deleteProcess.DeleteDirectory(destinationFolderPath, fileInformations); // overwrite işlemi .
                 CopyFiles(sourceFolderPath, destinationFolderPath, copyPermissions, fileDate, selectedDate, dateType, chEmptyFoldersCheck, OverWriteCheck, fileInformations, folderInformations, dateOptions);
 
                 MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully copied to the location '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);

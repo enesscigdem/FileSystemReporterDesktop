@@ -72,7 +72,7 @@ namespace FileOrbis___File_System_Reporter
                 //    ProgressBarCallBack?.Invoke(processedFiles, totalFiles);
                 //}
             });
-            //MessageBox.Show("Scan Process is finished.");
+            MessageBox.Show("Scan Process is finished." + totalFiles);
             Parallel.ForEach(Directory.GetDirectories(sourcePath, "*.*", SearchOption.AllDirectories), new ParallelOptions
             {
                 MaxDegreeOfParallelism = 1

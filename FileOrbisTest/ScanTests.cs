@@ -11,24 +11,22 @@ namespace FileOrbisTest
     {
         private const string SourcePath = "C:\\Users\\Eness\\OneDrive\\Desktop";
         private const int ThreadCount = 1; // Set a thread count
-        private const int TotalFiles = 100; // Enter the total number of files of the path you will choose.
-        private ScanProcess scanProcess;
-        [TestInitialize]
-        public void Initialize()
-        {
-            scanProcess = new ScanProcess();
-        }
+        private const int TotalFiles = 7261; // Enter the total number of files of the path you will choose.
+        ScanProcess scanProcess = new ScanProcess();
+   
         [TestMethod]
-        public void ReturnsFileFolderİnformation()
+        public void ReturnsFileCountValid()
         {
             // Act
-            var (fileInformations, folderInformations) = scanProcess.ScanFiles(SourcePath, ThreadCount, TotalFiles);
-
+            var (fileInformations, _) = scanProcess.ScanFiles(SourcePath, ThreadCount, TotalFiles);
             // Assert
             Assert.IsTrue(fileInformations.Count > 0);
+        }
+        [TestMethod]
+        public void ReturnsFolderCountValid()
+        {
+            var (_, folderInformations) = scanProcess.ScanFiles(SourcePath, ThreadCount, TotalFiles);
             Assert.IsTrue(folderInformations.Count > 0);
-
-            Assert.IsTrue(Directory.Exists(SourcePath));
         }
         [TestMethod]
         public void ValidSourcePath()
