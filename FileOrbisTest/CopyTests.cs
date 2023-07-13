@@ -17,9 +17,6 @@ namespace FileOrbisTest
         int ThreadCount = 1;
         int TotalFiles = 100;
         string selectedFileName = "test2";
-        bool OverWriteCheck = false;
-        bool ntfsPermissionCheck = false;
-        bool chEmptyFoldersCheck = false;
         List<Fileİnformation> fileInformations = new List<Fileİnformation>();
         List<Folderİnformation> folderInformations = new List<Folderİnformation>();
         DateTime filedate = DateTime.Now;
@@ -52,14 +49,43 @@ namespace FileOrbisTest
         {
             Assert.IsTrue(Directory.Exists(sourcePath) && Directory.Exists(targetPath));
             copyProcess.CopyOperation(sourcePath, targetPath, selectedFileName, false, false, fileInformations, folderInformations, filedate, selectedDate, false, dateOptions);
-
         }
 
         [TestMethod]
-        public void CopyPermissionsEnable()
+        public void PermissionsEnable_Copy_FilesAndFolders()
         {
             Assert.IsTrue(Directory.Exists(sourcePath) && Directory.Exists(targetPath));
             copyProcess.CopyOperation(sourcePath, targetPath, selectedFileName, false, true, fileInformations, folderInformations, filedate, selectedDate, false, dateOptions);
+        }
+        [TestMethod]
+        public void OverWriteEnable_Copy_FilesAndFolders()
+        {
+            Assert.IsTrue(Directory.Exists(sourcePath) && Directory.Exists(targetPath));
+            copyProcess.CopyOperation(sourcePath, targetPath, selectedFileName, true, false, fileInformations, folderInformations, filedate, selectedDate, false, dateOptions);
+        }
+        [TestMethod]
+        public void EmptyFolderEnable_Copy_FilesAndFolders()
+        {
+            Assert.IsTrue(Directory.Exists(sourcePath) && Directory.Exists(targetPath));
+            copyProcess.CopyOperation(sourcePath, targetPath, selectedFileName, false, false, fileInformations, folderInformations, filedate, selectedDate, true, dateOptions);
+        }
+        [TestMethod]
+        public void EmptyFolder_OverWrite_Enable_Copy_FilesAndFolders()
+        {
+            Assert.IsTrue(Directory.Exists(sourcePath) && Directory.Exists(targetPath));
+            copyProcess.CopyOperation(sourcePath, targetPath, selectedFileName, true, false, fileInformations, folderInformations, filedate, selectedDate, true, dateOptions);
+        }
+        [TestMethod]
+        public void EmptyFolder_Permission_Enable_Copy_FilesAndFolders()
+        {
+            Assert.IsTrue(Directory.Exists(sourcePath) && Directory.Exists(targetPath));
+            copyProcess.CopyOperation(sourcePath, targetPath, selectedFileName, false, true, fileInformations, folderInformations, filedate, selectedDate, true, dateOptions);
+        }
+        [TestMethod]
+        public void OverWrite_Permission_Enable_Copy_FilesAndFolders()
+        {
+            Assert.IsTrue(Directory.Exists(sourcePath) && Directory.Exists(targetPath));
+            copyProcess.CopyOperation(sourcePath, targetPath, selectedFileName, true, true, fileInformations, folderInformations, filedate, selectedDate, false, dateOptions);
         }
     }
 }

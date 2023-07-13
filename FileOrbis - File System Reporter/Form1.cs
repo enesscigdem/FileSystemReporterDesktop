@@ -219,7 +219,7 @@ namespace FileOrbis___File_System_Reporter
                 if (rdMove.Checked)
                 {
                     MoveProcess moveProcess = new MoveProcess();
-                    moveProcess.MoveOperation(checkedDate, rdMove.Checked, chOverWrite.Checked, txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chEmptyFolders.Checked, fileDate, selectedDate, informationList, folderList, dateOptions);
+                    moveProcess.MoveOperation(chOverWrite.Checked, txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chEmptyFolders.Checked, fileDate, selectedDate, informationList, folderList, dateOptions);
                 }
                 #endregion
 

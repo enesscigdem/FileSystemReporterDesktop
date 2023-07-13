@@ -14,7 +14,7 @@ namespace FileOrbis___File_System_Reporter
     public class MoveProcess
     {
         DeleteProcess deleteProcess = new DeleteProcess();
-        public void MoveOperation(string dateType, bool rdMoveCheck, bool chOverWriteCheck, string sourcePath, string targetPath, string selectedFileName, bool chEmptyFoldersCheck, DateTime fileDate, DateTime selectedDate, List<Fileİnformation> fileInformations, List<Folderİnformation> folderInformations, IDateOptions dateOptions)
+        public void MoveOperation(bool chOverWriteCheck, string sourcePath, string targetPath, string selectedFileName, bool chEmptyFoldersCheck, DateTime fileDate, DateTime selectedDate, List<Fileİnformation> fileInformations, List<Folderİnformation> folderInformations, IDateOptions dateOptions)
         {
             try
             {
@@ -24,14 +24,16 @@ namespace FileOrbis___File_System_Reporter
                 {
                     if (Directory.Exists(destinationFolderPath))
                         deleteProcess.DeleteDirectory(destinationFolderPath);
-                    MoveFiles(sourceFolderPath, destinationFolderPath, fileDate, selectedDate, dateType, chEmptyFoldersCheck, fileInformations, folderInformations, dateOptions);
+                    MoveFiles(sourceFolderPath, destinationFolderPath, fileDate, selectedDate,chEmptyFoldersCheck, fileInformations, folderInformations, dateOptions);
                     MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully moved from location '" + sourceFolderPath + "' to '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else if (!chOverWriteCheck && Directory.Exists(destinationFolderPath))
                     MessageBox.Show("You want to overwrite an existing file at the destination. Check the OverWrite option. ", "Info", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 else
                 {
-                    MoveFiles(sourceFolderPath, destinationFolderPath, fileDate, selectedDate, dateType, chEmptyFoldersCheck, fileInformations, folderInformations, dateOptions);
+                    if (!Directory.Exists(destinationFolderPath))
+                        Directory.CreateDirectory(destinationFolderPath);
+                    MoveFiles(sourceFolderPath, destinationFolderPath, fileDate, selectedDate, chEmptyFoldersCheck, fileInformations, folderInformations, dateOptions);
                     MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully moved from location '" + sourceFolderPath + "' to '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
@@ -41,7 +43,7 @@ namespace FileOrbis___File_System_Reporter
             }
         }
 
-        public void MoveFiles(string sourcePath, string targetPath, DateTime fileDate, DateTime selectedDate, string dateType, bool chEmptyFoldersCheck, List<Fileİnformation> fileInformations, List<Folderİnformation> folderInformations, IDateOptions dateOptions)
+        public void MoveFiles(string sourcePath, string targetPath, DateTime fileDate, DateTime selectedDate, bool chEmptyFoldersCheck, List<Fileİnformation> fileInformations, List<Folderİnformation> folderInformations, IDateOptions dateOptions)
         {
             foreach (Folderİnformation dirPath in folderInformations)
             {
