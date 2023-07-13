@@ -164,7 +164,7 @@ namespace FileOrbis___File_System_Reporter
             lblTotalTime.Text = $"Scan was completed. Total elapsed time: {stopwatch.Elapsed.TotalSeconds} seconds";
             lblTotalTime.Update();
         }
-       
+
         private async void txtSourcePath_TextChanged(object sender, EventArgs e)
         {
             FluentValidation();
@@ -218,8 +218,13 @@ namespace FileOrbis___File_System_Reporter
                 #region MoveProcess
                 if (rdMove.Checked)
                 {
-                    MoveProcess moveProcess = new MoveProcess();
-                    moveProcess.MoveOperation(chOverWrite.Checked, txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chEmptyFolders.Checked, fileDate, selectedDate, informationList, folderList, dateOptions);
+                    if (Directory.Exists(txtTargetPath.Text))
+                    {
+                        MoveProcess moveProcess = new MoveProcess();
+                        moveProcess.MoveOperation(chOverWrite.Checked, txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chEmptyFolders.Checked, fileDate, selectedDate, informationList, folderList, dateOptions);
+                    }
+                    else
+                        MessageBox.Show("No such path was found.");
                 }
                 #endregion
 

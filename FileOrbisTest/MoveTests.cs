@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.AccessControl;
+using System.Windows.Forms;
+
 namespace FileOrbisTest
 {
     [TestClass]
@@ -15,7 +17,7 @@ namespace FileOrbisTest
         string targetPath = @"C:\Users\Eness\OneDrive\Desktop\test3";
         int ThreadCount = 1;
         int TotalFiles = 100;
-        string selectedFileName = "test2";
+        string selectedFileName = "test2", destinationFolderPath;
         List<Fileİnformation> fileInformations = new List<Fileİnformation>();
         List<Folderİnformation> folderInformations = new List<Folderİnformation>();
         DateTime filedate = DateTime.Now;
@@ -28,6 +30,7 @@ namespace FileOrbisTest
         public void ReturnFileİnformations()
         {
             scanProcess.EnableUIUpdates(false);
+            //Assert.IsTrue(Directory.Exists(sourcePath) && Directory.Exists(targetPath));
             (fileInformations, folderInformations) = scanProcess.ScanFiles(sourcePath, ThreadCount, TotalFiles);
         }
 
@@ -43,30 +46,62 @@ namespace FileOrbisTest
             Assert.IsTrue(Directory.Exists(targetPath));
         }
 
+        private void ValidateMovedFilesAndFolders()
+        {
+            destinationFolderPath = Path.Combine(targetPath, selectedFileName);
+            Assert.IsTrue(Directory.Exists(destinationFolderPath));
+
+            foreach (Fileİnformation newPath in fileInformations)
+            {
+                if (filedate > selectedDate)
+                {
+                    string newFilePath = newPath.FilePath.Replace(sourcePath, destinationFolderPath);
+                    Assert.IsTrue(File.Exists(newFilePath));
+                }
+            }
+
+            foreach (Folderİnformation newPath in folderInformations)
+            {
+                if (filedate > selectedDate)
+                {
+                    string newFolderPath = newPath.FolderPath.Replace(sourcePath, destinationFolderPath);
+                    Assert.IsTrue(Directory.Exists(newFolderPath));
+                }
+            }
+        }
+
         [TestMethod]
         public void IsSuccess_Moves_FilesAndFolders()
         {
-            Assert.IsTrue(Directory.Exists(sourcePath) && Directory.Exists(targetPath));
-            moveProcess.MoveOperation(false,sourcePath,targetPath,selectedFileName,false,filedate,selectedDate,fileInformations,folderInformations,dateOptions);
+            moveProcess.MoveOperation(false, sourcePath, targetPath, selectedFileName, false, filedate, selectedDate, fileInformations, folderInformations, dateOptions);
+            ValidateMovedFilesAndFolders(); // Doğru bir şekilde taşındığını doğruluyoruz.
         }
 
         [TestMethod]
         public void OverWriteEnable_Move_FilesAndFolders()
         {
-            Assert.IsTrue(Directory.Exists(sourcePath) && Directory.Exists(targetPath));
             moveProcess.MoveOperation(true, sourcePath, targetPath, selectedFileName, false, filedate, selectedDate, fileInformations, folderInformations, dateOptions);
+            ValidateMovedFilesAndFolders();
         }
+
         [TestMethod]
         public void EmptyFolderEnable_Move_FilesAndFolders()
         {
-            Assert.IsTrue(Directory.Exists(sourcePath) && Directory.Exists(targetPath));
             moveProcess.MoveOperation(false, sourcePath, targetPath, selectedFileName, true, filedate, selectedDate, fileInformations, folderInformations, dateOptions);
+            ValidateMovedFilesAndFolders();
         }
+
         [TestMethod]
         public void EmptyFolder_OverWrite_Enable_Move_FilesAndFolders()
         {
-            Assert.IsTrue(Directory.Exists(sourcePath) && Directory.Exists(targetPath));
             moveProcess.MoveOperation(true, sourcePath, targetPath, selectedFileName, true, filedate, selectedDate, fileInformations, folderInformations, dateOptions);
+            ValidateMovedFilesAndFolders();
+        }
+        [TestMethod]
+        public void Is_Source_Folder_Deleted_AfterMove()
+        {
+            moveProcess.MoveOperation(false, sourcePath, targetPath, selectedFileName, false, filedate, selectedDate, fileInformations, folderInformations, dateOptions);
+            Assert.IsFalse(Directory.Exists(sourcePath));
         }
     }
 }
