@@ -11,7 +11,7 @@ namespace FileOrbisTest
     {
         private const string SourcePath = "C:\\Users\\Eness\\OneDrive\\Desktop";
         private const int ThreadCount = 1; // Set a thread count
-        private const int TotalFiles = 7238; // Enter the total number of files of the path you will choose.
+        private const int TotalFiles = 100; // Enter the total number of files of the path you will choose.
         private ScanProcess scanProcess;
         [TestInitialize]
         public void Initialize()
@@ -63,7 +63,7 @@ namespace FileOrbisTest
         [TestMethod]
         public void InvalidSourcePath_ThrowsException()
         {
-            string invalidSourcePath = "C:\\NonExistingFolder";
+            string invalidSourcePath = "C:\\InvalidPath";
 
             Assert.ThrowsException<DirectoryNotFoundException>(() =>
             {
