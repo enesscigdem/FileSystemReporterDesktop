@@ -2,6 +2,7 @@
 using FileOrbis___File_System_Reporter.File_İnformation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 
@@ -10,24 +11,32 @@ namespace FileOrbisTest
     [TestClass]
     public class ScanTests
     {
-        string SourcePath = "C:\\Users\\Eness\\OneDrive\\Desktop\\büyük dosya";
-        int ThreadCount = 1; // Set a thread count
+        string SourcePath = @"C:\Users\Eness\OneDrive\Desktop\büyük dosya";
+        int ThreadCount = 1000; // Set a thread count
         int TotalFiles = 6256; // Enter the total number of files of the path you will choose.
+        int FileCount, FolderCount;
+
+        List<Fileİnformation> fileInformations;
+        List<Folderİnformation> folderInformations;
         ScanProcess scanProcess = new ScanProcess();
 
+        [TestInitialize]
+        public void Returnİnformations()
+        {
+            scanProcess.EnableUIUpdates(false);
+            (fileInformations, folderInformations) = scanProcess.ScanFiles(SourcePath, ThreadCount, TotalFiles);
+            FileCount = fileInformations.Count;
+            FolderCount = folderInformations.Count;
+        }
         [TestMethod]
         public void ReturnsFileCountValid()
         {
-            // Act
-            var (fileInformations, _) = scanProcess.ScanFiles(SourcePath, ThreadCount, TotalFiles);
-            // Assert
-            Assert.IsTrue(fileInformations.Count > 0);
+            Assert.IsTrue(FileCount > 0);
         }
         [TestMethod]
         public void ReturnsFolderCountValid()
         {
-            var (_, folderInformations) = scanProcess.ScanFiles(SourcePath, ThreadCount, TotalFiles);
-            Assert.IsTrue(folderInformations.Count > 0);
+            Assert.IsTrue(FolderCount > 0);
         }
         [TestMethod]
         public void ValidSourcePath()
@@ -37,27 +46,17 @@ namespace FileOrbisTest
         [TestMethod]
         public void ReturnsFileIsNotNull()
         {
-            var (fileInformations, _) = scanProcess.ScanFiles(SourcePath, ThreadCount, TotalFiles);
             Assert.IsNotNull(fileInformations);
-
         }
         [TestMethod]
         public void ReturnsFolderIsNotNull()
         {
-            var (_, folderInformations) = scanProcess.ScanFiles(SourcePath, ThreadCount, TotalFiles);
             Assert.IsNotNull(folderInformations);
         }
         [TestMethod]
         public void ReturnsExpectedFileCount()
         {
-            var (fileInformations, _) = scanProcess.ScanFiles(SourcePath, ThreadCount, TotalFiles);
             Assert.AreEqual(TotalFiles, fileInformations.Count);
-        }
-        [TestMethod]
-        public void ReturnsExpectedFolderCount()
-        {
-            var (_, folderInformations) = scanProcess.ScanFiles(SourcePath, ThreadCount, TotalFiles);
-            Assert.IsTrue(folderInformations.Count > 0);
         }
         [TestMethod]
         public void InvalidSourcePath()

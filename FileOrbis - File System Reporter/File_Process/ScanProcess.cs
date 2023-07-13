@@ -45,6 +45,24 @@ namespace FileOrbis___File_System_Reporter
         IDateOptions dateOptionsMd = new ModifiedDateOptions();
         IDateOptions dateOptionsCr = new CreatedDateOption();
         IDateOptions dateOptionsAc = new AccessedDateOption();
+        private bool enableUIUpdates = true;
+        public void EnableUIUpdates(bool enable)
+        {
+            enableUIUpdates = enable;
+        }
+        public void UpdateUI(int totalFiles, string filePath)
+        {
+            if (!enableUIUpdates)
+                return;
+
+            if (Convert.ToInt16(stopwatch.Elapsed.TotalMilliseconds) % 100 == 0 || processedFiles == totalFiles || processedFiles > totalFiles)
+            {
+                lblPathMessage?.Invoke(filePath);
+                lblTotalTımeCallBack?.Invoke(stopwatch);
+                lblScannedMessage?.Invoke(processedFiles, totalFiles);
+                ProgressBarCallBack?.Invoke(processedFiles, totalFiles);
+            }
+        }
         public (List<Fileİnformation> files, List<Folderİnformation> folders) ScanFiles(string sourcePath, int threadCount, int totalFiles)
         {
             fileInformations.Clear();
@@ -64,15 +82,12 @@ namespace FileOrbis___File_System_Reporter
                     fileInformations.Add(fileInfo);
                     processedFiles++;
                 }
-                //if (Convert.ToInt16(stopwatch.Elapsed.TotalMilliseconds) % 100 == 0 || processedFiles == totalFiles || processedFiles > totalFiles)
-                //{
-                //    lblPathMessage?.Invoke(fileInfo.FilePath);
-                //    lblTotalTımeCallBack?.Invoke(stopwatch);
-                //    lblScannedMessage?.Invoke(processedFiles, totalFiles);
-                //    ProgressBarCallBack?.Invoke(processedFiles, totalFiles);
-                //}
+
+                UpdateUI(totalFiles, fileInfo.FilePath);
+
             });
-            //MessageBox.Show("Scan Process is finished." + fileInformations.Count);
+            if (enableUIUpdates)
+                MessageBox.Show("Scan Process is finished.");
             Parallel.ForEach(Directory.GetDirectories(sourcePath, "*.*", SearchOption.AllDirectories), new ParallelOptions
             {
                 MaxDegreeOfParallelism = 1
@@ -87,7 +102,7 @@ namespace FileOrbis___File_System_Reporter
                             folderInformations.Add(folderInfo);
 
                     });
-            
+
             return (fileInformations, folderInformations);
         }
         public (List<Fileİnformation> files, List<Folderİnformation> folders) ScanOperation(string selectedFolder, int threadCount, int totalfiles)
