@@ -226,8 +226,14 @@ namespace FileOrbis___File_System_Reporter
                 #region Copy Process
                 if (rdCopy.Checked)
                 {
-                    CopyProcess copyProcess = new CopyProcess();
-                    copyProcess.CopyOperation(txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chOverWrite.Checked, chNtfsPermission.Checked, rdCopy.Checked, informationList, folderList, fileDate, selectedDate, checkedDate, chEmptyFolders.Checked, dateOptions);
+                    if (Directory.Exists(txtTargetPath.Text))
+                    {
+                        CopyProcess copyProcess = new CopyProcess();
+                        copyProcess.CopyOperation(txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chOverWrite.Checked, chNtfsPermission.Checked, informationList, folderList, fileDate, selectedDate, chEmptyFolders.Checked, dateOptions);
+
+                    }
+                    else
+                        MessageBox.Show("No such path was found.");
                 }
                 #endregion
             }

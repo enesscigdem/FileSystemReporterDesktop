@@ -3,17 +3,18 @@ using FileOrbis___File_System_Reporter.File_İnformation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
+using System.Windows.Forms;
 
 namespace FileOrbisTest
 {
     [TestClass]
     public class ScanTests
     {
-        private const string SourcePath = "C:\\Users\\Eness\\OneDrive\\Desktop";
-        private const int ThreadCount = 1; // Set a thread count
-        private const int TotalFiles = 7261; // Enter the total number of files of the path you will choose.
+        string SourcePath = "C:\\Users\\Eness\\OneDrive\\Desktop\\büyük dosya";
+        int ThreadCount = 1; // Set a thread count
+        int TotalFiles = 6256; // Enter the total number of files of the path you will choose.
         ScanProcess scanProcess = new ScanProcess();
-   
+
         [TestMethod]
         public void ReturnsFileCountValid()
         {
