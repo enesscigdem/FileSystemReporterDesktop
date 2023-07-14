@@ -244,6 +244,7 @@ namespace FileOrbis___File_System_Reporter
             this.txtTargetPath.Name = "txtTargetPath";
             this.txtTargetPath.Size = new System.Drawing.Size(751, 28);
             this.txtTargetPath.TabIndex = 20;
+            this.txtTargetPath.TextChanged += new System.EventHandler(this.txtTargetPath_TextChanged);
             // 
             // label6
             // 

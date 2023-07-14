@@ -1,5 +1,6 @@
 ﻿using FileOrbis___File_System_Reporter.Date_Process;
 using FileOrbis___File_System_Reporter.File_İnformation;
+using FileOrbis___File_System_Reporter.File_Process;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,46 +12,15 @@ using System.Windows.Forms;
 
 namespace FileOrbis___File_System_Reporter
 {
-    public class MoveProcess
+    public class MoveProcess : IFileOperation
     {
-        DeleteProcess deleteProcess = new DeleteProcess();
-        public void MoveOperation(bool chOverWriteCheck, string sourcePath, string targetPath, string selectedFileName, bool chEmptyFoldersCheck, DateTime fileDate, DateTime selectedDate, List<Fileİnformation> fileInformations, List<Folderİnformation> folderInformations, IDateOptions dateOptions)
-        {
-            try
-            {
-                string sourceFolderPath = sourcePath;
-                string destinationFolderPath = Path.Combine(targetPath, selectedFileName);
-                if (chOverWriteCheck)
-                {
-                    if (Directory.Exists(destinationFolderPath))
-                        deleteProcess.DeleteDirectory(destinationFolderPath);
-                    MoveFiles(sourceFolderPath, destinationFolderPath, fileDate, selectedDate,chEmptyFoldersCheck, fileInformations, folderInformations, dateOptions);
-                    MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully moved from location '" + sourceFolderPath + "' to '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                else if (!chOverWriteCheck && Directory.Exists(destinationFolderPath))
-                    MessageBox.Show("You want to overwrite an existing file at the destination. Check the OverWrite option. ", "Info", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                else
-                {
-                    if (!Directory.Exists(destinationFolderPath))
-                        Directory.CreateDirectory(destinationFolderPath);
-                    MoveFiles(sourceFolderPath, destinationFolderPath, fileDate, selectedDate, chEmptyFoldersCheck, fileInformations, folderInformations, dateOptions);
-                    MessageBox.Show("Folder '" + sourceFolderPath + "' has been successfully moved from location '" + sourceFolderPath + "' to '" + destinationFolderPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("An error occurred during the folder move operation: " + ex.Message, "Info", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        public void MoveFiles(string sourcePath, string targetPath, DateTime fileDate, DateTime selectedDate, bool chEmptyFoldersCheck, List<Fileİnformation> fileInformations, List<Folderİnformation> folderInformations, IDateOptions dateOptions)
+        public void Execute(string sourcePath, string targetPath, string selectedFileName, bool overwriteCheck, bool copyPermission, bool emptyFoldersCheck, DateTime fileDate, DateTime selectedDate, List<Fileİnformation> fileInformations, List<Folderİnformation> folderInformations, IDateOptions dateOptions)
         {
             foreach (Folderİnformation dirPath in folderInformations)
             {
                 string targetDirPath = dirPath.FolderPath.Replace(sourcePath, targetPath);
 
-                // burada 2. ve 3. koşullar için direk şunu kullanabilirsin. Directory.GetFileSystemEntries.count>0 
-                if ((chEmptyFoldersCheck || Directory.GetFileSystemEntries(dirPath.FolderPath).Count() > 0))
+                if ((emptyFoldersCheck || Directory.GetFileSystemEntries(dirPath.FolderPath).Count() > 0))
                 {
                     fileDate = dateOptions.SetDate(dirPath.FolderPath);
                     if (fileDate > selectedDate)
@@ -69,7 +39,7 @@ namespace FileOrbis___File_System_Reporter
                     File.Move(newPath.FilePath, newFilePath);
                 }
             }
-            deleteProcess.DeleteDirectory(sourcePath);
+
         }
     }
 }

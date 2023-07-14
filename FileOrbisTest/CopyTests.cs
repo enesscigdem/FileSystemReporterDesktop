@@ -1,6 +1,7 @@
 ﻿using FileOrbis___File_System_Reporter;
 using FileOrbis___File_System_Reporter.DateOptions;
 using FileOrbis___File_System_Reporter.File_İnformation;
+using FileOrbis___File_System_Reporter.File_Process;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace FileOrbisTest
         DateTime filedate = DateTime.Now;
         DateTime selectedDate = DateTime.Now.AddDays(-7);
         IDateOptions dateOptions = new CreatedDateOption();
-        CopyProcess copyProcess = new CopyProcess();
+        IFileOperation copyProcess = new CopyProcess();
         ScanProcess scanProcess = new ScanProcess();
 
         [TestInitialize]
@@ -73,43 +74,43 @@ namespace FileOrbisTest
         [TestMethod]
         public void Is_Success_Copies_FilesAndFolders()
         {
-            copyProcess.CopyOperation(sourcePath, targetPath, selectedFileName, false, false, fileInformations, folderInformations, filedate, selectedDate, false, dateOptions);
+            copyProcess.Execute(sourcePath,targetPath,selectedFileName,false,false,false,filedate,selectedDate,fileInformations,folderInformations,dateOptions);
             Validate_Copy_FilesAndFolders();
         }
         [TestMethod]
         public void PermissionsEnable_Copy_FilesAndFolders()
         {
-            copyProcess.CopyOperation(sourcePath, targetPath, selectedFileName, false, true, fileInformations, folderInformations, filedate, selectedDate, false, dateOptions);
+            copyProcess.Execute(sourcePath,targetPath,selectedFileName,false, true, false,filedate,selectedDate,fileInformations,folderInformations,dateOptions);
             Validate_Copy_FilesAndFolders();
         }
         [TestMethod]
         public void OverWriteEnable_Copy_FilesAndFolders()
         {
-            copyProcess.CopyOperation(sourcePath, targetPath, selectedFileName, true, false, fileInformations, folderInformations, filedate, selectedDate, false, dateOptions);
+            copyProcess.Execute(sourcePath,targetPath,selectedFileName, true, false,false,filedate,selectedDate,fileInformations,folderInformations,dateOptions);
             Validate_Copy_FilesAndFolders();
         }
         [TestMethod]
         public void EmptyFolderEnable_Copy_FilesAndFolders()
         {
-            copyProcess.CopyOperation(sourcePath, targetPath, selectedFileName, false, false, fileInformations, folderInformations, filedate, selectedDate, true, dateOptions);
+            copyProcess.Execute(sourcePath,targetPath,selectedFileName,false,false, true, filedate,selectedDate,fileInformations,folderInformations,dateOptions);
             Validate_Copy_FilesAndFolders();
         }
         [TestMethod]
         public void EmptyFolder_OverWrite_Enable_Copy_FilesAndFolders()
         {
-            copyProcess.CopyOperation(sourcePath, targetPath, selectedFileName, true, false, fileInformations, folderInformations, filedate, selectedDate, true, dateOptions);
+            copyProcess.Execute(sourcePath,targetPath,selectedFileName, true, false, true, filedate,selectedDate,fileInformations,folderInformations,dateOptions);
             Validate_Copy_FilesAndFolders();
         }
         [TestMethod]
         public void EmptyFolder_Permission_Enable_Copy_FilesAndFolders()
         {
-            copyProcess.CopyOperation(sourcePath, targetPath, selectedFileName, false, true, fileInformations, folderInformations, filedate, selectedDate, true, dateOptions);
+            copyProcess.Execute(sourcePath,targetPath,selectedFileName,false, true, true, filedate,selectedDate,fileInformations,folderInformations,dateOptions);
             Validate_Copy_FilesAndFolders();
         }
         [TestMethod]
         public void OverWrite_Permission_Enable_Copy_FilesAndFolders()
         {
-            copyProcess.CopyOperation(sourcePath, targetPath, selectedFileName, true, true, fileInformations, folderInformations, filedate, selectedDate, false, dateOptions);
+            copyProcess.Execute(sourcePath,targetPath,selectedFileName, true, true, false,filedate,selectedDate,fileInformations,folderInformations,dateOptions);
             Validate_Copy_FilesAndFolders();
         }
     }

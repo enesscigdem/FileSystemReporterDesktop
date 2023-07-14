@@ -96,12 +96,16 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Decorator\CopyPermissionDecorator.cs" />
     <Compile Include="File_Process\CopyProcess.cs" />
     <Compile Include="Date_Process\AccessedDateOption.cs" />
     <Compile Include="Date_Process\CreatedDateOption.cs" />
     <Compile Include="Date_Process\DateType.cs" />
+    <Compile Include="Decorator\Decorator.cs" />
     <Compile Include="File_Process\DeleteProcess.cs" />
     <Compile Include="Export\ExcelProcess.cs" />
+    <Compile Include="Decorator\IFileOperation.cs" />
+    <Compile Include="Decorator\MoveOverWriteDecorator.cs" />
     <Compile Include="File_İnformation\Fileİnformation.cs" />
     <Compile Include="File_İnformation\Folderİnformation.cs" />
     <Compile Include="FluentValidation\FormValidate.cs" />

@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml.Presentation;
 using DocumentFormat.OpenXml.Spreadsheet;
 using FileOrbis___File_System_Reporter.Date_Process;
 using FileOrbis___File_System_Reporter.File_İnformation;
+using FileOrbis___File_System_Reporter.File_Process;
 using FileOrbis___File_System_Reporter.FluentValidation;
 using FluentValidation.Results;
 using System;
@@ -74,7 +75,7 @@ namespace FileOrbis___File_System_Reporter
         {
             dtDateOption.Format = DateTimePickerFormat.Custom;
             dtDateOption.CustomFormat = "dd MMMM yyyy h:mm";
-            dtDateOption.Value = DateTime.Now.AddDays(-7);
+            dtDateOption.Value = DateTime.Now.AddYears(-1);
             DisabledChecked();
             rdMove.Enabled = false;
             rdCopy.Enabled = false;
@@ -167,6 +168,7 @@ namespace FileOrbis___File_System_Reporter
 
         private async void txtSourcePath_TextChanged(object sender, EventArgs e)
         {
+            selectedFileName = Path.GetFileName(txtSourcePath.Text);
             FluentValidation();
             if (validationResult.IsValid)
             {
@@ -184,12 +186,19 @@ namespace FileOrbis___File_System_Reporter
             }
         }
         ValidationResult validationResult;
+
+        private void txtTargetPath_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
         private void FluentValidation()
         {
             model.Thread = txtThread.Text;
             model.Path = txtSourcePath.Text;
             validationResult = validator.Validate(model);
         }
+        DeleteProcess deleteProcess = new DeleteProcess();
         private void button3_Click(object sender, EventArgs e)
         {
             FluentValidation();
@@ -214,32 +223,53 @@ namespace FileOrbis___File_System_Reporter
 
                 }
                 #endregion
-
                 #region MoveProcess
                 if (rdMove.Checked)
                 {
+                    txtSourcePath.Text = txtSourcePath.Text;
                     if (Directory.Exists(txtTargetPath.Text))
                     {
-                        MoveProcess moveProcess = new MoveProcess();
-                        moveProcess.MoveOperation(chOverWrite.Checked, txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chEmptyFolders.Checked, fileDate, selectedDate, informationList, folderList, dateOptions);
+                        string destinationFolder = Path.Combine(txtTargetPath.Text, selectedFileName);
+                        IFileOperation moveProcess = new MoveProcess();
+
+                        if (chOverWrite.Checked)
+                        {
+                            moveProcess = new MoveOverWriteDecorator(moveProcess,true);
+                        }
+
+                        moveProcess.Execute(txtSourcePath.Text, destinationFolder, selectedFileName, chOverWrite.Checked, chNtfsPermission.Checked, chEmptyFolders.Checked, fileDate, selectedDate, informationList, folderList, dateOptions);
+                        deleteProcess.DeleteDirectory(txtSourcePath.Text);
+                        MessageBox.Show("Folder '" + txtSourcePath.Text + "' has been successfully copied to the location '" + destinationFolder + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else
+                    {
                         MessageBox.Show("No such path was found.");
+                    }
                 }
                 #endregion
 
                 #region Copy Process
                 if (rdCopy.Checked)
                 {
+                    txtSourcePath.Text = txtSourcePath.Text;
                     if (Directory.Exists(txtTargetPath.Text))
                     {
-                        CopyProcess copyProcess = new CopyProcess();
-                        copyProcess.CopyOperation(txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chOverWrite.Checked, chNtfsPermission.Checked, informationList, folderList, fileDate, selectedDate, chEmptyFolders.Checked, dateOptions);
+                        IFileOperation copyProcess = new CopyProcess();
 
+                        if (chNtfsPermission.Checked)
+                        {
+                            copyProcess = new CopyPermissionDecorator(copyProcess);
+                        }
+
+                        copyProcess.Execute(txtSourcePath.Text, txtTargetPath.Text, selectedFileName, chOverWrite.Checked, chEmptyFolders.Checked, chNtfsPermission.Checked, fileDate, selectedDate, informationList, folderList, dateOptions);
+                        MessageBox.Show("Folder '" + txtSourcePath.Text + "' has been successfully copied to the location '" + txtTargetPath.Text + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else
+                    {
                         MessageBox.Show("No such path was found.");
+                    }
                 }
+
                 #endregion
             }
             else
