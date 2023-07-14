@@ -208,14 +208,12 @@ namespace FileOrbis___File_System_Reporter
                     progressBar1.Value = 0;
                     string selectedFolder = txtSourcePath.Text;
 
-                    // Task oluşturarak dosya tarama işlemini arka planda gerçekleştir
                     Task.Run(() =>
                     {
                         var result = scanProcess.ScanOperation(selectedFolder, Convert.ToInt32(txtThread.Text), totalFiles);
 
                         if (result.files != null && result.folders != null)
                         {
-                            // UI güncellemelerini Invoke ile ana iş parçacığına gönder
                             Invoke(new Action(() =>
                             {
                                 informationList = result.files;
