@@ -62,7 +62,7 @@ namespace FileOrbisTest
             {
                 if (filedate > selectedDate)
                 {
-                    if (newPath.subDirectoryFiles.Count()!=0)
+                    if (newPath.subDirectoryFiles.Count() != 0)
                     {
                         string newFolderPath = newPath.FolderPath.Replace(sourcePath, destinationFolderPath);
                         Assert.IsTrue(Directory.Exists(newFolderPath));

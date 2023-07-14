@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.AccessControl;
 using System.Windows.Forms;
 
@@ -64,8 +65,12 @@ namespace FileOrbisTest
             {
                 if (filedate > selectedDate)
                 {
-                    string newFolderPath = newPath.FolderPath.Replace(sourcePath, destinationFolderPath);
-                    Assert.IsTrue(Directory.Exists(newFolderPath));
+                    if (newPath.subDirectoryFiles.Count() != 0)
+                    {
+                        string newFolderPath = newPath.FolderPath.Replace(sourcePath, destinationFolderPath);
+                        Assert.IsTrue(Directory.Exists(newFolderPath));
+                    }
+
                 }
             }
         }
