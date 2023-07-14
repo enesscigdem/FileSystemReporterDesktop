@@ -24,7 +24,6 @@ namespace FileOrbis___File_System_Reporter
             if (!Directory.Exists(destinationFolderPath))
                 Directory.CreateDirectory(destinationFolderPath);
             CopyFiles(sourceFolderPath, destinationFolderPath, copyPermissions, fileDate, selectedDate, chEmptyFoldersCheck, OverWriteCheck, fileInformations, folderInformations, dateOptions);
-            MessageBox.Show("Folder '" + sourcePath + "' has been successfully copied to the location '" + targetPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
         }
         public void CopyFiles(string sourcePath, string targetPath, bool copyPermissions, DateTime fileDate, DateTime selectedDate, bool chEmptyFoldersCheck, bool OverWriteCheck, List<Fileİnformation> fileInformations, List<Folderİnformation> folderInformations, IDateOptions dateOptions)
@@ -61,11 +60,11 @@ namespace FileOrbis___File_System_Reporter
                         File.SetAccessControl(newPath.FilePath.Replace(sourcePath, targetPath), destFileSecurity);
                     }
                 }
+                MessageBox.Show("Folder '" + sourcePath + "' has been successfully copied to the location '" + targetPath + "'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("CopyFiles Error: " + ex.Message);
-                throw; // Hatanın testte yakalanabilmesi için
+                MessageBox.Show(ex.Message);
             }
         }
     }

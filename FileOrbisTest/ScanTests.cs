@@ -21,7 +21,7 @@ namespace FileOrbisTest
         ScanProcess scanProcess = new ScanProcess();
 
         [TestInitialize]
-        public void Returnİnformations()
+        public void Returns_İnformations()
         {
             scanProcess.EnableUIUpdates(false);
             (fileInformations, folderInformations) = scanProcess.ScanFiles(SourcePath, ThreadCount, TotalFiles);
@@ -29,37 +29,37 @@ namespace FileOrbisTest
             FolderCount = folderInformations.Count;
         }
         [TestMethod]
-        public void ReturnsFileCountValid()
+        public void Returns_File_Count_Valid()
         {
             Assert.IsTrue(FileCount > 0);
         }
         [TestMethod]
-        public void ReturnsFolderCountValid()
+        public void Returns_Folder_Count_Valid()
         {
             Assert.IsTrue(FolderCount > 0);
         }
         [TestMethod]
-        public void ValidSourcePath()
+        public void Valid_Source_Path()
         {
             Assert.IsTrue(Directory.Exists(SourcePath));
         }
         [TestMethod]
-        public void ReturnsFileIsNotNull()
+        public void Returns_File_Is_Not_Null()
         {
             Assert.IsNotNull(fileInformations);
         }
         [TestMethod]
-        public void ReturnsFolderIsNotNull()
+        public void Returns_Folder_Is_Not_Null()
         {
             Assert.IsNotNull(folderInformations);
         }
         [TestMethod]
-        public void ReturnsExpectedFileCount()
+        public void Returns_Expected_File_Count()
         {
             Assert.AreEqual(TotalFiles, fileInformations.Count);
         }
         [TestMethod]
-        public void InvalidSourcePath()
+        public void Invalid_Source_Path()
         {
             string invalidSourcePath = "C:\\InvalidPath";
 
