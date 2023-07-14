@@ -31,12 +31,11 @@ namespace FileOrbis___File_System_Reporter.File_Process
 
         public override void Execute(string sourcePath, string targetPath, string selectedFileName, bool overwriteCheck, bool emptyFoldersCheck, bool copyPermission, DateTime fileDate, DateTime selectedDate, List<Fileİnformation> fileInformations, List<Folderİnformation> folderInformations, IDateOptions dateOptions)
         {
-            base.Execute(sourcePath, targetPath, selectedFileName, overwriteCheck, emptyFoldersCheck, copyPermission, fileDate, selectedDate, fileInformations, folderInformations, dateOptions);
-
             if (copyPermission)
             {
                 CopyPermission(sourcePath, targetPath, fileInformations);
             }
+            base.Execute(sourcePath, targetPath, selectedFileName, overwriteCheck, emptyFoldersCheck, copyPermission, fileDate, selectedDate, fileInformations, folderInformations, dateOptions);
         }
     }
 }

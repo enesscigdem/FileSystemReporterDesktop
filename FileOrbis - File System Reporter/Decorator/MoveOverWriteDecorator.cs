@@ -18,6 +18,7 @@ namespace FileOrbis___File_System_Reporter.File_Process
 
         public MoveOverWriteDecorator(IFileOperation fileOperation, bool overwriteCheck) : base(fileOperation)
         {
+            this.fileOperation = fileOperation;
             this.overwriteCheck = overwriteCheck;
         }
 
