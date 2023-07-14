@@ -95,7 +95,7 @@ namespace FileOrbis___File_System_Reporter
             this.btnSourcePath.TabIndex = 2;
             this.btnSourcePath.Text = "Browse";
             this.btnSourcePath.UseVisualStyleBackColor = true;
-            this.btnSourcePath.Click += new System.EventHandler(this.button1_Click);
+            this.btnSourcePath.Click += new System.EventHandler(this.btnSourcePath_Click);
             // 
             // label2
             // 
@@ -142,7 +142,7 @@ namespace FileOrbis___File_System_Reporter
             this.txtThread.Name = "txtThread";
             this.txtThread.Size = new System.Drawing.Size(164, 28);
             this.txtThread.TabIndex = 11;
-            this.txtThread.Text = "1";
+            this.txtThread.Text = "4";
             // 
             // rdCopy
             // 
@@ -155,7 +155,7 @@ namespace FileOrbis___File_System_Reporter
             this.rdCopy.TabStop = true;
             this.rdCopy.Text = "Copy";
             this.rdCopy.UseVisualStyleBackColor = true;
-            this.rdCopy.CheckedChanged += new System.EventHandler(this.radioButton4_CheckedChanged);
+            this.rdCopy.CheckedChanged += new System.EventHandler(this.rdCopy_CheckedChanged);
             // 
             // rdMove
             // 
@@ -168,7 +168,7 @@ namespace FileOrbis___File_System_Reporter
             this.rdMove.TabStop = true;
             this.rdMove.Text = "Move";
             this.rdMove.UseVisualStyleBackColor = true;
-            this.rdMove.CheckedChanged += new System.EventHandler(this.radioButton5_CheckedChanged);
+            this.rdMove.CheckedChanged += new System.EventHandler(this.rdMove_CheckedChanged);
             // 
             // rdScan
             // 
@@ -181,7 +181,7 @@ namespace FileOrbis___File_System_Reporter
             this.rdScan.TabStop = true;
             this.rdScan.Text = "Scan";
             this.rdScan.UseVisualStyleBackColor = true;
-            this.rdScan.CheckedChanged += new System.EventHandler(this.radioButton6_CheckedChanged);
+            this.rdScan.CheckedChanged += new System.EventHandler(this.rdScan_CheckedChanged);
             // 
             // label5
             // 
@@ -235,7 +235,7 @@ namespace FileOrbis___File_System_Reporter
             this.btnTargetPath.TabIndex = 21;
             this.btnTargetPath.Text = "Browse";
             this.btnTargetPath.UseVisualStyleBackColor = true;
-            this.btnTargetPath.Click += new System.EventHandler(this.button2_Click);
+            this.btnTargetPath.Click += new System.EventHandler(this.btnTargetPath_Click);
             // 
             // txtTargetPath
             // 
@@ -264,7 +264,7 @@ namespace FileOrbis___File_System_Reporter
             this.btnRun.TabIndex = 25;
             this.btnRun.Text = "Run";
             this.btnRun.UseVisualStyleBackColor = true;
-            this.btnRun.Click += new System.EventHandler(this.button3_Click);
+            this.btnRun.Click += new System.EventHandler(this.btnRun_Click);
             // 
             // btnReport
             // 
@@ -275,7 +275,7 @@ namespace FileOrbis___File_System_Reporter
             this.btnReport.TabIndex = 26;
             this.btnReport.Text = "Report";
             this.btnReport.UseVisualStyleBackColor = true;
-            this.btnReport.Click += new System.EventHandler(this.button4_Click);
+            this.btnReport.Click += new System.EventHandler(this.btnReport_Click);
             // 
             // progressBar1
             // 

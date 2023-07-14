@@ -39,8 +39,9 @@ namespace FileOrbis___File_System_Reporter
         IDateOptions dateOptions;
         Validation validator = new Validation();
         int totalFiles;
+        DeleteProcess deleteProcess = new DeleteProcess();
+        ValidationResult validationResult;
         FormValidate model = new FormValidate();
-
         #region Disabled Checked Radio Buttons,CheckBoxs
         public void DisabledChecked()
         {
@@ -54,8 +55,6 @@ namespace FileOrbis___File_System_Reporter
             chOverWrite.Enabled = false;
         }
         #endregion
-
-        //For Move,Copy
         #region Enabled Checked Radio Buttons,CheckBoxs
         public void EnabledChecked()
         {
@@ -84,25 +83,6 @@ namespace FileOrbis___File_System_Reporter
             scanProcess.lblPathMessage = new lblPathMessage(UpdateLblPath);
             scanProcess.ProgressBarCallBack = UpdateProgressBar;
         }
-        private void button1_Click(object sender, EventArgs e)
-        {
-            #region Select a path for scan
-            FolderBrowserDialog folderDialog = new FolderBrowserDialog();
-
-            DialogResult result = folderDialog.ShowDialog();
-
-            if (result == DialogResult.OK)
-            {
-                string selectedFolder = folderDialog.SelectedPath;
-                selectedFileName = Path.GetFileName(selectedFolder);
-                txtSourcePath.Text = selectedFolder;
-                rdMove.Enabled = false;
-                rdCopy.Enabled = false;
-                rdScan.Checked = true;
-            }
-            #endregion
-        }
-
         #region Get Selected Data Type
         private void rdCreatedDate_CheckedChanged(object sender, EventArgs e)
         {
@@ -133,7 +113,6 @@ namespace FileOrbis___File_System_Reporter
             progressBar1.Value = processedFiles;
             progressBar1.Update();
         }
-
         public void UpdateLblPath(string fileInfo)
         {
             if (InvokeRequired)
@@ -154,7 +133,6 @@ namespace FileOrbis___File_System_Reporter
             lblScannedItem.Text = $"{processedFiles} / {totalFiles} items were scanned.";
             lblScannedItem.Update();
         }
-
         public void UpdateLblTotalTıme(Stopwatch stopwatch)
         {
             if (InvokeRequired)
@@ -165,7 +143,6 @@ namespace FileOrbis___File_System_Reporter
             lblTotalTime.Text = $"Scan was completed. Total elapsed time: {stopwatch.Elapsed.TotalSeconds} seconds";
             lblTotalTime.Update();
         }
-
         private async void txtSourcePath_TextChanged(object sender, EventArgs e)
         {
             selectedFileName = Path.GetFileName(txtSourcePath.Text);
@@ -185,17 +162,78 @@ namespace FileOrbis___File_System_Reporter
                 MessageBox.Show(errorMessage, "Doğrulama Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        ValidationResult validationResult;
+        private void btnSourcePath_Click(object sender, EventArgs e)
+        {
+            #region Select a path for scan
+            FolderBrowserDialog folderDialog = new FolderBrowserDialog();
 
+            DialogResult result = folderDialog.ShowDialog();
+
+            if (result == DialogResult.OK)
+            {
+                string selectedFolder = folderDialog.SelectedPath;
+                selectedFileName = Path.GetFileName(selectedFolder);
+                txtSourcePath.Text = selectedFolder;
+                rdMove.Enabled = false;
+                rdCopy.Enabled = false;
+                rdScan.Checked = true;
+            }
+            #endregion
+        }
         private void FluentValidation()
         {
             model.Thread = txtThread.Text;
             model.Path = txtSourcePath.Text;
             validationResult = validator.Validate(model);
         }
+        private void rdScan_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rdScan.Checked)
+                DisabledChecked();
+        }
+        private void rdMove_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rdMove.Checked)
+                EnabledChecked();
+        }
+        private void rdCopy_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rdCopy.Checked)
+                EnabledChecked();
+        }
+        private void btnTargetPath_Click(object sender, EventArgs e)
+        {
+            #region Select a path for move 
+            FolderBrowserDialog folderDialog = new FolderBrowserDialog();
+            DialogResult result = folderDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                string selectedFolderMove = folderDialog.SelectedPath;
+                txtTargetPath.Text = selectedFolderMove;
+            }
+            #endregion
+        }
+        private void btnReport_Click(object sender, EventArgs e)
+        {
+            #region report process 
+            if (rdTxt.Checked)
+            {
+                TxtProcess txtProcess = new TxtProcess();
+                txtProcess.SaveTxt(txtSourcePath.Text, informationList);
+            }
+            else if (rdExcel.Checked)
+            {
+                ExcelProcess excelProcess = new ExcelProcess();
 
-        DeleteProcess deleteProcess = new DeleteProcess();
-        private void button3_Click(object sender, EventArgs e)
+                excelProcess.SaveExcel(txtSourcePath.Text, checkedDate, selectedDate, fileDate, informationList);
+            }
+            else
+            {
+                MessageBox.Show("Please select an option.", "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            #endregion
+        }
+        private void btnRun_Click(object sender, EventArgs e)
         {
             FluentValidation();
             if (validationResult.IsValid)
@@ -224,7 +262,6 @@ namespace FileOrbis___File_System_Reporter
                     });
                 }
                 #endregion
-
                 #region MoveProcess
                 if (rdMove.Checked)
                 {
@@ -236,7 +273,7 @@ namespace FileOrbis___File_System_Reporter
 
                         if (chOverWrite.Checked)
                         {
-                            moveProcess = new MoveOverWriteDecorator(moveProcess,true);
+                            moveProcess = new MoveOverWriteDecorator(moveProcess, true);
                         }
 
                         moveProcess.Execute(txtSourcePath.Text, destinationFolder, selectedFileName, chOverWrite.Checked, chNtfsPermission.Checked, chEmptyFolders.Checked, fileDate, selectedDate, informationList, folderList, dateOptions);
@@ -278,53 +315,6 @@ namespace FileOrbis___File_System_Reporter
                 string errorMessage = string.Join(Environment.NewLine, validationResult.Errors);
                 MessageBox.Show(errorMessage, "Doğrulama Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-        private void button4_Click(object sender, EventArgs e)
-        {
-            #region report process 
-            if (rdTxt.Checked)
-            {
-                TxtProcess txtProcess = new TxtProcess();
-                txtProcess.SaveTxt(txtSourcePath.Text, informationList);
-            }
-            else if (rdExcel.Checked)
-            {
-                ExcelProcess excelProcess = new ExcelProcess();
-
-                excelProcess.SaveExcel(txtSourcePath.Text, checkedDate, selectedDate, fileDate, informationList);
-            }
-            else
-            {
-                MessageBox.Show("Please select an option.", "İnfo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            #endregion
-        }
-        private void button2_Click(object sender, EventArgs e)
-        {
-            #region Select a path for move 
-            FolderBrowserDialog folderDialog = new FolderBrowserDialog();
-            DialogResult result = folderDialog.ShowDialog();
-            if (result == DialogResult.OK)
-            {
-                string selectedFolderMove = folderDialog.SelectedPath;
-                txtTargetPath.Text = selectedFolderMove;
-            }
-            #endregion
-        }
-        private void radioButton5_CheckedChanged(object sender, EventArgs e)
-        {
-            if (rdMove.Checked)
-                EnabledChecked();
-        }
-        private void radioButton6_CheckedChanged(object sender, EventArgs e)
-        {
-            if (rdScan.Checked)
-                DisabledChecked();
-        }
-        private void radioButton4_CheckedChanged(object sender, EventArgs e)
-        {
-            if (rdCopy.Checked)
-                EnabledChecked();
         }
     }
 }

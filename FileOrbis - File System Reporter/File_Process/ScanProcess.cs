@@ -24,31 +24,33 @@ namespace FileOrbis___File_System_Reporter
     public delegate void ProgressBarCallBack(int processedFiles, int totalFiles);
     public class ScanProcess
     {
-        public ScanProcess()
-        {
-            fileInformations = new List<Fileİnformation>();
-            folderInformations = new List<Folderİnformation>();
-        }
-        int processedFiles;
-        Stopwatch stopwatch;
-        DateType dt = new DateType();
+        private List<Fileİnformation> fileInformations = new List<Fileİnformation>();
+        private List<Folderİnformation> folderInformations = new List<Folderİnformation>();
         public FileScannedCallback FileScannedCallback { get; set; }
         public lblScannedMessage lblScannedMessage { get; set; }
         public lblTotalTımeCallBack lblTotalTımeCallBack { get; set; }
         public lblPathMessage lblPathMessage { get; set; }
         public ProgressBarCallBack ProgressBarCallBack { get; set; }
-        private List<Fileİnformation> fileInformations = new List<Fileİnformation>();
-        private List<Folderİnformation> folderInformations = new List<Folderİnformation>();
-        private object fileInformationLock = new object();
-        private object folderInformationLock = new object();
 
         IDateOptions dateOptionsMd = new ModifiedDateOptions();
         IDateOptions dateOptionsCr = new CreatedDateOption();
         IDateOptions dateOptionsAc = new AccessedDateOption();
+
+        private object fileInformationLock = new object();
+        private object folderInformationLock = new object();
+
+        int processedFiles;
+        Stopwatch stopwatch;
+
         private bool enableUIUpdates = true;
         public void EnableUIUpdates(bool enable)
         {
             enableUIUpdates = enable;
+        }
+        public ScanProcess()
+        {
+            fileInformations = new List<Fileİnformation>();
+            folderInformations = new List<Folderİnformation>();
         }
         public void UpdateUI(int totalFiles, string filePath)
         {
@@ -86,11 +88,9 @@ namespace FileOrbis___File_System_Reporter
                 UpdateUI(totalFiles, fileInfo.FilePath);
 
             });
-            if (enableUIUpdates)
-                MessageBox.Show("Scan Process is finished.");
             Parallel.ForEach(Directory.GetDirectories(sourcePath, "*.*", SearchOption.AllDirectories), new ParallelOptions
             {
-                MaxDegreeOfParallelism = 1
+                MaxDegreeOfParallelism = threadCount
             }, dirPath =>
                     {
                         Folderİnformation folderInfo = new Folderİnformation();
@@ -117,7 +117,6 @@ namespace FileOrbis___File_System_Reporter
             stopwatch.Stop();
 
             return (fileInformations, folderInformations);
-
         }
     }
 }
