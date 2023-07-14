@@ -187,17 +187,13 @@ namespace FileOrbis___File_System_Reporter
         }
         ValidationResult validationResult;
 
-        private void txtTargetPath_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void FluentValidation()
         {
             model.Thread = txtThread.Text;
             model.Path = txtSourcePath.Text;
             validationResult = validator.Validate(model);
         }
+
         DeleteProcess deleteProcess = new DeleteProcess();
         private void button3_Click(object sender, EventArgs e)
         {
@@ -212,17 +208,25 @@ namespace FileOrbis___File_System_Reporter
                     progressBar1.Value = 0;
                     string selectedFolder = txtSourcePath.Text;
 
-                    var result = scanProcess.ScanOperation(selectedFolder, Convert.ToInt32(txtThread.Text), totalFiles);
-
-                    if (result.files != null && result.folders != null)
+                    // Task oluşturarak dosya tarama işlemini arka planda gerçekleştir
+                    Task.Run(() =>
                     {
-                        informationList = result.files;
-                        folderList = result.folders;
-                        IsItDoneScan();
-                    }
+                        var result = scanProcess.ScanOperation(selectedFolder, Convert.ToInt32(txtThread.Text), totalFiles);
 
+                        if (result.files != null && result.folders != null)
+                        {
+                            // UI güncellemelerini Invoke ile ana iş parçacığına gönder
+                            Invoke(new Action(() =>
+                            {
+                                informationList = result.files;
+                                folderList = result.folders;
+                                IsItDoneScan();
+                            }));
+                        }
+                    });
                 }
                 #endregion
+
                 #region MoveProcess
                 if (rdMove.Checked)
                 {
@@ -247,7 +251,6 @@ namespace FileOrbis___File_System_Reporter
                     }
                 }
                 #endregion
-
                 #region Copy Process
                 if (rdCopy.Checked)
                 {
@@ -277,8 +280,6 @@ namespace FileOrbis___File_System_Reporter
                 string errorMessage = string.Join(Environment.NewLine, validationResult.Errors);
                 MessageBox.Show(errorMessage, "Doğrulama Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
-
         }
         private void button4_Click(object sender, EventArgs e)
         {

@@ -28,7 +28,6 @@ namespace FileOrbis___File_System_Reporter.File_Process
                 File.SetAccessControl(newPath.FilePath.Replace(sourcePath, targetPath), destFileSecurity);
             }
         }
-
         public override void Execute(string sourcePath, string targetPath, string selectedFileName, bool overwriteCheck, bool emptyFoldersCheck, bool copyPermission, DateTime fileDate, DateTime selectedDate, List<Fileİnformation> fileInformations, List<Folderİnformation> folderInformations, IDateOptions dateOptions)
         {
             if (copyPermission)
